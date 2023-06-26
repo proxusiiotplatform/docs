@@ -5,7 +5,62 @@ description: 'Start building awesome documentation in under 5 minutes'
 
 ## Setup your development
 
-Learn how to update your docs locally and and deploy them to the public.
+The commands you provided are for a Unix-like terminal. They download a shell script from the given URL, change its permissions to make it executable, and then run the script.
+
+### Linux and MacOS instructions:
+
+1. Open the Terminal. This can usually be found in your applications or utilities folder. On Linux, you might also be able to open it by right-clicking on the desktop and choosing "Open Terminal".
+2. Paste the following commands into the terminal, pressing Enter after each command to run it:
+
+curl -O https://raw.githubusercontent.com/volkanalkilic/Proxus/main/CloudInstall.sh
+chmod +x CloudInstall.sh
+./CloudInstall.sh
+
+
+### Windows instructions:
+
+Windows doesn't natively support the `curl`, `chmod`, and shell script (`sh`) commands. However, you can run these commands on Windows using a tool like Git Bash, Cygwin, or the Windows Subsystem for Linux (WSL).
+
+Option 1: Git Bash
+
+1. Download and install [Git for Windows](https://gitforwindows.org/).
+2. Open Git Bash. You can find it in your Start Menu.
+3. Paste the following commands into Git Bash, pressing Enter after each one to run it:
+
+```
+curl -O https://raw.githubusercontent.com/volkanalkilic/Proxus/main/CloudInstall.sh chmod
+```
+
+```
++x CloudInstall.sh
+```
+
+```
+./CloudInstall.sh
+```
+
+Option 2: Cygwin
+
+1. Download and install [Cygwin](https://www.cygwin.com/), making sure to include the `curl`, `chmod`, and `bash` packages during the installation process.
+2. Open Cygwin.
+3. Paste the following commands into Cygwin, pressing Enter after each one to run it:
+
+bashCopy code
+
+`curl -O https://raw.githubusercontent.com/volkanalkilic/Proxus/main/CloudInstall.sh chmod +x CloudInstall.sh ./CloudInstall.sh`
+
+Option 3: Windows Subsystem for Linux (WSL)
+
+1. Install [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+2. Open a new WSL terminal window.
+3. Paste the following commands into the WSL terminal, pressing Enter after each one to run it:
+
+bashCopy code
+
+`curl -O https://raw.githubusercontent.com/volkanalkilic/Proxus/main/CloudInstall.sh chmod +x CloudInstall.sh ./CloudInstall.sh`
+
+Please note that running scripts from the internet carries certain risks, as they might contain harmful instructions. Always make sure to inspect the contents of a script before running it, and only run scripts from sources that you trust.
+
 
 ### Edit and preview
 
