@@ -30,7 +30,55 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["introduction", "quickstart", "development"]
+      "pages": [
+        "introduction",
+        {
+          "group": "Deployment Options",
+          "pages": [
+            {
+              "group": "Automated Script",
+              "pages": [
+                "setup/script/linux-and-macos",
+                "setup/script/windows"
+              ]
+            },
+            {
+              "group": "Docker Compose",
+              "pages": [
+                "setup/self-hosted/docker",
+                "setup/self-hosted/pip/windows",
+                "setup/self-hosted/pip/linux",
+                "setup/self-hosted/pip/macos",
+                "setup/self-hosted/pip/source"
+              ]
+            },
+            {
+              "group": "External Cloud Services",
+              "pages": [
+                "setup/gcp"
+              ]
+            },
+            {
+              "group": "Other",
+              "pages": [
+                "connect/dbt"
+              ]
+            }
+          ]
+        },
+        {
+          "group": "Configuration Options",
+          "pages": [
+            "setup/custom-config",
+            "setup/environment-vars"
+          ]
+        },
+        "setup/community-deploys-mindsdb"
+      ]
+    },
+    {
+      "group": "Get Started",
+      "pages": ["introduction", "quickstart", "development", "installation/script/linuxandmacos"]
     },
     {
       "group": "Essentials",

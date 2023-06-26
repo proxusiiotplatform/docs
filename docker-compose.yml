@@ -1,0 +1,164 @@
+version: '3.8'
+services:
+  
+  #  consul:
+  #    #restart: always
+  #    container_name: consul
+  #    networks:
+  #      - proxus
+  #    ports:
+  #      - "8300:8300"
+  #      - "8301:8301"
+  #      - "8301:8301/udp"
+  #      - "8500:8500"
+  #      - "8502:8502"
+  #      - "8600:8600"
+  #      - "8600:8600/udp"
+  #    image: consul
+  #    environment:
+  #      CONSUL_LOCAL_CONFIG: >-
+  #        {
+  #          "bootstrap": true,
+  #          "server": true,
+  #          "node_name": "consul1",
+  #          "bind_addr": "0.0.0.0",
+  #          "client_addr": "0.0.0.0",
+  #          "bootstrap_expect": 1,
+  #          "ui": true,
+  #          "addresses" : {
+  #            "http" : "0.0.0.0"
+  #          },
+  #          "ports": {
+  #            "http": 8500
+  #          },
+  #          "log_level": "ERROR",
+  #          "connect" : {
+  #            "enabled" : true
+  #          }
+  #        }
+  #    
+  #    labels:
+  #      kompose.service.type: nodeport
+  #      kompose.service.expose: "true"
+  #      kompose.image-pull-policy: "Always"
+
+  redis:
+    image: 'bitnami/redis:latest'
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - proxus
+  
+  timescaledb:
+    restart: always
+    container_name: timescaledb
+    image: timescale/timescaledb:latest-pg14
+    command: postgres -c shared_preload_libraries=timescaledb -p 5442
+    volumes:
+      - type: volume
+        source: proxus-db-volume
+        target: /var/lib/postgresql/data
+        read_only: false
+    networks:
+      - proxus
+    ports:
+      - "5442:5442"
+    environment:
+      # - PGDATA=/var/lib/postgresql/data/timescaledb
+      - POSTGRES_DB=proxus
+      - POSTGRES_USER=proxus
+      - POSTGRES_PASSWORD=proxus
+  
+  proxus-ui:
+    restart: always
+    depends_on:
+      - redis
+      - proxus-server
+    container_name: proxus-ui
+    image: proxusplatform/proxus-ui:latest
+    #    command: >
+    #      /bin/sh -c "
+    #        supervisord -n &&
+    #        apt-get update && \
+    #        apt-get install -y -qq libgdiplus && \
+    #      "
+    labels:
+      kompose.serviceaccount-name: "Proxus"
+    #    build:
+    #      context: .
+    #      dockerfile: Proxus.Blazor.Server/Dockerfile
+    networks:
+      - proxus
+    ports:
+      - "8080:8080"
+    volumes:
+      - type: volume
+        source: config
+        target: /app/config
+        read_only: false
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      # - ASPNETCORE_HTTPS_PORT=443
+      - CONSUL_HTTP_ADDR=consul:8500
+      - AdvertisedHost=proxus-ui
+      # - CONSUL_HTTP_ADDR=${DOCKER_GATEWAY_HOST:-host.docker.internal}:8500
+    command: [ "./Proxus.Blazor.Server",  "--GatewayID=1",  "--GrpcInterfaceBinding=Localhost", "RedisConnection=redis:6379", "ClusterProvider=Redis"]
+  
+  proxus-server:
+    restart: always
+    depends_on:
+      - redis
+    container_name: proxus-server
+    image: proxusplatform/proxus-server:latest
+    user: "0"
+    networks:
+      - proxus
+    ports:
+      - "1883:1883"
+    labels:
+      kompose.serviceaccount-name: "Proxus"
+    #    build:
+    #      context: .
+    #      dockerfile: Proxus.Server/Dockerfile
+    volumes:
+      - type: volume
+        source: config
+        target: /app/config
+        read_only: false
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CONSUL_HTTP_ADDR=consul:8500
+      - AdvertisedHost=proxus-server
+    command: [ "./Proxus.Server", "--GatewayID=1",  "--GrpcInterfaceBinding=Localhost", "RedisConnection=redis:6379",  "ClusterProvider=Redis"]
+  
+  proxus-api:
+    restart: always
+    container_name: proxus-api
+    image: proxusplatform/proxus-api:latest
+    labels:
+      kompose.serviceaccount-name: "Proxus"
+    
+    networks:
+      - proxus
+    ports:
+      - "8082:8082"
+    volumes:
+      - type: volume
+        source: config
+        target: /app/config
+        read_only: false
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8081
+networks:
+  proxus:
+    driver: bridge
+
+volumes:
+  proxus-db-volume:
+  config:

@@ -1,0 +1,60 @@
+---
+title: Linux and macOS
+description: 'Welcome to the home of Proxus documentation'
+---
+
+The following guide provides instructions for installing Proxus, the ultra-fast, distributed, and next-gen IIoT platform, on Linux and macOS operating systems.
+
+### Prerequisites
+
+Before proceeding with the installation, ensure that you have the following prerequisites:
+
+-   Docker: Make sure you have Docker installed on your system. You can download Docker from the official website and follow the installation instructions for your specific operating system.
+
+### Step 1: Download the Installation Script
+
+1.  Open a terminal on your Linux or macOS system.
+2.  Use the `curl` command to download the installation script. Run the following command:
+
+bashCopy code
+
+`curl -O https://raw.githubusercontent.com/proxusiiotplatform/docs/main/install_proxus.sh`
+
+This will download the installation script and save it as `install_proxus.sh` in your current directory.
+
+### Step 2: Grant Execution Permissions
+
+In the terminal, navigate to the directory where the `install_proxus.sh` file is located. Run the following command to grant execution permissions to the script:
+
+bashCopy code
+
+`chmod +x install_proxus.sh`
+
+### Step 3: Run the Installation Script
+
+Run the following command in the terminal to execute the Proxus installation script:
+
+bashCopy code
+
+`./install_proxus.sh`
+
+### Step 4: Follow the Installation Prompts
+
+The installation script will guide you through the installation process by presenting various prompts. Follow the instructions and provide the necessary information when prompted, such as passwords for database and environment settings.
+
+### Step 5: Complete the Installation
+
+Once the installation script completes its execution, Proxus should be installed and ready to use on your Linux or macOS system.
+
+### Accessing Proxus
+
+After the installation is complete, you can access Proxus by opening a web browser and navigating to `http://localhost:8080`. This will take you to the Proxus web interface, where you can log in and start using the platform.
+
+### Important Notes
+
+-   The installation script automatically configures Proxus with default settings. If you wish to customize the configuration further, you can manually modify the generated `docker-compose.yml` file.
+-   Make sure to securely store the passwords generated during the installation process. The installation script saves the passwords to a file named `passwords.txt` located in the installation directory.
+
+That's it! You have successfully installed Proxus on your Linux or macOS system. Enjoy using the powerful features of Proxus for your industrial IoT needs.
+
+For more advanced usage and configuration options, please refer to the Proxus User Documentation.
