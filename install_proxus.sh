@@ -77,7 +77,7 @@ esac
 # Prompt user for configuration variables
 POSTGRES_USER=$(prompt_or_generate_password "Please enter the POSTGRES_USER" "proxus" "$RANDOM_PASSWORD_OPTION")
 POSTGRES_PASSWORD=$(prompt_or_generate_password "Please enter the POSTGRES_PASSWORD" "proxus" "$RANDOM_PASSWORD_OPTION")
-ASPNETCORE_ENVIRONMENT=$(prompt_or_generate_password "Please enter the ASPNETCORE_ENVIRONMENT" "Development" "$RANDOM_PASSWORD_OPTION")
+ASPNETCORE_ENVIRONMENT= "Development"
 REDIS_PASSWORD=$(prompt_or_generate_password "Please enter the REDIS_PASSWORD" "proxus" "$RANDOM_PASSWORD_OPTION")
 
 
@@ -277,7 +277,6 @@ IP_ADDRESS="localhost"
 PASSWORDS_FILE="$(pwd)/passwords.txt"
 echo "POSTGRES_USER: $POSTGRES_USER" >"$PASSWORDS_FILE"
 echo "POSTGRES_PASSWORD: $POSTGRES_PASSWORD" >>"$PASSWORDS_FILE"
-echo "ASPNETCORE_ENVIRONMENT: $ASPNETCORE_ENVIRONMENT" >>"$PASSWORDS_FILE"
 echo "REDIS_PASSWORD: $REDIS_PASSWORD" >>"$PASSWORDS_FILE"
 
 echo -e "${GREEN}Done! You should now see Proxus in your default browser: http://$IP_ADDRESS:8080${NC}"
