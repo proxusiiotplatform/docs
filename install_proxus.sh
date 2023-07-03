@@ -209,7 +209,7 @@ services:
          "--GrpcInterfaceBinding=Localhost", 
          "RedisConnection=redis:6379, password=$REDIS_PASSWORD", 
          "ClusterProvider=Redis",
-         "ConnectionString=Server=localhost;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
+         "ConnectionString=Server=timescaledb;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
   
   proxus-server:
     restart: always
@@ -236,7 +236,7 @@ services:
          "--GrpcInterfaceBinding=Localhost", 
          "RedisConnection=redis:6379, password=$REDIS_PASSWORD", 
          "ClusterProvider=Redis",
-         "ConnectionString=Server=localhost;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
+         "ConnectionString=Server=timescaledb;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
   
   proxus-api:
     restart: always
@@ -255,7 +255,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8081
     command: [ "./Proxus.WebApi",
-             "ConnectionString=Server=localhost;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
+             "ConnectionString=Server=timescaledb;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
       
 networks:
   proxus:
