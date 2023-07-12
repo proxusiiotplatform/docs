@@ -1,0 +1,49 @@
+---
+title: Proxus IIoT Platform Docker Installation with Bash Script
+description: 'Learn how to install and run Proxus IIoT platform with a Bash script on Linux, macOS, and Windows systems.'
+---
+
+In this guide, we will walk you through the process of installing and running the Proxus IIoT platform using a provided Bash script. This script is designed to automate the installation process and the set-up of necessary Docker services.
+
+## Prerequisites
+
+- A machine running Linux, macOS, or Windows (using [Git Bash](https://gitforwindows.org/) or the Windows Subsystem for Linux).
+- Docker: If you don't have Docker installed, you can download it from the [Docker official website](https://www.docker.com/products/docker-desktop). *This is specifically required for Windows users before proceeding with the Bash script.*
+- An Internet connection.
+
+## Installation Steps
+
+1. Download the installation script from the repository:
+
+ ```bash
+ curl -o install_proxus.sh https://raw.githubusercontent.com/proxusiiotplatform/docs/main/install_proxus.sh
+```
+
+2. Make the script executable:
+
+ ```bash
+ chmod +x install_proxus.sh
+```
+
+3. Run the installation script:
+
+ ```bash
+ sudo ./install_proxus.sh
+```
+
+You will be prompted to provide some inputs during the execution of the script:
+
+ - Whether you want to enter passwords manually, generate them randomly, or use default values.
+ - The PostgreSQL user and password.
+ - The Redis password.
+
+The script will automatically install Docker and Docker Compose if they are not already installed (except for Windows where Docker should be manually installed), and will then use Docker Compose to start the necessary services. It will also generate a `docker-compose.yml` file with your chosen configuration settings.
+
+## Accessing the Platform
+
+You can access Proxus by navigating to [http://localhost:8080](http://localhost:8080) from your web browser.
+
+The default username is `Admin`, and the password field should be left blank.
+The script will also generate a `passwords.txt` file in the same directory, which contains the configuration settings you entered (like the PostgreSQL user and password and the Redis password). You should keep this file safe as it contains sensitive information about your setup.
+
+Congratulations! You have successfully installed and started the Proxus IIoT platform using the Bash installation script.

@@ -1,9 +1,4 @@
----
-title: Windows
-description: 'Welcome to the home of Proxus documentation'
----
-
-Prerequisites
+### Prerequisites
 
 Before proceeding with the installation, ensure that you have the following prerequisites:
 
@@ -36,15 +31,17 @@ This will download the installation script and save it as `install_proxus.sh` in
 
 In the Git Bash terminal, navigate to the directory where the `install_proxus.sh` file is located. Run the following command to grant execution permissions to the script:
 
+bashCopy code
 
-```chmod +x install_proxus.sh```
+`chmod +x install_proxus.sh`
 
 ### Step 5: Run the Installation Script
 
 Run the following command in the Git Bash terminal to execute the Proxus installation script:
 
+bashCopy code
 
-```./install_proxus.sh````
+`./install_proxus.sh`
 
 ### Step 6: Follow the Installation Prompts
 

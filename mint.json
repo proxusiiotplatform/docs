@@ -33,10 +33,38 @@
       "pages": [
         "introduction",
         {
-          "group": "Deployment Options",
+          "group": "Installation Options",
+          "pages": [
+
+            {
+              "group": "Docker",
+              "pages": [
+                "setup/docker",
+                "setup/docker-bash"
+              ]
+            }
+            
+          ]
+        },
+        {
+          "group": "Configuration Options",
+          "pages": [
+            "setup/custom-config",
+            "setup/environment-vars"
+          ]
+        },
+        "setup/community-deploys-mindsdb"
+      ]
+    },
+    {
+      "group": "Platform",
+      "pages": [
+        "introduction",
+        {
+          "group": "Data Collection",
           "pages": [
             {
-              "group": "Automated Script",
+              "group": "Supported Protocols",
               "pages": [
                 "setup/script/linux-and-macos",
                 "setup/script/windows"
@@ -45,11 +73,7 @@
             {
               "group": "Docker Compose",
               "pages": [
-                "setup/self-hosted/docker",
-                "setup/self-hosted/pip/windows",
-                "setup/self-hosted/pip/linux",
-                "setup/self-hosted/pip/macos",
-                "setup/self-hosted/pip/source"
+                "setup/self-hosted/docker"
               ]
             },
             {

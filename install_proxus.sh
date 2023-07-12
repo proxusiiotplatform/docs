@@ -30,33 +30,33 @@ Do you wish to continue? (y/n)"
 read -r user_choice
 
 if [[ $user_choice =~ ^[Yy]$ ]]; then
-    echo -e "${GREEN}Continuing with the script...${NC}"
+  echo -e "${GREEN}Continuing with the script...${NC}"
 else
-    echo -e "${RED}Exiting without making any changes.${NC}"
-    exit 0
+  echo -e "${RED}Exiting without making any changes.${NC}"
+  exit 0
 fi
 
 # Function to generate a random password
 generate_random_password() {
-    local length=$1
-    LC_ALL=C tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w "$length" | head -n 1
+  local length=$1
+  LC_ALL=C tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w "$length" | head -n 1
 }
 
 # Function to prompt for password or generate randomly
 prompt_or_generate_password() {
-    local prompt=$1
-    local default=$2
-    local random=$3
-    local password
+  local prompt=$1
+  local default=$2
+  local random=$3
+  local password
 
-    if [[ $random =~ ^[Yy]$ ]]; then
-        password=$(generate_random_password 16)
-    else
-        read -p "$prompt (default: $default): " password
-        password=${password:-$default}
-    fi
+  if [[ $random =~ ^[Yy]$ ]]; then
+    password=$(generate_random_password 16)
+  else
+    read -p "$prompt (default: $default): " password
+    password=${password:-$default}
+  fi
 
-    echo "$password"
+  echo "$password"
 }
 
 # Prompt user for password options
@@ -68,23 +68,24 @@ echo -e "3. Use default passwords"
 read -r password_option
 
 case $password_option in
-    1) RANDOM_PASSWORD_OPTION='N';;
-    2) RANDOM_PASSWORD_OPTION='Y';;
-    3) RANDOM_PASSWORD_OPTION='N';;
-    *) echo -e "${RED}Invalid option. Exiting.${NC}"; exit 1;;
+1) RANDOM_PASSWORD_OPTION='N' ;;
+2) RANDOM_PASSWORD_OPTION='Y' ;;
+3) RANDOM_PASSWORD_OPTION='N' ;;
+*)
+  echo -e "${RED}Invalid option. Exiting.${NC}"
+  exit 1
+  ;;
 esac
 
 # Prompt user for configuration variables
 POSTGRES_USER=$(prompt_or_generate_password "Please enter the POSTGRES_USER" "proxus" "$RANDOM_PASSWORD_OPTION")
 POSTGRES_PASSWORD=$(prompt_or_generate_password "Please enter the POSTGRES_PASSWORD" "proxus" "$RANDOM_PASSWORD_OPTION")
-ASPNETCORE_ENVIRONMENT=$(prompt_or_generate_password "Please enter the ASPNETCORE_ENVIRONMENT" "Development" "$RANDOM_PASSWORD_OPTION")
 REDIS_PASSWORD=$(prompt_or_generate_password "Please enter the REDIS_PASSWORD" "proxus" "$RANDOM_PASSWORD_OPTION")
-
 
 # Function to install Docker on Windows
 install_docker_windows() {
-    # Generate PowerShell script
-    cat > install_docker.ps1 <<EOF
+  # Generate PowerShell script
+  cat >install_docker.ps1 <<EOF
 # Check if running as administrator
 \$IsAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 if (-NOT \$IsAdmin) {
@@ -111,36 +112,43 @@ if (!(Get-Command docker -ErrorAction SilentlyContinue)) {
 }
 EOF
 
-    # Run the PowerShell script
-    powershell -ExecutionPolicy Bypass -File ./install_docker.ps1
+  # Run the PowerShell script
+  powershell -ExecutionPolicy Bypass -File ./install_docker.ps1
 }
 
 # Determine the operating system
 OS="$(uname)"
 
 # Check if Docker is installed
-if ! command -v docker &> /dev/null; then
-    echo "Docker is not installed. Attempting to install..."
-    # Install Docker
-    case "$OS" in
-        "Linux")
-            sudo apt-get update
-            sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-            ;;
-        "Darwin")
-            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-            brew cask install docker
-            ;;
-        "MINGW"*|"CYGWIN"*|"MSYS"*)
-            install_docker_windows
-            ;;
-        *)
-            echo "Unsupported operating system: $OS"
-            exit 1
-            ;;
-    esac
+if ! command -v docker &>/dev/null; then
+  echo "Docker is not installed. Attempting to install..."
+  # Install Docker
+  case "$OS" in
+  "Linux")
+    #sudo apt-get update
+    #sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+    # Download Docker installation script
+    curl -fsSL https://get.docker.com -o get-docker.sh
+
+    # Run the Docker installation script
+    sudo sh get-docker.sh
+    ;;
+
+  "Darwin")
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    brew cask install docker
+    ;;
+  "MINGW"* | "CYGWIN"* | "MSYS"*)
+    install_docker_windows
+    ;;
+  *)
+    echo "Unsupported operating system: $OS"
+    exit 1
+    ;;
+  esac
 else
-    echo "Docker is already installed."
+  echo "Docker is already installed."
 fi
 
 # Create docker-compose.yml file
@@ -204,13 +212,21 @@ services:
       # - ASPNETCORE_HTTPS_PORT=443
       - CONSUL_HTTP_ADDR=consul:8500
       - AdvertisedHost=proxus-ui
+      - TZ=GMT
     command: [ "./Proxus.Blazor.Server",
          "--GatewayID=1",  
          "--GrpcInterfaceBinding=Localhost", 
+         "Server-Address=proxus-server",
          "RedisConnection=redis:6379, password=$REDIS_PASSWORD", 
          "ClusterProvider=Redis",
-         "ConnectionString=Server=localhost;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
-  
+         "ConnectionString=Server=timescaledb;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/healthz" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      
+      
   proxus-server:
     restart: always
     depends_on:
@@ -234,10 +250,17 @@ services:
     command: [ "./Proxus.Server", 
          "--GatewayID=1",  
          "--GrpcInterfaceBinding=Localhost", 
+          "Server-Address=proxus-server",
          "RedisConnection=redis:6379, password=$REDIS_PASSWORD", 
          "ClusterProvider=Redis",
-         "ConnectionString=Server=localhost;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
-  
+         "ConnectionString=Server=timescaledb;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8083/healthz" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      
+      
   proxus-api:
     restart: always
     container_name: proxus-api
@@ -253,9 +276,9 @@ services:
         read_only: false
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8081
+      - ASPNETCORE_URLS=http://+:8082
     command: [ "./Proxus.WebApi",
-             "ConnectionString=Server=localhost;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
+             "ConnectionString=Server=timescaledb;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
       
 networks:
   proxus:
@@ -277,7 +300,6 @@ IP_ADDRESS="localhost"
 PASSWORDS_FILE="$(pwd)/passwords.txt"
 echo "POSTGRES_USER: $POSTGRES_USER" >"$PASSWORDS_FILE"
 echo "POSTGRES_PASSWORD: $POSTGRES_PASSWORD" >>"$PASSWORDS_FILE"
-echo "ASPNETCORE_ENVIRONMENT: $ASPNETCORE_ENVIRONMENT" >>"$PASSWORDS_FILE"
 echo "REDIS_PASSWORD: $REDIS_PASSWORD" >>"$PASSWORDS_FILE"
 
 echo -e "${GREEN}Done! You should now see Proxus in your default browser: http://$IP_ADDRESS:8080${NC}"

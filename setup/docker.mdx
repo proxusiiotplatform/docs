@@ -1,0 +1,78 @@
+---
+title: Proxus IIoT Platform Docker Installation
+description: 'Detailed instructions for setting up the Proxus IIoT Platform using Docker on Linux, macOS, and Windows systems.'
+---
+
+
+This guide will walk you through the process of installing and running the Proxus IIoT platform using Docker.
+
+## Prerequisites
+
+- Docker: If you don't have Docker installed, you can download it from the [Docker official website](https://www.docker.com/products/docker-desktop).
+- Docker Compose: It should be installed automatically with Docker on Windows and macOS. For Linux users, you can download it from the [Docker Compose GitHub repository](https://github.com/docker/compose/releases).
+
+## Downloading and Running the docker-compose.yml File
+
+### For Linux and Mac:
+
+1. Open a terminal window.
+
+2. Use either `curl` or `wget` to download the file. These are command-line tools for getting files from web servers.
+
+If you have `curl` installed:
+
+```bash 
+curl -LO https://raw.githubusercontent.com/proxusiiotplatform/docs/main/docker-compose.yml
+```
+
+If you have `wget`:
+
+```bash 
+wget https://raw.githubusercontent.com/proxusiiotplatform/docs/main/docker-compose.yml
+```
+
+### For Windows using curl:
+
+1. Open a Command Prompt or PowerShell window.
+
+2. Enter the following command to download the `docker-compose.yml` file:
+
+```bash 
+curl -O https://raw.githubusercontent.com/proxusiiotplatform/docs/main/docker-compose.yml
+```
+
+> Note: The `-O` option tells `curl` to output to a file instead of standard output. The file name in the URL will be used as the local file name. If `curl` is not recognized as a command, you may need to add it to your PATH or use a full path to the `curl` executable.
+
+### For Windows using PowerShell:
+
+1. Open PowerShell.
+
+2. Use the `Invoke-WebRequest` cmdlet to download the file:
+
+```bash 
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/proxusiiotplatform/docs/main/docker-compose.yml -OutFile .\docker-compose.yml
+```
+
+## Running the docker-compose.yml File on Linux, Mac, and Windows:
+
+1. Ensure that Docker and Docker Compose are installed on your machine. If not, refer to the official Docker documentation to install these tools.
+
+2. Navigate to the directory where you downloaded the `docker-compose.yml` file.
+
+3. Run the following command:
+
+```bash
+docker compose -p="proxus" up -d
+```
+
+This command will start all services defined in the `docker-compose.yml` file. Docker Compose will pull the necessary images and start all services.
+
+> Note: You might need administrative permissions (use `sudo` on Linux/Mac, and run Command Prompt or PowerShell as an administrator on Windows) to run these commands, depending on your system's configuration.
+
+## Accessing the Platform
+
+You can access Proxus by navigating to [http://localhost:8080](http://localhost:8080) from your web browser.
+
+The default username is `Admin`, and the password field should be left blank.
+
+Congratulations! You have successfully installed and started the Proxus IIoT platform using Docker.
