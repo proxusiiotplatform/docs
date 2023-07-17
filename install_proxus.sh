@@ -251,7 +251,7 @@ services:
          "GatewayID=1",  
          "GrpcInterfaceBinding=AdvertisedHost", "Server-Address=proxus-server",
          "RedisConnection=redis:6379, password=$REDIS_PASSWORD", 
-         "ClusterProvider=Redis", , "Server-Address=proxus-server",
+         "ClusterProvider=Redis", "Server-Address=proxus-server",
          "ConnectionString=Server=timescaledb;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8083/healthz | grep -q 'Healthy' || exit 1" ]
