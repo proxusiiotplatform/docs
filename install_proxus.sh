@@ -210,18 +210,18 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
       # - ASPNETCORE_HTTPS_PORT=443
-      - CONSUL_HTTP_ADDR=consul:8500
       - AdvertisedHost=proxus-ui
       - TZ=GMT
     command: [ "./Proxus.Blazor.Server",
          "--GatewayID=1",  
-         "--GrpcInterfaceBinding=Localhost", 
+         "--GrpcInterfaceBinding=AdvertisedHost", 
          "Server-Address=proxus-server",
+         "UI-Address=proxus-ui",
          "RedisConnection=redis:6379, password=$REDIS_PASSWORD", 
          "ClusterProvider=Redis",
          "ConnectionString=Server=timescaledb;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/healthz" ]
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/healthz | grep -q 'Healthy' || exit 1" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -245,17 +245,16 @@ services:
         read_only: false
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - CONSUL_HTTP_ADDR=consul:8500
+      - ASPNETCORE_URLS=http://+:8083
       - AdvertisedHost=proxus-server
     command: [ "./Proxus.Server", 
-         "--GatewayID=1",  
-         "--GrpcInterfaceBinding=Localhost", 
-          "Server-Address=proxus-server",
+         "GatewayID=1",  
+         "GrpcInterfaceBinding=AdvertisedHost", "Server-Address=proxus-server",
          "RedisConnection=redis:6379, password=$REDIS_PASSWORD", 
-         "ClusterProvider=Redis",
+         "ClusterProvider=Redis", , "Server-Address=proxus-server",
          "ConnectionString=Server=timescaledb;Port=5442;UserID=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Database=Proxus;"]
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8083/healthz" ]
+      test: [ "CMD-SHELL", "curl -f http://localhost:8083/healthz | grep -q 'Healthy' || exit 1" ]
       interval: 30s
       timeout: 10s
       retries: 5
