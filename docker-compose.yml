@@ -11,6 +11,11 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
       - proxus
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping || exit 1" ]
+      interval: 3s
+      timeout: 10s
+      retries: 5
   
   timescaledb:
     restart: always
@@ -31,64 +36,12 @@ services:
       - POSTGRES_USER=proxus
       - POSTGRES_PASSWORD=proxus
   
-  proxus-ui:
-    restart: always
-    depends_on:
-      - redis
-      - proxus-server
-    container_name: proxus-ui
-    image: proxusplatform/proxus-ui:latest
-    labels:
-      kompose.serviceaccount-name: "Proxus"
-    
-    networks:
-      - proxus
-    ports:
-      - "8080:8080"
-    volumes:
-      - type: volume
-        source: config
-        target: /app/config
-        read_only: false
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080
-      # - ASPNETCORE_HTTPS_PORT=443
-      - CONSUL_HTTP_ADDR=consul:8500
-      - AdvertisedHost=proxus-ui
-    command: [ "./Proxus.Blazor.Server",  "--GatewayID=1",  "--GrpcInterfaceBinding=Localhost", "RedisConnection=redis:6379", "ClusterProvider=Redis" ]
-  
-  proxus-server:
-    restart: always
-    depends_on:
-      - redis
-    container_name: proxus-server
-    image: proxusplatform/proxus-server:latest
-    user: "0"
-    networks:
-      - proxus
-    ports:
-      - "1883:1883"
-    labels:
-      kompose.serviceaccount-name: "Proxus"
-    volumes:
-      - type: volume
-        source: config
-        target: /app/config
-        read_only: false
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - CONSUL_HTTP_ADDR=consul:8500
-      - AdvertisedHost=proxus-server
-    command: [ "./Proxus.Server", "--GatewayID=1",  "--GrpcInterfaceBinding=Localhost", "RedisConnection=redis:6379",  "ClusterProvider=Redis" ]
-  
   proxus-api:
     restart: always
     container_name: proxus-api
     image: proxusplatform/proxus-api:latest
     labels:
       kompose.serviceaccount-name: "Proxus"
-    
     networks:
       - proxus
     ports:
@@ -101,6 +54,71 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8081
+  
+  
+  proxus-server:
+    restart: always
+    container_name: proxus-server
+    image: proxusplatform/proxus-server:latest
+    user: "0"
+    networks:
+      - proxus
+    ports:
+      - "8083:8083"
+      - "1883:1883"
+    labels:
+      kompose.serviceaccount-name: "Proxus"
+    volumes:
+      - type: volume
+        source: config
+        target: /app/config
+        read_only: false
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8083
+      - CONSUL_HTTP_ADDR=consul:8500
+      - AdvertisedHost=proxus-server
+    command: [ "./Proxus.Server", "--GatewayID=1",
+               "GrpcInterfaceBinding=AdvertisedHost", "IdentityLookupStrategy=PartitionActivatorLookup",
+               "UI-Address=proxus-ui", "RedisConnection=redis:6379", "ClusterProvider=Redis" ]
+    
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8083/healthz | grep -q 'Healthy' || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  
+  
+  proxus-ui:
+    restart: always
+    container_name: proxus-ui
+    image: proxusplatform/proxus-ui:latest
+    labels:
+      kompose.serviceaccount-name: "Proxus"
+    networks:
+      - proxus
+    ports:
+      - "8080:8080"
+    volumes:
+      - type: volume
+        source: config
+        target: /app/config
+        read_only: false
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - CONSUL_HTTP_ADDR=consul:8500
+      - AdvertisedHost=proxus-ui
+    command: [ "./Proxus.Blazor.Server", "GrpcInterfaceBinding=AdvertisedHost",
+               "IdentityLookupStrategy=PartitionActivatorLookup", "Server-Address=proxus-server", "RedisConnection=redis:6379",
+               "ClusterProvider=Redis" ]
+    
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/healthz | grep -q 'Healthy' || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 networks:
   proxus:
     driver: bridge
