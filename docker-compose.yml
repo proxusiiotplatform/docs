@@ -1,21 +1,62 @@
 version: '3.8'
 services:
   
-  redis:
-    image: 'bitnami/redis:latest'
-    container_name: redis
+  consul:
     restart: always
-    ports:
-      - "6379:6379"
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
+    container_name: consul
     networks:
       - proxus
-    healthcheck:
-      test: [ "CMD-SHELL", "redis-cli ping || exit 1" ]
-      interval: 3s
-      timeout: 10s
-      retries: 5
+    ports:
+      - "8300:8300"
+      - "8301:8301"
+      - "8301:8301/udp"
+      - "8500:8500"
+      - "8502:8502"
+      - "8600:8600"
+      - "8600:8600/udp"
+    image: hashicorp/consul
+    environment:
+      CONSUL_LOCAL_CONFIG: >-
+        {
+          "bootstrap": true,
+          "server": true,
+          "node_name": "consul1",
+          "bind_addr": "0.0.0.0",
+          "client_addr": "0.0.0.0",
+          "bootstrap_expect": 1,
+          "ui": true,
+          "addresses" : {
+            "http" : "0.0.0.0"
+          },
+          "ports": {
+            "http": 8500
+          },
+          "log_level": "ERROR",
+          "connect" : {
+            "enabled" : true
+          }
+        }
+
+    labels:
+      kompose.service.type: nodeport
+      kompose.service.expose: "true"
+      kompose.image-pull-policy: "Always"
+  
+  #  redis:
+  #    image: 'bitnami/redis:latest'
+  #    container_name: redis
+  #    restart: always
+  #    ports:
+  #      - "6379:6379"
+  #    environment:
+  #      - ALLOW_EMPTY_PASSWORD=yes
+  #    networks:
+  #      - proxus
+  #    healthcheck:
+  #      test: [ "CMD-SHELL", "redis-cli ping || exit 1" ]
+  #      interval: 3s
+  #      timeout: 10s
+  #      retries: 5
   
   timescaledb:
     restart: always
@@ -54,6 +95,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8081
+      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+  
   
   
   proxus-server:
@@ -74,13 +117,14 @@ services:
         target: /app/config
         read_only: false
     environment:
+      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+      - AdvertisedHost=proxus-server
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8083
       - CONSUL_HTTP_ADDR=consul:8500
-      - AdvertisedHost=proxus-server
-    command: [ "./Proxus.Server", "--GatewayID=1",
-               "GrpcInterfaceBinding=AdvertisedHost", "IdentityLookupStrategy=PartitionActivatorLookup",
-               "UI-Address=proxus-ui", "RedisConnection=redis:6379", "ClusterProvider=Redis" ]
+    command: ["./Proxus.Server", "--GatewayID=1",
+              "GrpcInterfaceBinding=AdvertisedHost", "IdentityLookupStrategy=PartitionIdentityLookup",
+              "UI-Address=proxus-ui", "RedisConnection=redis:6379", "ClusterProvider=Consul" , "AdvertisedHost="]
     
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8083/healthz | grep -q 'Healthy' || exit 1" ]
@@ -105,19 +149,22 @@ services:
         target: /app/config
         read_only: false
     environment:
+      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
       - CONSUL_HTTP_ADDR=consul:8500
       - AdvertisedHost=proxus-ui
     command: [ "./Proxus.Blazor.Server", "GrpcInterfaceBinding=AdvertisedHost",
-               "IdentityLookupStrategy=PartitionActivatorLookup", "Server-Address=proxus-server", "RedisConnection=redis:6379",
-               "ClusterProvider=Redis" ]
+               "IdentityLookupStrategy=PartitionIdentityLookup", "Server-Address=", "RedisConnection=redis:6379",
+               "ClusterProvider=Consul" , "AdvertisedHost=proxus-ui" ]
     
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8080/healthz | grep -q 'Healthy' || exit 1" ]
       interval: 30s
       timeout: 10s
       retries: 5
+
+
 
 networks:
   proxus:
