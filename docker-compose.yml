@@ -124,7 +124,7 @@ services:
       - CONSUL_HTTP_ADDR=consul:8500
     command: ["./Proxus.Server", "--GatewayID=1",
               "GrpcInterfaceBinding=AdvertisedHost", "IdentityLookupStrategy=PartitionIdentityLookup",
-              "UI-Address=proxus-ui", "RedisConnection=redis:6379", "ClusterProvider=Consul" , "AdvertisedHost="]
+              "UI-Address=proxus-ui", "RedisConnection=redis:6379", "ClusterProvider=Consul"]
     
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8083/healthz | grep -q 'Healthy' || exit 1" ]
@@ -155,8 +155,8 @@ services:
       - CONSUL_HTTP_ADDR=consul:8500
       - AdvertisedHost=proxus-ui
     command: [ "./Proxus.Blazor.Server", "GrpcInterfaceBinding=AdvertisedHost",
-               "IdentityLookupStrategy=PartitionIdentityLookup", "Server-Address=", "RedisConnection=redis:6379",
-               "ClusterProvider=Consul" , "AdvertisedHost=proxus-ui" ]
+               "IdentityLookupStrategy=PartitionIdentityLookup", "RedisConnection=redis:6379",
+               "ClusterProvider=Consul"]
     
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8080/healthz | grep -q 'Healthy' || exit 1" ]
