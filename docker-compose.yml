@@ -81,6 +81,7 @@ services:
     restart: always
     container_name: proxus-api
     image: proxusplatform/proxus-api:latest
+    user: "0"
     labels:
       kompose.serviceaccount-name: "Proxus"
     networks:
@@ -122,7 +123,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8083
       - CONSUL_HTTP_ADDR=consul:8500
-    command: ["./Proxus.Server", "--GatewayID=1",
+    command: ["./Proxus.Server", "--GatewayID=1", "--EdgeMode=Proxus",
               "GrpcInterfaceBinding=AdvertisedHost", "IdentityLookupStrategy=PartitionIdentityLookup",
               "UI-Address=proxus-ui", "RedisConnection=redis:6379", "ClusterProvider=Consul"]
     
@@ -137,6 +138,7 @@ services:
     restart: always
     container_name: proxus-ui
     image: proxusplatform/proxus-ui:latest
+    user: "0"
     labels:
       kompose.serviceaccount-name: "Proxus"
     networks:
