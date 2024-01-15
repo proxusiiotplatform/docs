@@ -6,6 +6,7 @@ services:
     container_name: consul
     networks:
       - proxus
+    
     ports:
       - "8300:8300"
       - "8301:8301"
@@ -18,6 +19,7 @@ services:
     environment:
       CONSUL_LOCAL_CONFIG: >-
         {
+          "datacenter": "dc1",
           "bootstrap": true,
           "server": true,
           "node_name": "consul1",
@@ -31,10 +33,7 @@ services:
           "ports": {
             "http": 8500
           },
-          "log_level": "ERROR",
-          "connect" : {
-            "enabled" : true
-          }
+          "log_level": "ERROR"
         }
 
     labels:
@@ -42,26 +41,10 @@ services:
       kompose.service.expose: "true"
       kompose.image-pull-policy: "Always"
   
-  #  redis:
-  #    image: 'bitnami/redis:latest'
-  #    container_name: redis
-  #    restart: always
-  #    ports:
-  #      - "6379:6379"
-  #    environment:
-  #      - ALLOW_EMPTY_PASSWORD=yes
-  #    networks:
-  #      - proxus
-  #    healthcheck:
-  #      test: [ "CMD-SHELL", "redis-cli ping || exit 1" ]
-  #      interval: 3s
-  #      timeout: 10s
-  #      retries: 5
-  
   timescaledb:
     restart: always
     container_name: timescaledb
-    image: timescale/timescaledb:latest-pg14
+    image: timescale/timescaledb:latest-pg16
     command: postgres -c shared_preload_libraries=timescaledb -p 5442
     volumes:
       - type: volume
@@ -94,11 +77,9 @@ services:
         target: /app/config
         read_only: false
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8081
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
-  
-  
   
   proxus-server:
     restart: always
@@ -120,12 +101,16 @@ services:
     environment:
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
       - AdvertisedHost=proxus-server
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8083
       - CONSUL_HTTP_ADDR=consul:8500
-    command: ["./Proxus.Server", "--GatewayID=1", "--EdgeMode=Proxus",
-              "GrpcInterfaceBinding=AdvertisedHost", "IdentityLookupStrategy=PartitionIdentityLookup",
-              "UI-Address=proxus-ui", "RedisConnection=redis:6379", "ClusterProvider=Consul"]
+    command: ["./Proxus.Server", 
+              "GatewayID=1",
+              "EdgeMode=Proxus",
+              "GrpcInterfaceBinding=AdvertisedHost",
+              "IdentityLookupStrategy=PartitionIdentityLookup",
+              "UI-Address=proxus-ui",
+              "ClusterProvider=Consul"]
     
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8083/healthz | grep -q 'Healthy' || exit 1" ]
@@ -152,12 +137,13 @@ services:
         read_only: false
     environment:
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
       - CONSUL_HTTP_ADDR=consul:8500
       - AdvertisedHost=proxus-ui
-    command: [ "./Proxus.Blazor.Server", "GrpcInterfaceBinding=AdvertisedHost",
-               "IdentityLookupStrategy=PartitionIdentityLookup", "RedisConnection=redis:6379",
+    command: [ "./Proxus.Blazor.Server",
+               "GrpcInterfaceBinding=AdvertisedHost",
+               "IdentityLookupStrategy=PartitionIdentityLookup",
                "ClusterProvider=Consul"]
     
     healthcheck:
@@ -166,7 +152,29 @@ services:
       timeout: 10s
       retries: 5
 
+  grafana:
+    networks:
+      - proxus
+    user: "0"
+    image: grafana/grafana
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    volumes:
+      - grafana-config:/etc/grafana
+      - grafana-config:/var/lib/grafana
+    ports:
+      - 3000:3000
 
+  prometheus:
+    networks:
+      - proxus
+    user: "0"
+    image: prom/prometheus
+    volumes:
+      - prometheus-config:/etc/prometheus
+    ports:
+      - 9090:9090
 
 networks:
   proxus:
@@ -175,3 +183,5 @@ networks:
 volumes:
   proxus-db-volume:
   config:
+  grafana-config:
+  prometheus-config:
