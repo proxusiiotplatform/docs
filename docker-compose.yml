@@ -35,21 +35,19 @@ services:
           },
           "log_level": "ERROR"
         }
-
-    labels:
-      kompose.service.type: nodeport
-      kompose.service.expose: "true"
-      kompose.image-pull-policy: "Always"
   
   timescaledb:
     restart: always
     container_name: timescaledb
-    image: timescale/timescaledb:latest-pg16
+    image: timescale/timescaledb-ha:pg16 # HA image includes the TimescaleDB Toolkit, and support for PostGIS and Patroni but does not support ARM64. For ARM64 environments, use the timescaledb Docker image. 
+    # image: timescale/timescaledb:latest-pg16
     command: postgres -c shared_preload_libraries=timescaledb -p 5442
+    user: "0"
     volumes:
       - type: volume
         source: proxus-db-volume
-        target: /var/lib/postgresql/data
+        # target: /var/lib/postgresql/data # Non HA image data location
+        target: /home/postgres/pgdata/data
         read_only: false
     networks:
       - proxus
@@ -65,8 +63,6 @@ services:
     container_name: proxus-api
     image: proxusplatform/proxus-api:latest
     user: "0"
-    labels:
-      kompose.serviceaccount-name: "Proxus"
     networks:
       - proxus
     ports:
@@ -91,8 +87,6 @@ services:
     ports:
       - "8083:8083"
       - "1883:1883"
-    labels:
-      kompose.serviceaccount-name: "Proxus"
     volumes:
       - type: volume
         source: config
@@ -104,13 +98,14 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8083
       - CONSUL_HTTP_ADDR=consul:8500
-    command: ["./Proxus.Server", 
-              "GatewayID=1",
-              "EdgeMode=Proxus",
-              "GrpcInterfaceBinding=AdvertisedHost",
-              "IdentityLookupStrategy=PartitionIdentityLookup",
-              "UI-Address=proxus-ui",
-              "ClusterProvider=Consul"]
+    
+    command: [ "./Proxus.Server",
+               "GatewayID=1",
+               "EdgeMode=Proxus",
+               "GrpcInterfaceBinding=AdvertisedHost",
+               "IdentityLookupStrategy=PartitionIdentityLookup",
+               "UI-Address=proxus-ui",
+               "ClusterProvider=Consul" ]
     
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8083/healthz | grep -q 'Healthy' || exit 1" ]
@@ -124,8 +119,6 @@ services:
     container_name: proxus-ui
     image: proxusplatform/proxus-ui:latest
     user: "0"
-    labels:
-      kompose.serviceaccount-name: "Proxus"
     networks:
       - proxus
     ports:
@@ -135,16 +128,18 @@ services:
         source: config
         target: /app/config
         read_only: false
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
       - CONSUL_HTTP_ADDR=consul:8500
       - AdvertisedHost=proxus-ui
+      - TZ=Europe/Istanbul  # Set the timezone for the container
     command: [ "./Proxus.Blazor.Server",
                "GrpcInterfaceBinding=AdvertisedHost",
                "IdentityLookupStrategy=PartitionIdentityLookup",
-               "ClusterProvider=Consul"]
+               "ClusterProvider=Consul" ]
     
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8080/healthz | grep -q 'Healthy' || exit 1" ]
