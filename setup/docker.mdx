@@ -58,7 +58,13 @@ curl -O https://raw.githubusercontent.com/proxusiiotplatform/docs/main/docker-co
 2. Use the `Invoke-WebRequest` cmdlet to download the file:
 
 ```bash 
-Invoke-WebRequest -Uri https://raw.githubusercontent.com/proxusiiotplatform/docs/main/docker-compose.yml -OutFile .\docker-compose.yml
+$b = "https://raw.githubusercontent.com/proxusiiotplatform/docs/main/"
+$c = "Configs"
+iwr "${b}docker-compose.yml" -OutFile "docker-compose.yml"
+ni -ItemType Directory -Force -Path $c
+"dashboard.yml datasource.yml dotnet-otel-dashboard.json jaeger-ui.json logs-dashboard.json loki.yml otel-collector-config.yml prometheus.yml".Split() | % {
+    iwr "${b}Configs/$_" -OutFile "${c}/$_"
+}
 ```
 
 ## Running the docker-compose.yml File on Linux, Mac, and Windows:
