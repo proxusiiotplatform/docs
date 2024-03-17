@@ -22,13 +22,21 @@ This guide will walk you through the process of installing and running the Proxu
 If you have `curl` installed:
 
 ```bash 
-curl -LO https://raw.githubusercontent.com/proxusiiotplatform/docs/main/docker-compose.yml
+BASE_URL="https://raw.githubusercontent.com/proxusiiotplatform/docs/main/"
+CONFIGS_DIR="Configs"
+curl -LO "${BASE_URL}docker-compose.yml" && \
+mkdir -p "${CONFIGS_DIR}" && \
+curl -L "${BASE_URL}Configs/{dashboard.yml,datasource.yml,dotnet-otel-dashboard.json,jaeger-ui.json,logs-dashboard.json,loki.yml,otel-collector-config.yml,prometheus.yml}" -o "${CONFIGS_DIR}/#1"
 ```
 
 If you have `wget`:
 
 ```bash 
-wget https://raw.githubusercontent.com/proxusiiotplatform/docs/main/docker-compose.yml
+BASE_URL="https://raw.githubusercontent.com/proxusiiotplatform/docs/main/"
+CONFIGS_DIR="Configs"
+wget -O docker-compose.yml "${BASE_URL}docker-compose.yml" && \
+mkdir -p "${CONFIGS_DIR}" && \
+for file in dashboard.yml datasource.yml dotnet-otel-dashboard.json jaeger-ui.json logs-dashboard.json loki.yml otel-collector-config.yml prometheus.yml; do wget -O "${CONFIGS_DIR}/${file}" "${BASE_URL}Configs/${file}"; done
 ```
 
 ### For Windows using curl:
