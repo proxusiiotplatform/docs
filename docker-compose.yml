@@ -98,6 +98,14 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8083
       - CONSUL_HTTP_ADDR=consul:8500
+      - OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES=Proto.Actor
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_DOTNET_AUTO_METRICS_CONSOLE_EXPORTER_ENABLED=true
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    
     
     command: [ "./Proxus.Server",
                "GatewayID=1",
@@ -136,6 +144,10 @@ services:
       - CONSUL_HTTP_ADDR=consul:8500
       - AdvertisedHost=proxus-ui
       - TZ=Europe/Istanbul  # Set the timezone for the container
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
     command: [ "./Proxus.Blazor.Server",
                "GrpcInterfaceBinding=AdvertisedHost",
                "IdentityLookupStrategy=PartitionIdentityLookup",
@@ -146,30 +158,69 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-
-  grafana:
+  
+  jaeger:
+    image: jaegertracing/all-in-one:1.52
+    command: --query.ui-config=/etc/jaeger/jaeger-ui.json --collector.otlp.enabled=true --prometheus.server-url=http://prometheus:9090 --prometheus.query.support-spanmetrics-connector=true
+    environment:
+      - METRICS_STORAGE_TYPE=prometheus
+      - PROMETHEUS_QUERY_NORMALIZE_CALLS=true
+      - PROMETHEUS_QUERY_NORMALIZE_DURATION=true
+    volumes:
+      - ./Configs/jaeger-ui.json:/etc/jaeger/jaeger-ui.json
+    ports:
+      - "127.0.0.1:16686:16686"
     networks:
       - proxus
-    user: "0"
-    image: grafana/grafana
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.91.0
+    command: --config /etc/otelcol/otel-collector-config.yml
+    volumes:
+      - ./Configs/otel-collector-config.yml:/etc/otelcol/otel-collector-config.yml
+    ports:
+      - "127.0.0.1:4317:4317"
+    networks:
+      - proxus
+    depends_on:
+      - jaeger
+
+  prometheus:
+    image: prom/prometheus:v2.48.1
+    volumes:
+      - ./Configs/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "127.0.0.1:9090:9090"
+    networks:
+      - proxus
+
+  loki:
+    image: grafana/loki:2.9.3
+    command: -config.file=/mnt/config/loki-config.yml
+    volumes:
+      - ./Configs/loki.yml:/mnt/config/loki-config.yml
+    ports:
+      - "127.0.0.1:3100:3100"
+    networks:
+      - proxus
+
+  grafana:
+    image: grafana/grafana:10.2.3
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
     volumes:
-      - grafana-config:/etc/grafana
-      - grafana-config:/var/lib/grafana
+      - ./Configs/grafana.ini:/etc/grafana/grafana.ini
+      - ./Configs/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
+      - ./Configs/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
+      - ./Configs/dotnet-otel-dashboard.json:/etc/grafana/provisioning/dashboards/dotnet-otel-dashboard.json
+      - ./Configs/logs-dashboard.json:/etc/grafana/provisioning/dashboards/logs-dashboard.json
     ports:
-      - 3000:3000
-
-  prometheus:
+      - "127.0.0.1:3000:3000"
     networks:
       - proxus
-    user: "0"
-    image: prom/prometheus
-    volumes:
-      - prometheus-config:/etc/prometheus
-    ports:
-      - 9090:9090
+
 
 networks:
   proxus:
@@ -178,5 +229,3 @@ networks:
 volumes:
   proxus-db-volume:
   config:
-  grafana-config:
-  prometheus-config:
