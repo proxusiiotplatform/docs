@@ -57,6 +57,22 @@ services:
       - POSTGRES_DB=proxus
       - POSTGRES_USER=proxus
       - POSTGRES_PASSWORD=proxus
+      
+#  pgadmin:
+#      image: dpage/pgadmin4
+#      restart: always
+#      container_name: pgadmin
+#      environment:
+#        PGADMIN_DEFAULT_EMAIL: 'admin@admin.com' # Replace with your desired admin email
+#        PGADMIN_DEFAULT_PASSWORD: 'admin' # Replace with your desired admin password
+#        PGADMIN_LISTEN_PORT: 5050
+#      ports:
+#        - "5050:5050" # Maps port 5050 on the host to port 80 in the container
+#      volumes:
+#        - pgadmin-data:/var/lib/pgadmin
+#      networks:
+#        - proxus
+        
   
   proxus-api:
     restart: always
@@ -73,6 +89,7 @@ services:
         target: /app/config
         read_only: false
     environment:
+      - TZ=Europe/Istanbul  # Set the timezone for the container
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8081
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
@@ -93,6 +110,7 @@ services:
         target: /app/config
         read_only: false
     environment:
+      - TZ=Europe/Istanbul  # Set the timezone for the container
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
       - AdvertisedHost=proxus-server
       - ASPNETCORE_ENVIRONMENT=Production
@@ -138,12 +156,12 @@ services:
         read_only: false
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
+      - TZ=Europe/Istanbul  # Set the timezone for the container
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
       - CONSUL_HTTP_ADDR=consul:8500
       - AdvertisedHost=proxus-ui
-      - TZ=Europe/Istanbul  # Set the timezone for the container
       - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
       - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
       - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
@@ -217,7 +235,7 @@ services:
       - ./Configs/dotnet-otel-dashboard.json:/etc/grafana/provisioning/dashboards/dotnet-otel-dashboard.json
       - ./Configs/logs-dashboard.json:/etc/grafana/provisioning/dashboards/logs-dashboard.json
     ports:
-      - "127.0.0.1:3000:3000"
+      - "3000:3000"
     networks:
       - proxus
 
@@ -229,3 +247,5 @@ networks:
 volumes:
   proxus-db-volume:
   config:
+  pgadmin-data:
+  
