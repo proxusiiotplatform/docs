@@ -3,6 +3,12 @@ receivers:
     protocols:
       grpc:
       http:
+  postgresql:
+      endpoint: timescaledb:5442
+      transport: tcp
+      username: proxus
+      password: proxus
+
 
 exporters:
   prometheus:
@@ -44,3 +50,4 @@ service:
       receivers: [ otlp ]
       processors: [ resource ]
       exporters: [ loki ]
+      
