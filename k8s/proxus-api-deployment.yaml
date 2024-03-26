@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: proxus-api
+  name: proxus-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: proxus-api
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.32.0 (HEAD)
+      labels:
+        io.kompose.network/chart-proxus: "true"
+        io.kompose.service: proxus-api
+    spec:
+      containers:
+      - name: proxus-api
+        image: proxusplatform/proxus-api:latest
+        ports:
+        - containerPort: 8082
+          protocol: TCP
+        args:
+        - "ConnectionString=Server=timescaledb.default.svc.cluster.local;Port=5442;User ID=roxus;Password=roxus;Database=proxus;"
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Production
+        - name: ASPNETCORE_URLS
+          value: http://+:8082
+        - name: DOTNET_SYSTEM_GLOBALIZATION_INVARIANT
+          value: "false"
+        - name: TZ
+          value: Europe/Istanbul
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /app/config
+          name: config
+      restartPolicy: Always
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: config
