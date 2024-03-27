@@ -8,6 +8,7 @@ metadata:
     io.kompose.service: proxus-api
   name: proxus-api
 spec:
+  type: LoadBalancer
   ports:
     - name: "8082"
       port: 8082

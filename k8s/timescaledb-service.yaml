@@ -8,6 +8,7 @@ metadata:
     io.kompose.service: timescaledb
   name: timescaledb
 spec:
+  type: LoadBalancer
   ports:
     - name: "5442"
       port: 5442
