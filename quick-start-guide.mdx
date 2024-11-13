@@ -1,0 +1,48 @@
+---
+title: 'Deployment Guide'
+description: 'Deploy Proxus Platform on-premise using Docker'
+---
+
+# On-Premise Deployment Guide
+
+This guide covers deploying Proxus Platform on your infrastructure using Docker.
+
+## Prerequisites
+
+<Steps>
+  <Step title="Install Docker">
+    Download and install Docker Engine from [Docker's official website](https://www.docker.com/get-started)
+  </Step>
+
+  <Step title="Install Docker Compose">
+    Included with Docker Desktop for Windows/Mac. Linux users can install separately.
+  </Step>
+
+  <Step title="License">
+    Request a demo license at [proxus.io/demo](https://www.proxus.io/demo)
+  </Step>
+</Steps>
+
+## Installation
+
+### Download Configuration Files
+
+<CodeGroup>
+  <CodeBlock title="Linux/Mac">
+    ```bash
+    curl -O https://download.proxus.io/docker-compose.yml
+    ```
+  </CodeBlock>
+
+  <CodeBlock title="Windows (PowerShell)">
+    ```powershell
+    Invoke-WebRequest -Uri "https://download.proxus.io/docker-compose.yml" -OutFile "docker-compose.yml"
+    ```
+  </CodeBlock>
+</CodeGroup>
+
+### Deploy Platform
+
+```bash
+docker compose up -d
+```
