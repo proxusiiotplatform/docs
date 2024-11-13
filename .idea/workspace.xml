@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7ef92cef-8d80-4640-9a40-0e57bcfef57e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../docs/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/.idea/indexLayout.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/api-reference/endpoint/create.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/api-reference/endpoint/delete.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/api-reference/endpoint/get.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/api-reference/introduction.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/api-reference/openapi.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/development.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/essentials/code.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/essentials/images.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/essentials/markdown.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/essentials/navigation.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/essentials/reusable-snippets.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/essentials/settings.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/favicon.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/images/checks-passed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/images/hero-dark.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/images/hero-light.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/introduction.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/logo/dark.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/logo/light.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/mint.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/quickstart.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docs/snippets/snippet-intro.mdx" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;proxusiiotplatform&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/proxusiiotplatform/docs.git&quot;,
+    &quot;accountId&quot;: &quot;2be409a3-aa69-404b-a652-467b1f63730b&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2onCNoWiueqABQ1qTLebFv7oJfn" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7ef92cef-8d80-4640-9a40-0e57bcfef57e" name="Changes" comment="" />
+      <created>1731495916138</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731495916138</updated>
+      <workItem from="1731495917220" duration="544000" />
+      <workItem from="1731496502286" duration="93000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/../.." />
+      <path value="$PROJECT_DIR$/.." />
+    </ignored-roots>
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+</project>
