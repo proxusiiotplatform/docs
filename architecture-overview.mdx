@@ -1,0 +1,256 @@
+---
+title: 'Architecture Overview'
+description: 'Detailed overview of Proxus Platform architecture and components'
+---
+
+# Architecture Overview
+
+## System Architecture
+
+<Grid cols={2}>
+  <div>
+    ### High-Level Architecture
+    Proxus Platform follows a distributed architecture consisting of UI, data collection, processing and storage layers. The microservices architecture ensures high scalability and flexibility.
+  </div>
+  
+  <div>
+    ### Key Components
+    - Frontend Layer
+    - Data Collection Layer 
+    - Processing Layer
+    - Storage Layer
+    - Integration Layer
+  </div>
+</Grid>
+
+## Core Components
+
+<Tabs>
+  <Tab title="Data Collection Layer">
+    ### Data Collection Services
+    
+    <CardGroup cols={2}>
+      <Card title="Protocol Adapters" icon="plug">
+        - OPC UA Collector
+        - Modbus Collector
+        - MQTT Broker
+        - REST API Gateway
+        - Custom Protocol Support
+      </Card>
+      
+      <Card title="Edge Computing" icon="microchip">
+        - Local Processing Units
+        - Data Buffering
+        - Protocol Translation
+        - Store & Forward
+        - Edge Analytics
+      </Card>
+    </CardGroup>
+
+    ### Key Features
+    - High-speed data ingestion
+    - Protocol normalization
+    - Quality stamping
+    - Store & forward capability
+    - Edge processing
+  </Tab>
+
+  <Tab title="Processing Layer">
+    ### Data Processing Services
+    
+    <CardGroup cols={2}>
+      <Card title="Stream Processing" icon="stream">
+        - Real-time Analytics Engine
+        - Rules Engine
+        - Event Processing
+        - Data Transformation
+        - Complex Event Processing
+      </Card>
+      
+      <Card title="Batch Processing" icon="layer-group">
+        - Historical Analysis
+        - Data Aggregation
+        - ETL Operations
+        - Machine Learning Pipeline
+        - Reporting Engine
+      </Card>
+    </CardGroup>
+
+    ### Processing Capabilities
+    - In-memory processing
+    - Stream analytics
+    - Complex event detection
+    - Machine learning integration
+    - Custom processing pipelines
+  </Tab>
+
+  <Tab title="Storage Layer">
+    ### Data Storage Services
+    
+    <CardGroup cols={2}>
+      <Card title="Time Series DB" icon="database">
+        - High-Speed Ingestion
+        - Time Series Optimization
+        - Data Compression
+        - Automatic Partitioning
+        - Query Optimization
+      </Card>
+      
+      <Card title="Metadata Store" icon="table">
+        - Configuration Data
+        - Asset Information
+        - User Data
+        - System Settings
+        - Audit Logs
+      </Card>
+    </CardGroup>
+
+    ### Storage Features
+    - Optimized time-series storage
+    - Automatic data lifecycle management
+    - Data compression
+    - High availability
+    - Backup and recovery
+  </Tab>
+</Tabs>
+
+## System Topology
+
+<Grid cols={2}>
+  <div>
+    ### Deployment Models
+    
+    #### On-Premises
+    - Full local deployment
+    - Private cloud integration
+    - Air-gapped environments
+    - High availability setup
+    
+    #### Cloud
+    - Multi-cloud support
+    - Hybrid deployments
+    - Managed services
+    - Auto-scaling
+  </div>
+  
+  <div>
+    ### Scalability
+    
+    #### Horizontal Scaling
+    - Node addition/removal
+    - Load balancing
+    - Data distribution
+    - Service replication
+    
+    #### Vertical Scaling
+    - Resource allocation
+    - Performance optimization
+    - Capacity planning
+    - Storage expansion
+  </div>
+</Grid>
+
+## Network Architecture
+
+<CardGroup cols={3}>
+  <Card title="Security Zones" icon="shield">
+    - DMZ
+    - Operation Zone
+    - Enterprise Zone
+    - Cloud Zone
+  </Card>
+  
+  <Card title="Communication" icon="network-wired">
+    - Protocol Security
+    - Data Encryption
+    - Access Control
+    - Network Isolation
+  </Card>
+  
+  <Card title="Integration" icon="puzzle-piece">
+    - API Gateway
+    - Message Bus
+    - Event Hub
+    - Service Mesh
+  </Card>
+</CardGroup>
+
+## High Availability
+
+<AccordionGroup>
+  <Accordion title="Redundancy">
+    - Service redundancy
+    - Data replication
+    - Failover mechanisms
+    - Load balancing
+    - Disaster recovery
+  </Accordion>
+  
+  <Accordion title="Fault Tolerance">
+    - Error handling
+    - Circuit breakers
+    - Retry mechanisms
+    - Graceful degradation
+    - Self-healing
+  </Accordion>
+  
+  <Accordion title="Monitoring">
+    - Health checks
+    - Performance monitoring
+    - Resource utilization
+    - Alert management
+    - Log aggregation
+  </Accordion>
+</AccordionGroup>
+
+## Technical Specifications
+
+<Grid cols={3}>
+  <div>
+    ### Performance
+    - Sub-millisecond latency
+    - High throughput
+    - Concurrent connections
+    - Query performance
+  </div>
+  
+  <div>
+    ### Scalability
+    - Horizontal scaling
+    - Multi-node clusters
+    - Load distribution 
+    - Resource management
+  </div>
+  
+  <div>
+    ### Reliability
+    - 99.99% uptime
+    - Data consistency
+    - Backup/recovery
+    - Fault tolerance
+  </div>
+</Grid>
+
+## Integration Capabilities
+
+<CardGroup cols={2}>
+  <Card title="Enterprise Systems" icon="building">
+    - ERP Integration
+    - MES Connection
+    - Historian Interface
+    - SCADA Systems
+    - Custom Systems
+  </Card>
+  
+  <Card title="APIs & Protocols" icon="code">
+    - REST APIs
+    - GraphQL
+    - WebSocket
+    - OPC UA
+    - MQTT
+  </Card>
+</CardGroup>
+
+<Note>
+For detailed deployment guides and configuration options, please refer to our [Installation Guide](/installation) and [System Configuration](/system-configuration) documentation.
+</Note>
