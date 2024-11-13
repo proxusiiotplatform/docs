@@ -1,0 +1,106 @@
+---
+title: 'System Requirements'
+description: 'Hardware and software requirements for deploying and running Proxus Platform'
+---
+
+# System Requirements
+
+## Container Requirements
+
+### Docker Environment
+- Docker Engine 20.10 or later
+- Docker Compose 2.0 or later
+- Linux containers support
+
+### Port Requirements
+
+<CardGroup cols={2}>
+  <Card title="NATS Server">
+    - 4222: NATS Client Port
+    - 8222: HTTP Management
+    - 7422: Leafnode Port
+  </Card>
+  <Card title="TimescaleDB">
+    - 5442: Database Port
+  </Card>
+  <Card title="Proxus API">
+    - 8082: API Port
+    - 8081: Internal Port
+  </Card>
+  <Card title="Proxus Server">
+    - 8083: Server Port
+    - 1883: MQTT Port
+  </Card>
+  <Card title="Proxus UI">
+    - 8080: Web Interface
+  </Card>
+</CardGroup>
+
+## Hardware Requirements
+
+### Minimum Specifications
+
+<Card>
+  **Base Installation**
+  - CPU: 4 cores (x64 architecture)
+  - RAM: 8 GB
+  - Storage: 100 GB SSD
+  - Network: 1 Gbps Ethernet
+</Card>
+
+### Component Storage Requirements
+
+<CardGroup cols={2}>
+  <Card title="Volume Requirements">
+    - nats: NATS Server data
+    - config: Configuration files
+    - proxus-db-volume: TimescaleDB data
+    - proxus_modules: Proxus modules
+  </Card>
+  <Card title="Configuration Storage">
+    - /app/config (multiple services)
+    - /nats-config (NATS)
+    - /home/postgres/pgdata/data (TimescaleDB)
+  </Card>
+</CardGroup>
+
+## Software Requirements
+
+### Database
+
+<Card>
+  **TimescaleDB**
+  - Version: TimescaleDB HA with PostgreSQL 16
+  - Note: ARM64 environments require non-HA image
+</Card>
+
+### Services Architecture
+
+<Steps>
+  <Step title="Message Broker">
+    NATS Server (Alpine-based) with JetStream enabled
+  </Step>
+  <Step title="Database">
+    TimescaleDB with PostGIS and Patroni support
+  </Step>
+  <Step title="Core Services">
+    - Proxus API (v1.1.0.0-x64)
+    - Proxus Server (v1.1.0.0-x64)
+    - Proxus UI (v1.1.0.0-x64)
+  </Step>
+</Steps>
+
+## Network Requirements
+
+### Service Communication
+
+```plaintext
+Required Internal Communication:
+- NATS Client (4222)
+- NATS Management (8222)
+- NATS Leafnode (7422)
+- TimescaleDB (5442)
+- Proxus API (8081/8082)
+- Proxus Server (8083)
+- Proxus UI (8080)
+- MQTT (1883)
