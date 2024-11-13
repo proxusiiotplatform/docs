@@ -1,182 +1,200 @@
 ---
-title: 'Supported Protocols'
+title: 'Industrial Protocol Support'
 description: 'Complete protocol support matrix for Proxus platform'
 ---
 
+<Note>
+  Status Indicators:
+  <span>✓ Production Ready</span> |
+  <span>⚡ Beta Testing</span> |
+  <span>🔨 Implementation in Progress</span> |
+  <span>📅 Planned</span>
+</Note>
+
 <CardGroup cols={3}>
-  <Card title="Allen Bradley" icon="microchip">
-    * Allen Bradley
+  <Card title="Siemens" icon="microchip">
+    * S7-1500 ✓
 
-    * Allen Bradley Micro CIP
+    * S7-1200 ✓
 
-    * Allen Bradley PCCC
+    * S7-300 ✓
 
-    * Allen Bradley SLC
-  </Card>
+    * S7-400 ✓
 
-  <Card title="Beckhoff" icon="microchip">
-    * Beckhoff ADS
-  </Card>
+    * S7-200 ⚡
 
-  <Card title="Delta" icon="microchip">
-    * Delta Serial ASCII OverTCP
-
-    * Delta Serial OverTCP
-
-    * Delta TCP
-  </Card>
-
-  <Card title="Fatek" icon="microchip">
-    * Fatek Program OverTCP
-  </Card>
-
-  <Card title="Freedom" icon="microchip">
-    * Freedom TCP
-  </Card>
-
-  <Card title="Fuji" icon="microchip">
-    * Fuji SPB OverTCP
-
-    * Fuji SPH
-  </Card>
-
-  <Card title="GE" icon="microchip">
-    * GE SRTP
-  </Card>
-
-  <Card title="Keyence" icon="microchip">
-    * Keyence MC
-
-    * Keyence MC ASCII
-
-    * Keyence Nano Serial OverTCP
-  </Card>
-
-  <Card title="LSIS" icon="microchip">
-    * LSIS XGBFast ENET
-
-    * LSIS XGBCNET OverTCP
-
-    * LSIS XGKFast ENET
-  </Card>
-
-  <Card title="MEG Meet" icon="microchip">
-    * MEG Meet Serial OverTCP
-
-    * MEG Meet TCP
+    * S7-200 Smart ⚡
   </Card>
 
   <Card title="Mitsubishi MELSEC" icon="microchip">
-    * MELSEC CIP
+    * MELSEC MC ✓
 
-    * MELSEC A1E
+    * MELSEC MCR ✓
 
-    * MELSEC A1E ASCII
+    * MELSEC MC ASCII ✓
 
-    * MELSEC A3C OverTCP
+    * MELSEC MC UDP ✓
 
-    * MELSEC FxLinks OverTCP
+    * MELSEC A1E ⚡
 
-    * MELSEC MC
+    * MELSEC FX Series ⚡
 
-    * MELSEC MCR
+    * MELSEC CIP 📅
   </Card>
 
-  <Card title="Mitsubishi Additional" icon="microchip">
-    * MELSEC FX Serial OverTCP
+  <Card title="Allen Bradley" icon="microchip">
+    * Allen Bradley ✓
 
-    * MELSEC MC ASCII
+    * Micro CIP ✓
 
-    * MELSEC MC ASCII UDP
+    * PCCC ⚡
 
-    * MELSEC MC UDP
-  </Card>
-
-  <Card title="Omron" icon="microchip">
-    * Omron CIP
-
-    * Omron FINS
-
-    * Omron Host Link CMode OverTCP
-
-    * Omron Host Link OverTCP
-  </Card>
-
-  <Card title="Siemens" icon="microchip">
-    * Siemens S7-200
-
-    * Siemens S7-300
-
-    * Siemens S7-400
-
-    * Siemens S7-1200
-
-    * Siemens S7-1500
-
-    * Siemens S7-200 Smart
-  </Card>
-
-  <Card title="Panasonic" icon="microchip">
-    * Panasonic MC
-
-    * Panasonic Mewtocol OverTCP
-  </Card>
-
-  <Card title="Yaskawa" icon="robot">
-    * Yaskawa Memobus UDP
-
-    * Yaskawa YRC1000 TCP
-
-    * Yaskawa YRCHigh Ethernet
-  </Card>
-
-  <Card title="Estun" icon="robot">
-    * Estun TCP
-  </Card>
-
-  <Card title="Fanuc" icon="robot">
-    * Fanuc Interface
-  </Card>
-
-  <Card title="Hyundai" icon="robot">
-    * Hyundai UDP
-  </Card>
-
-  <Card title="KUKA" icon="robot">
-    * KUKA TCP
-  </Card>
-
-  <Card title="Yamaha" icon="robot">
-    * Yamaha RCX
+    * SLC ⚡
   </Card>
 
   <Card title="Standard Protocols" icon="network-wired">
-    * HTTP
+    * Modbus TCP ✓
 
-    * MQTT
+    * Modbus RTU OverTCP ✓
 
-    * Modbus RTU OverTCP
+    * OPC UA ✓
 
-    * Modbus ASCII OverTCP
+    * MQTT ✓
 
-    * Modbus UDP
+    * HTTP ✓
+
+    * SNMP ⚡
+
+    * Modbus ASCII OverTCP ⚡
+
+    * Modbus UDP ⚡
+  </Card>
+
+  <Card title="Omron" icon="microchip">
+    * Omron FINS ✓
+
+    * Omron CIP ✓
+
+    * Host Link CMode OverTCP ⚡
+
+    * Host Link OverTCP ⚡
+  </Card>
+
+  <Card title="FANUC" icon="robot">
+    * FANUC Interface ✓
+
+    * FANUC FOCAS 🔨
+  </Card>
+
+  <Card title="KUKA" icon="robot">
+    * KUKA TCP ✓
+
+    * KUKA EthernetKRL 🔨
+  </Card>
+
+  <Card title="Yaskawa" icon="robot">
+    * Yaskawa Memobus UDP ✓
+
+    * YRC1000 TCP ✓
+
+    * YRCHigh Ethernet ⚡
+  </Card>
+
+  <Card title="Hyundai" icon="robot">
+    * Hyundai UDP ⚡
+
+    * Hyundai TCP 📅
+  </Card>
+
+  <Card title="Yamaha" icon="robot">
+    * Yamaha RCX ⚡
+
+    * Yamaha RCX-Studio 📅
+  </Card>
+
+  <Card title="Estun" icon="robot">
+    * Estun TCP 🔨
+
+    * Estun ProNet 📅
+  </Card>
+
+  <Card title="Beckhoff" icon="microchip">
+    * Beckhoff ADS ✓
+
+    * TwinCAT ADS 🔨
+  </Card>
+
+  <Card title="Delta" icon="microchip">
+    * Delta TCP ✓
+
+    * Delta Serial OverTCP ⚡
+
+    * Delta Serial ASCII OverTCP ⚡
+  </Card>
+
+  <Card title="Panasonic" icon="microchip">
+    * Panasonic MC ✓
+
+    * Panasonic Mewtocol OverTCP ⚡
+  </Card>
+
+  <Card title="Keyence" icon="microchip">
+    * Keyence MC ✓
+
+    * Keyence MC ASCII ⚡
+
+    * Keyence Nano Serial OverTCP ⚡
+  </Card>
+
+  <Card title="LSIS" icon="microchip">
+    * XGBFast ENET ⚡
+
+    * XGBCNET OverTCP ⚡
+
+    * XGKFast ENET ⚡
+  </Card>
+
+  <Card title="Fuji" icon="microchip">
+    * Fuji SPB ⚡
+
+    * Fuji SPH ⚡
+
+    * Fuji MICREX-SX 📅
+  </Card>
+
+  <Card title="GE" icon="microchip">
+    * GE SRTP ⚡
+
+    * GE PACSystems 📅
+  </Card>
+
+  <Card title="Fatek" icon="microchip">
+    * Fatek OverTCP 📅
+
+    * Fatek FBs 📅
   </Card>
 
   <Card title="Utility Protocols" icon="bolt">
-    * CJT 188 OverTCP
+    * IEC 104 ✓
 
-    * DLT 645 OverTCP
+    * DLT 645 OverTCP ⚡
 
-    * DLT 645 With 1997 OverTCP
+    * DLT 698 TCP ⚡
 
-    * DLT 698 OverTCP
+    * CJT 188 OverTCP ⚡
 
-    * DLT 698 TCP
-
-    * IEC 104
+    * DLT 645 1997 OverTCP ⚡
   </Card>
 </CardGroup>
 
 <Note>
-  All protocols support automatic device discovery, connection monitoring, and data buffering capabilities. For detailed configuration guides, please visit the respective protocol documentation pages.
+  Status Legend:
+
+  * ✓ Production Ready: Thoroughly tested and deployed
+
+  * ⚡ Beta Testing: Implementation complete, under testing
+
+  * 🔨 Implementation in Progress: Currently being developed
+
+  * 📅 Planned: Scheduled for future implementation
 </Note>
