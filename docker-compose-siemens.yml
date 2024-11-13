@@ -1,0 +1,134 @@
+services:
+  
+  # NATS message broker service
+  hub-server:
+    image: nats:alpine
+    container_name: hub-server
+    networks:
+      - proxus
+    ports:
+      - "4222:4222"  # NATS client port
+      - "8222:8222"  # HTTP management port
+      - "7422:7422"  # Clustering port
+    volumes:
+      - nats:/data  # Persistent storage for NATS
+      - ./Configs/hub.conf:/etc/nats/hub.conf  # NATS configuration file
+      - ./Configs/accounts.conf:/etc/nats/accounts.conf  # NATS accounts configuration
+    command:
+      - "--name=hub-server"
+      - "--http_port=8222"
+      - "-c"
+      - "/etc/nats/hub.conf"
+  
+  # TimescaleDB service for time-series data storage
+  timescaledb:
+    restart: always
+    container_name: timescaledb
+    image: timescale/timescaledb-ha:pg16  # High-availability image with additional features
+    # Uncomment the following line for ARM64 environments
+    # image: timescale/timescaledb:latest-pg16
+    command: postgres -c shared_preload_libraries=timescaledb -p 5442
+    user: "0"
+    volumes:
+      - type: volume
+        source: proxus-db-volume
+        # target: /var/lib/postgresql/data  # Data location for non-HA image
+        target: /home/postgres/pgdata/data  # Data location for HA image
+        read_only: false
+    networks:
+      - proxus
+    ports:
+      - "5442:5442"  # PostgreSQL port
+    environment:
+      - POSTGRES_DB=proxus
+      - POSTGRES_USER=proxus
+      - POSTGRES_PASSWORD=proxus
+  
+  # Proxus server service
+  proxus-server:
+    restart: always
+    container_name: proxus-server
+    image: proxusplatform/proxus-server:1.0.0.0-x64
+    user: "0"
+    networks:
+      - proxus
+    ports:
+      - "8083:8083"  # HTTP port
+      - "1883:1883"  # MQTT port
+    volumes:
+      - type: volume
+        source: config
+        target: /app/config
+        read_only: false
+    environment:
+      - TZ=Europe/Istanbul  # Set the timezone for the container
+      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+      - AdvertisedHost=proxus-server
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8083
+      - OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES=Proto.Actor
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_DOTNET_AUTO_METRICS_CONSOLE_EXPORTER_ENABLED=true
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    command: [ "./Proxus.Server",
+               "GatewayID=1",
+               "EdgeMode=Proxus",
+               "BrokerUrl=nats://hub-server:4222",
+               "BrokerUser=acc",
+               "BrokerPassword=acc",
+               "UI-Address=proxus-ui" ]
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8083/healthz | grep -q 'Healthy' || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  
+  # Proxus UI service
+  proxus-ui:
+    restart: always
+    container_name: proxus-ui
+    image: proxusplatform/proxus-ui:1.0.0.0-x64
+    user: "0"
+    networks:
+      - proxus
+    ports:
+      - "8080:8080"  # HTTP port for UI
+    volumes:
+      - type: volume
+        source: config
+        target: /app/config
+        read_only: false
+      - /var/run/docker.sock:/var/run/docker.sock  # Docker socket for container management
+      - ./Configs/accounts.conf:/app/accounts.conf  # Accounts configuration
+    environment:
+      - TZ=Europe/Istanbul  # Set the timezone for the container
+      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    command: [ "./Proxus.Blazor.Server",
+               "BrokerUrl=nats://hub-server:4222",
+               "BrokerUser=acc",
+               "BrokerPassword=acc" ]
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/healthz | grep -q 'Healthy' || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+# Network configuration
+networks:
+  proxus:
+    driver: bridge
+
+# Volume configuration for persistent storage
+volumes:
+  proxus-db-volume:  # Volume for TimescaleDB data
+  config:  # Volume for configuration files
+  nats:  # Volume for NATS data
