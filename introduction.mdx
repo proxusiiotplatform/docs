@@ -1,122 +1,85 @@
 ---
 title: 'Introduction to Proxus'
-description: 'Learn about Proxus, a high-performance distributed IIoT Platform for industrial data management'
+description: 'Learn about Proxus, a next-generation Industrial IoT Platform for high-performance distributed data management'
 ---
 
 # Welcome to Proxus
 
-Proxus is a next-generation Industrial IoT (IIoT) platform that unifies data collection, analysis, storage, enrichment, monitoring, and integration capabilities in a single, high-performance system. Designed for modern industrial environments, Proxus enables organizations to harness the full potential of their operational data.
+Proxus is a high-performance, distributed next-generation Industrial IoT Platform that unifies all essential features for industrial data management in a single system. It provides comprehensive capabilities for data collection, analysis, storage, enrichment, monitoring, and integration.
 
 ## What is Proxus?
 
-Proxus is a comprehensive IIoT platform that bridges the gap between Operational Technology (OT) and Information Technology (IT) systems. Built on cutting-edge technologies and architectural patterns, it delivers unprecedented performance and scalability for industrial data management.
+Proxus serves as an end-to-end solution for managing industrial data workflows, offering:
 
-### Core Capabilities
-
-<CardGroup cols={2}>
-  <Card title="Data Collection" icon="database">
-    Connect and collect data from 50+ industrial protocols and OT systems effortlessly
-  </Card>
-
-  <Card title="Real-time Analytics" icon="chart-line">
-    Process and analyze data in real-time with user-defined rules and anomaly detection
-  </Card>
-
-  <Card title="Edge Computing" icon="microchip">
-    Deploy powerful edge computing capabilities with near-zero latency
-  </Card>
-
-  <Card title="Integration Hub" icon="plug">
-    Connect with 20+ IT systems for seamless data flow across your organization
-  </Card>
-</CardGroup>
+- **Seamless Data Collection**: With support for over 50 OT protocols, making industrial data collection effortless
+- **Real-time Analytics**: Process data streams with user-defined rules and trigger notifications, including anomaly detection
+- **Enterprise-grade Storage**: Powered by TimescaleDB for reliable and scalable data management
+- **Integrated Development**: Built-in IDE for C#-based development with deploy/undeploy capabilities
+- **Visual Analytics**: Create powerful dashboards using the integrated designer with SQL-based data queries
+- **Extensive Integration**: Connect with 20+ IT systems for seamless data flow
+- **Edge Computing**: Deploy all features (except visualization) to edge devices
+- **Container-Native**: Full Docker support, including edge computing services
+- **Cloud-Ready**: Support for cloud-native deployments including Kubernetes
 
 ## Why Proxus?
 
-<CardGroup cols={3}>
-  <Card title="High Performance" icon="gauge-high">
-    Built using Actor model, message passing, and SIMD optimizations for maximum throughput
-  </Card>
+### Unmatched Performance
 
-  <Card title="Cloud Native" icon="cloud">
-    Designed for modern cloud environments with full Kubernetes support
-  </Card>
+Proxus stands out in the market with its exceptional performance characteristics:
+- Actor model architecture
+- Efficient message passing
+- State isolation
+- SIMD optimization
 
-  <Card title="Developer Friendly" icon="code">
-    Integrated IDE for C# development with hot-deploy capabilities
+### Simplified Workflow
+
+<CardGroup cols={2}>
+  <Card title="Collect" icon="database">
+    Connect to industrial devices and systems using 50+ protocols
+  </Card>
+  <Card title="Process" icon="gear">
+    Apply real-time analytics and rules to your data streams
+  </Card>
+  <Card title="Store" icon="hard-drive">
+    Persist data efficiently in TimescaleDB
+  </Card>
+  <Card title="Visualize" icon="chart-line">
+    Create interactive dashboards with built-in tools
   </Card>
 </CardGroup>
 
-## Key Features
+### Key Differentiators
 
-### Advanced Data Management
-
-* Real-time data collection from diverse industrial sources
-
-* Built-in TimescaleDB integration for efficient time-series data storage
-
-* Sophisticated data enrichment and transformation capabilities
-
-### Powerful Analytics Engine
-
-* User-defined rules for real-time data analysis
-
-* Advanced anomaly detection
-
-* Customizable alerting and notification system
-
-### Edge Computing
-
-* Distributed edge computing architecture
-
-* Offline operation support
-
-* Seamless edge-to-cloud synchronization
-
-### Visual Analytics
-
-* Integrated dashboard designer
-
-* SQL-based data visualization
-
-* Custom widget support
-
-### Enterprise Integration
-
-* Connect with 20+ enterprise systems
-
-* Flexible data mapping
-
-* Secure authentication and transmission
-
-## Architecture Highlights
-
-Proxus is built on modern architectural principles that ensure high performance, scalability, and reliability:
-
-* **Actor Model**: For concurrent and distributed processing
-
-* **Message-Based Communication**: Ensuring loose coupling and scalability
-
-* **Stateless Design**: Enabling true horizontal scalability
-
-* **SIMD Optimization**: For high-performance data processing
-
-* **Container-Native**: Full Docker and Kubernetes support
+<Steps>
+  <Step title="Unified Platform">
+    All essential IIoT features in a single, cohesive system
+  </Step>
+  <Step title="Developer-Friendly">
+    Built-in IDE with C# support for custom development
+  </Step>
+  <Step title="Edge-Ready">
+    Deploy capabilities to edge devices for local processing
+  </Step>
+  <Step title="Enterprise-Grade">
+    Built for scalability, reliability, and security
+  </Step>
+</Steps>
 
 ## Getting Started
 
-Ready to begin with Proxus? Follow our quick start guide to:
+Ready to begin with Proxus? Here's how to get started:
 
-<Steps>
-  1. Install Proxus using Docker
-
-  2. Configure your first data source
-
-  3. Create your first dashboard
-
-  4. Set up real-time analytics
-</Steps>
-
-<Card title="Quick Start Guide" icon="rocket" href="/getting-started/quickstart">
-  Get up and running with Proxus in minutes
-</Card>
+<CardGroup cols={2}>
+  <Card title="Quick Start Guide" icon="rocket" href="../quick-start-guide">
+    Get up and running with Proxus in minutes
+  </Card>
+  <Card title="Key Features" icon="stars" href="../key-features">
+    Explore the full capabilities of Proxus
+  </Card>
+  <Card title="System Requirements" icon="computer" href="../system-requirements">
+    Check the prerequisites for installation
+  </Card>
+  <Card title="Architecture" icon="diagram-project" href="../architecture-overview">
+    Understand how Proxus works
+  </Card>
+</CardGroup>
