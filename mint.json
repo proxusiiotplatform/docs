@@ -18,7 +18,7 @@
   "topbarLinks": [
     {
       "name": "Contact",
-      "url": "mailto:contact@proxus.com"
+      "url": "mailto:hello@proxus.io"
     }
   ],
   "topbarCtaButton": {
@@ -132,6 +132,6 @@
   ],
   "footerSocials": {
     "github": "https://github.com/proxus",
-    "linkedin": "https://linkedin.com/company/proxus"
+    "linkedin": "https://www.linkedin.com/company/proxus-iiot-platform"
   }
 }
