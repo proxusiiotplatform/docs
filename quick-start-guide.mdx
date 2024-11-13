@@ -1,48 +1,198 @@
 ---
 title: 'Deployment Guide'
-description: 'Deploy Proxus Platform on-premise using Docker'
+description: 'Step-by-step deployment guide for Proxus Platform'
 ---
 
-# On-Premise Deployment Guide
+# Deployment Guide
 
-This guide covers deploying Proxus Platform on your infrastructure using Docker.
+<Tabs>
+  <Tab title="Windows">
+    ## Windows Installation
 
-## Prerequisites
+    <Steps>
+      <Step title="Install Docker Desktop">
+        1. Download [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop)
 
-<Steps>
-  <Step title="Install Docker">
-    Download and install Docker Engine from [Docker's official website](https://www.docker.com/get-started)
-  </Step>
+        2. Double-click installer and follow setup wizard
 
-  <Step title="Install Docker Compose">
-    Included with Docker Desktop for Windows/Mac. Linux users can install separately.
-  </Step>
+        3. Launch Docker Desktop and wait for "Docker is running" message
 
-  <Step title="License">
-    Request a demo license at [proxus.io/demo](https://www.proxus.io/demo)
-  </Step>
-</Steps>
+        <Note>
+          Requires Windows 10 Pro/Enterprise or Windows 11. WSL2 installation may be required.
+        </Note>
+      </Step>
 
-## Installation
+      <Step title="Download Configuration">
+        <CodeGroup>
+          <CodeBlock title="PowerShell">
+            ```powershell
+            # Create project directory
+            New-Item -ItemType Directory -Path "C:\proxus"
+            Set-Location -Path "C:\proxus"
 
-### Download Configuration Files
+            # Download configuration
+            Invoke-WebRequest -Uri "https://download.proxus.io/docker-compose.yml" -OutFile "docker-compose.yml"
+            ```
+          </CodeBlock>
 
-<CodeGroup>
-  <CodeBlock title="Linux/Mac">
-    ```bash
-    curl -O https://download.proxus.io/docker-compose.yml
-    ```
-  </CodeBlock>
+          <CodeBlock title="CMD">
+            ```batch
+            mkdir C:\proxus
+            cd C:\proxus
+            curl -O https://download.proxus.io/docker-compose.yml
+            ```
+          </CodeBlock>
+        </CodeGroup>
+      </Step>
 
-  <CodeBlock title="Windows (PowerShell)">
-    ```powershell
-    Invoke-WebRequest -Uri "https://download.proxus.io/docker-compose.yml" -OutFile "docker-compose.yml"
-    ```
-  </CodeBlock>
-</CodeGroup>
+      <Step title="Deploy Platform">
+        ```powershell
+        docker compose up -d
+        ```
 
-### Deploy Platform
+        <Note>
+          First deployment may take several minutes to download required images.
+        </Note>
+      </Step>
+
+      <Step title="Verify Installation">
+        1. Open browser to `http://localhost:8080`
+
+        2. Login with:
+
+           * Username: `Admin`
+
+           * Password: (leave blank)
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="Linux">
+    ## Linux Installation
+
+    <Steps>
+      <Step title="Install Docker">
+        <CodeGroup>
+          <CodeBlock title="Ubuntu/Debian">
+            ```bash
+            # Add Docker repository
+            curl -fsSL https://get.docker.com | sudo sh
+
+            # Start Docker
+            sudo systemctl enable docker
+            sudo systemctl start docker
+
+            # Add user to docker group
+            sudo usermod -aG docker $USER
+            newgrp docker
+            ```
+          </CodeBlock>
+
+          <CodeBlock title="CentOS/RHEL">
+            ```bash
+            # Add Docker repository
+            sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+            # Install Docker
+            sudo dnf install docker-ce docker-ce-cli containerd.io
+
+            # Start Docker
+            sudo systemctl enable docker
+            sudo systemctl start docker
+
+            # Add user to docker group
+            sudo usermod -aG docker $USER
+            newgrp docker
+            ```
+          </CodeBlock>
+        </CodeGroup>
+      </Step>
+
+      <Step title="Install Docker Compose">
+        ```bash
+        # Download Docker Compose
+        sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+        # Make executable
+        sudo chmod +x /usr/local/bin/docker-compose
+        ```
+      </Step>
+
+      <Step title="Download Configuration">
+        ```bash
+        # Create project directory
+        mkdir ~/proxus && cd ~/proxus
+
+        # Download configuration
+        curl -O https://download.proxus.io/docker-compose.yml
+        ```
+      </Step>
+
+      <Step title="Deploy Platform">
+        ```bash
+        docker compose up -d
+        ```
+
+        <Warning>
+          Ensure ports 8080, 8082, 8083, 4222, and 5442 are not in use and firewall allows these ports.
+        </Warning>
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="macOS">
+    ## macOS Installation
+
+    <Steps>
+      <Step title="Install Docker Desktop">
+        1. Download [Docker Desktop for Mac](https://www.docker.com/products/docker-desktop)
+
+        2. Drag Docker.app to Applications folder
+
+        3. Launch Docker and wait for "Docker is running" message
+
+        <Note>
+          Supports both Intel and Apple Silicon Macs.
+        </Note>
+      </Step>
+
+      <Step title="Download Configuration">
+        ```bash
+        # Create project directory
+        mkdir ~/proxus && cd ~/proxus
+
+        # Download configuration
+        curl -O https://download.proxus.io/docker-compose.yml
+        ```
+      </Step>
+
+      <Step title="Deploy Platform">
+        ```bash
+        docker compose up -d
+        ```
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Post-Installation Steps
+
+### Request License
+
+1. Visit [proxus.io/demo](https://www.proxus.io/demo)
+
+2. Fill out the demo request form
+
+3. Apply received license in platform settings
+
+### Verify Services
 
 ```bash
-docker compose up -d
+# Check all containers are running
+docker compose ps
+
+# Verify each service health
+curl http://localhost:8080/healthz  # UI
+curl http://localhost:8083/healthz  # Server
+curl http://localhost:8222         # Message Broker
 ```
