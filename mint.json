@@ -1,91 +1,137 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Proxus Docs",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
+    "primary": "#2563EB",
+    "light": "#3B82F6", 
+    "dark": "#1D4ED8",
     "anchors": {
-      "from": "#0D9373",
-      "to": "#07C983"
+      "from": "#2563EB",
+      "to": "#3B82F6"
     }
   },
   "topbarLinks": [
     {
-      "name": "Support",
-      "url": "mailto:hi@mintlify.com"
+      "name": "Contact",
+      "url": "mailto:contact@proxus.com"
     }
   ],
   "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "name": "Get Started",
+    "url": "https://proxus.com/start"
   },
-  "tabs": [
-    {
-      "name": "API Reference",
-      "url": "api-reference"
-    }
-  ],
-  "anchors": [
-    {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
-    },
-    {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
-    }
-  ],
   "navigation": [
     {
-      "group": "Get Started",
+      "group": "Getting Started",
       "pages": [
         "introduction",
-        "quickstart",
-        "development"
+        "key-features",
+        "system-requirements",
+        "quick-start-guide",
+        "architecture-overview"
       ]
     },
     {
-      "group": "Essentials",
+      "group": "Core Concepts",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "core/data-collection",
+        "core/real-time-analytics", 
+        "core/data-storage",
+        "core/edge-computing",
+        "core/rules-engine",
+        "core/integration-framework"
       ]
     },
     {
-      "group": "API Documentation",
+      "group": "Installation",
       "pages": [
-        "api-reference/introduction"
+        "installation/docker",
+        "installation/cloud-deployment",
+        "installation/kubernetes",
+        "installation/system-configuration",
+        "installation/security-best-practices"
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "Data Management",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "data/device-management",
+        "data/device-profiles",
+        "data/collection-setup",
+        "data/ot-protocol-adapters",
+        "data/data-models",
+        "data/retention-policies"
+      ]
+    },
+    {
+      "group": "Edge Computing",
+      "pages": [
+        "edge/gateway-setup",
+        "edge/services",
+        "edge/deployment-strategies",
+        "edge/offline-operations",
+        "edge/synchronization"
+      ]
+    },
+    {
+      "group": "Development",
+      "pages": [
+        "development/built-in-ide",
+        "development/csharp",
+        "development/custom-functions",
+        "development/api-reference",
+        "development/sdk-docs",
+        "development/code-examples"
+      ]
+    },
+    {
+      "group": "Visualization",
+      "pages": [
+        "visualization/dashboard-designer",
+        "visualization/charts-widgets",
+        "visualization/sql-query-builder",
+        "visualization/templates",
+        "visualization/best-practices"
+      ]
+    },
+    {
+      "group": "Integration",
+      "pages": [
+        "integration/connectors",
+        "integration/setup",
+        "integration/data-mapping",
+        "integration/authentication",
+        "integration/troubleshooting"
+      ]
+    },
+    {
+      "group": "Administration",
+      "pages": [
+        "admin/user-management",
+        "admin/access-control",
+        "admin/system-monitoring",
+        "admin/backup-recovery",
+        "admin/performance-tuning"
+      ]
+    },
+    {
+      "group": "Reference",
+      "pages": [
+        "reference/api-docs",
+        "reference/cli-commands",
+        "reference/configuration",
+        "reference/error-codes",
+        "reference/glossary"
       ]
     }
   ],
   "footerSocials": {
-    "x": "https://x.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://linkedin.com/company/mintlify"
+    "github": "https://github.com/proxus",
+    "linkedin": "https://linkedin.com/company/proxus"
   }
 }
