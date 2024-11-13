@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: proxus-ui
+  name: proxus-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: proxus-ui
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.32.0 (HEAD)
+      labels:
+        io.kompose.network/chart-proxus: "true"
+        io.kompose.service: proxus-ui
+    spec:
+      containers:
+        - args:
+            - ./Proxus.Blazor.Server
+            - GrpcInterfaceBinding=AdvertisedHost
+            - IdentityLookupStrategy=PartitionIdentityLookup
+            - ClusterProvider=Kubernetes
+            - ConnectionString=Server=timescaledb.default.svc.cluster.local;Port=5442;User ID=proxus;Password=proxus;Database=proxus;
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Production
+            - name: ASPNETCORE_URLS
+              value: http://+:8080
+            - name: AdvertisedHost
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: TZ
+              value: Europe/Istanbul
+            # Added environment variable for timezone
+            - name: DOTNET_SYSTEM_GLOBALIZATION_INVARIANT
+              value: "false" # Set this to false to use globalization features
+          image: proxusplatform/proxus-ui:latest
+          livenessProbe:
+            exec:
+              command:
+                - curl -f http://localhost:8080/healthz | grep -q 'Healthy' || exit 1
+            failureThreshold: 9999
+            periodSeconds: 30
+            timeoutSeconds: 10
+          name: proxus-ui
+          ports:
+            - containerPort: 8080
+              hostPort: 8080
+              protocol: TCP
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - mountPath: /app/config
+              name: config
+            - mountPath: /var/run/docker.sock
+              name: proxus-ui-claim1
+      restartPolicy: Always
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: config
+        - name: proxus-ui-claim1
+          persistentVolumeClaim:
+            claimName: proxus-ui-claim1

@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: proxus-server
+  name: proxus-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: proxus-server
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.32.0 (HEAD)
+      labels:
+        io.kompose.network/chart-proxus: "true"
+        io.kompose.service: proxus-server
+    spec:
+      containers:
+        - args:
+            - ./Proxus.Server
+            - GatewayID=1
+            - EdgeMode=Proxus
+            - GrpcInterfaceBinding=AdvertisedHost
+            - IdentityLookupStrategy=PartitionIdentityLookup
+            - UI-Address=proxus-ui
+            - ClusterProvider=Kubernetes
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Production
+            - name: ASPNETCORE_URLS
+              value: http://+:8083
+            - name: AdvertisedHost
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: CONSUL_HTTP_ADDR
+              value: consul:8500
+            - name: DOTNET_SYSTEM_GLOBALIZATION_INVARIANT
+              value: "false"
+            - name: OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES
+              value: Proto.Actor
+            - name: OTEL_DOTNET_AUTO_METRICS_CONSOLE_EXPORTER_ENABLED
+              value: "true"
+            - name: OTEL_EXPORTER_JAEGER_AGENT_HOST
+              value: jaeger
+            - name: OTEL_EXPORTER_JAEGER_AGENT_PORT
+              value: "6831"
+            - name: OTEL_EXPORTER_JAEGER_ENDPOINT
+              value: http://jaeger:14268/api/traces
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://otel-collector:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: TZ
+              value: Europe/Istanbul
+          image: proxusplatform/proxus-server:latest
+          livenessProbe:
+            exec:
+              command:
+                - curl -f http://localhost:8083/healthz | grep -q 'Healthy' || exit 1
+            failureThreshold: 9999
+            periodSeconds: 30
+            timeoutSeconds: 10
+          name: proxus-server
+          ports:
+            - containerPort: 8083
+              hostPort: 8083
+              protocol: TCP
+            - containerPort: 1883
+              hostPort: 1883
+              protocol: TCP
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - mountPath: /app/config
+              name: config
+      restartPolicy: Always
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: config
