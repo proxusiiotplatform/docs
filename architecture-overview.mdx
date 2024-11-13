@@ -5,51 +5,47 @@ description: 'Comprehensive architectural overview of Proxus Industrial IoT Plat
 
 ## Platform Overview
 
-<Frame>
-  <div style={{ padding: '20px', textAlign: 'center' }}>
-    ```mermaid
-    graph TB
-        subgraph "Presentation Layer"
-            UI[Web Interface]
-            Mobile[Mobile Apps]
-            API[API Gateway]
-        end
-        
-        subgraph "Edge Layer"
-            ED[Edge Devices]
-            EC[Edge Computing]
-            EP[Edge Processing]
-        end
-        
-        subgraph "Core Services"
-            DC[Data Collection]
-            DP[Data Processing]
-            AN[Analytics Engine]
-            RE[Rules Engine]
-        end
-        
-        subgraph "Data Layer"
-            TS[Time Series DB]
-            MD[Metadata Store]
-            CACHE[Cache Layer]
-        end
-        
-        UI --> API
-        Mobile --> API
-        API --> DC
-        ED --> EC
-        EC --> EP
-        EP --> DC
-        DC --> DP
-        DP --> AN
-        AN --> RE
-        DC --> TS
-        DP --> TS
-        AN --> MD
-        RE --> CACHE
-    ```
-  </div>
-</Frame>
+```mermaid
+graph TB
+    subgraph "Presentation Layer"
+        UI[Web Interface]
+        Mobile[Mobile Apps]
+        API[API Gateway]
+    end
+    
+    subgraph "Edge Layer"
+        ED[Edge Devices]
+        EC[Edge Computing]
+        EP[Edge Processing]
+    end
+    
+    subgraph "Core Services"
+        DC[Data Collection]
+        DP[Data Processing]
+        AN[Analytics Engine]
+        RE[Rules Engine]
+    end
+    
+    subgraph "Data Layer"
+        TS[Time Series DB]
+        MD[Metadata Store]
+        CACHE[Cache Layer]
+    end
+    
+    UI --> API
+    Mobile --> API
+    API --> DC
+    ED --> EC
+    EC --> EP
+    EP --> DC
+    DC --> DP
+    DP --> AN
+    AN --> RE
+    DC --> TS
+    DP --> TS
+    AN --> MD
+    RE --> CACHE
+```
 
 ## Core Components
 
@@ -124,9 +120,8 @@ description: 'Comprehensive architectural overview of Proxus Industrial IoT Plat
 
 ## System Integration
 
-<Frame>
-  ```mermaid
-  graph LR
+```mermaid
+graph LR
     subgraph "External Systems"
         ERP[ERP Systems]
         MES[MES]
@@ -149,3 +144,133 @@ description: 'Comprehensive architectural overview of Proxus Industrial IoT Plat
     API --> CORE
     ESB --> CORE
     ADAPTER --> CORE
+```
+
+## High Availability Architecture
+
+<CardGroup cols={2}>
+  <Card title="Active-Active Configuration" icon="shield-check">
+    ```mermaid
+    graph TD
+        LB[Load Balancer]
+        LB --> N1[Node 1]
+        LB --> N2[Node 2]
+        N1 --> DB[(Database Cluster)]
+        N2 --> DB
+    ```
+  </Card>
+  <Card title="Disaster Recovery" icon="rotate">
+    ```mermaid
+    graph LR
+        DC1[Primary DC] --> SYNC[Data Sync]
+        SYNC --> DC2[Secondary DC]
+        DC1 -.-> |Failover| DC2
+    ```
+  </Card>
+</CardGroup>
+
+## Security Architecture
+
+```mermaid
+graph TB
+    subgraph "Security Layers"
+        A[Network Security]
+        B[Application Security]
+        C[Data Security]
+        D[Access Control]
+    end
+    
+    subgraph "Security Components"
+        A --> FW[Firewall]
+        A --> IDS[IDS/IPS]
+        B --> AUTH[Authentication]
+        B --> AUDIT[Audit Logging]
+        C --> ENCRYPT[Encryption]
+        C --> MASK[Data Masking]
+        D --> RBAC[Role Based Access]
+        D --> IAM[Identity Management]
+    end
+```
+
+## Deployment Models
+
+<Tabs>
+  <Tab title="On-Premises">
+    ```mermaid
+    graph TD
+        subgraph "Enterprise Network"
+            FW[Firewall]
+            APP[Application Servers]
+            DB[Database Cluster]
+            EDGE[Edge Nodes]
+        end
+        
+        FW --> APP
+        APP --> DB
+        EDGE --> APP
+    ```
+  </Tab>
+  
+  <Tab title="Cloud">
+    ```mermaid
+    graph TD
+        subgraph "Cloud Infrastructure"
+            LB[Load Balancer]
+            AS[Auto Scaling Group]
+            S3[Object Storage]
+            RDS[Managed Database]
+        end
+        
+        LB --> AS
+        AS --> RDS
+        AS --> S3
+    ```
+  </Tab>
+  
+  <Tab title="Hybrid">
+    ```mermaid
+    graph LR
+        subgraph "On-Premises"
+            EDGE[Edge Layer]
+            DATA[Local Data]
+        end
+        
+        subgraph "Cloud"
+            CLOUD[Cloud Services]
+            STORAGE[Cloud Storage]
+        end
+        
+        EDGE --> DATA
+        EDGE --> CLOUD
+        DATA -.-> STORAGE
+    ```
+  </Tab>
+</Tabs>
+
+## Performance Metrics
+
+<CardGroup cols={3}>
+  <Card title="Data Collection" icon="gauge-high">
+    - Ingestion Rate: 100K points/sec
+    - Latency: <10ms
+    - Protocol Support: 10+
+  </Card>
+  
+  <Card title="Processing" icon="bolt">
+    - Stream Processing: Real-time
+    - Batch Processing: 1M records/sec
+    - Analytics: Sub-second
+  </Card>
+  
+  <Card title="Storage" icon="database">
+    - Write Speed: 1M points/sec
+    - Query Response: <100ms
+    - Compression: 10:1 ratio
+  </Card>
+</CardGroup>
+
+## See Also
+- [Deployment Guide](/deployment)
+- [Security Configuration](/security)
+- [Integration Guide](/integration)
+- [Performance Tuning](/performance)
