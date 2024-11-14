@@ -38,10 +38,10 @@
       ]
     },
     {
-      "group": "Core Platform",
+      "group": "Data Management",
       "pages": [
-        "core/data-collection",
-        "core/edge-computing",
+        "data-management/data-acquisition",
+        "data-management/edge-computing",
         "core/data-storage",
         "core/analytics",
         "core/visualization",
