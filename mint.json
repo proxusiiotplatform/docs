@@ -28,108 +28,106 @@
   },
   "navigation": [
     {
-      "group": "Getting Started",
-      "pages": [
-        "introduction",
-        "key-features",
-        "system-requirements",
-        "quick-start-guide",
-        "architecture-overview"
-      ]
-    },
-    {
-      "group": "Core Concepts",
-      "pages": [
-        "core/data-collection",
-        "core/real-time-analytics", 
-        "core/data-storage",
-        "core/edge-computing",
-        "core/rules-engine",
-        "core/integration-framework"
-      ]
-    },
-    {
-      "group": "Installation",
-      "pages": [
-        "installation/docker",
-        "installation/cloud-deployment",
-        "installation/kubernetes",
-        "installation/system-configuration",
-        "installation/security-best-practices"
-      ]
-    },
-    {
-      "group": "Data Management",
-      "pages": [
-        "data/device-management",
-        "data/device-profiles",
-        "data/collection-setup",
-        "data/ot-protocol-adapters",
-        "data/data-models",
-        "data/retention-policies"
-      ]
-    },
-    {
-      "group": "Edge Computing",
-      "pages": [
-        "edge/gateway-setup",
-        "edge/services",
-        "edge/deployment-strategies",
-        "edge/offline-operations",
-        "edge/synchronization"
-      ]
-    },
-    {
-      "group": "Development",
-      "pages": [
-        "development/built-in-ide",
-        "development/csharp",
-        "development/custom-functions",
-        "development/api-reference",
-        "development/sdk-docs",
-        "development/code-examples"
-      ]
-    },
-    {
-      "group": "Visualization",
-      "pages": [
-        "visualization/dashboard-designer",
-        "visualization/charts-widgets",
-        "visualization/sql-query-builder",
-        "visualization/templates",
-        "visualization/best-practices"
-      ]
-    },
-    {
-      "group": "Integration",
-      "pages": [
-        "integration/connectors",
-        "integration/setup",
-        "integration/data-mapping",
-        "integration/authentication",
-        "integration/troubleshooting"
-      ]
-    },
-    {
-      "group": "Administration",
-      "pages": [
-        "admin/user-management",
-        "admin/access-control",
-        "admin/system-monitoring",
-        "admin/backup-recovery",
-        "admin/performance-tuning"
-      ]
-    },
-    {
-      "group": "Reference",
-      "pages": [
-        "reference/api-docs",
-        "reference/cli-commands",
-        "reference/configuration",
-        "reference/error-codes",
-        "reference/glossary"
-      ]
-    }
+  "overview": {
+    "title": "Overview",
+    "icon": "book-open",
+    "iconType": "solid",
+    "pages": [
+      "introduction",
+      "key-features", 
+      "architecture",
+      "getting-started"
+    ]
+  },
+  "data-management": {
+    "title": "Data Management",
+    "icon": "database",
+    "iconType": "solid",
+    "pages": [
+      "data-acquisition",
+      "ot-protocols",
+      "device-profiles",
+      "data-storage"
+    ]
+  },
+  "rules-engine": {
+    "title": "Rules Engine",
+    "icon": "gear", 
+    "iconType": "solid",
+    "pages": [
+      "rules-overview",
+      "creating-rules",
+      "alerts-notifications",
+      "anomaly-detection"
+    ]
+  },
+  "functions": {
+    "title": "Functions",
+    "icon": "code",
+    "iconType": "solid", 
+    "pages": [
+      "functions-overview",
+      "ide-usage",
+      "deployment",
+      "monitoring"
+    ]
+  },
+  "visualization": {
+    "title": "Visualization",
+    "icon": "table-columns",
+    "iconType": "solid",
+    "pages": [
+      "dashboards",
+      "components",
+      "data-binding",
+      "query-builder"
+    ]
+  },
+  "integration": {
+    "title": "Integration",
+    "icon": "network-wired",
+    "iconType": "solid",
+    "pages": [
+      "integration-overview", 
+      "supported-systems",
+      "configuration",
+      "monitoring"
+    ]
+  },
+  "edge-computing": {
+    "title": "Edge Computing",
+    "icon": "microchip",
+    "iconType": "solid",
+    "pages": [
+      "edge-overview",
+      "deployment",
+      "management", 
+      "limitations"
+    ]
+  },
+  "deployment": {
+    "title": "Deployment",
+    "icon": "docker",
+    "iconType": "brands",
+    "pages": [
+      "docker-deployment",
+      "kubernetes",
+      "scaling",
+      "monitoring"
+    ]
+  },
+  "api": {
+    "title": "API Reference",
+    "icon": "code",
+    "iconType": "solid",
+    "pages": [
+      "authentication",
+      "endpoints",
+      "models",
+      "examples" 
+    ]
+  }
+}
   ],
   "footerSocials": {
     "linkedin": "https://www.linkedin.com/company/proxus-iiot-platform"
