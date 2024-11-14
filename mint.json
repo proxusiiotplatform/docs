@@ -41,9 +41,9 @@
       "group": "Data Management",
       "pages": [
         "data-management/data-acquisition",
-        "data-management/edge-computing",
-        "core/data-storage",
-        "core/analytics",
+        "data-management/ot-protocols",
+        "data-management/device-profiles",
+        "data-management/analytics",
         "core/visualization",
         "core/integration"
       ]
