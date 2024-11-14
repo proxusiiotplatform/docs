@@ -18,115 +18,127 @@
   "topbarLinks": [
     {
       "name": "Contact",
-      "url": "mailto:hello@proxus.io"
+      "url": "mailto:hello@proxus.io",
+      "icon": "fa-regular fa-envelope"
     }
   ],
   "topbarCtaButton": {
     "name": "Get Started",
-    "url": "https://proxus.io/"
+    "url": "https://proxus.io/",
+    "icon": "fa-solid fa-rocket"
   },
   "navigation": [
     {
       "group": "Getting Started",
+      "icon": "fa-solid fa-flag-checkered",
       "pages": [
-        "introduction",
-        "key-features",
-        "system-requirements",
-        "quick-start-guide",
-        "architecture-overview"
+        {"name": "Introduction", "icon": "fa-solid fa-book-open", "path": "introduction"},
+        {"name": "Key Features", "icon": "fa-solid fa-star", "path": "key-features"},
+        {"name": "System Requirements", "icon": "fa-solid fa-microchip", "path": "system-requirements"},
+        {"name": "Quick Start Guide", "icon": "fa-solid fa-bolt", "path": "quick-start-guide"},
+        {"name": "Architecture Overview", "icon": "fa-solid fa-diagram-project", "path": "architecture-overview"}
       ]
     },
     {
       "group": "Core Concepts",
+      "icon": "fa-solid fa-cube",
       "pages": [
-        "core/data-collection",
-        "core/real-time-analytics", 
-        "core/data-storage",
-        "core/edge-computing",
-        "core/rules-engine",
-        "core/integration-framework"
+        {"name": "Data Collection", "icon": "fa-solid fa-database", "path": "core/data-collection"},
+        {"name": "Real-time Analytics", "icon": "fa-solid fa-chart-line", "path": "core/real-time-analytics"},
+        {"name": "Data Storage", "icon": "fa-solid fa-hard-drive", "path": "core/data-storage"},
+        {"name": "Edge Computing", "icon": "fa-solid fa-network-wired", "path": "core/edge-computing"},
+        {"name": "Rules Engine", "icon": "fa-solid fa-gears", "path": "core/rules-engine"},
+        {"name": "Integration Framework", "icon": "fa-solid fa-plug", "path": "core/integration-framework"}
       ]
     },
     {
       "group": "Installation",
+      "icon": "fa-solid fa-download",
       "pages": [
-        "installation/docker",
-        "installation/cloud-deployment",
-        "installation/kubernetes",
-        "installation/system-configuration",
-        "installation/security-best-practices"
+        {"name": "Docker", "icon": "fa-brands fa-docker", "path": "installation/docker"},
+        {"name": "Cloud Deployment", "icon": "fa-solid fa-cloud", "path": "installation/cloud-deployment"},
+        {"name": "Kubernetes", "icon": "fa-brands fa-kubernetes", "path": "installation/kubernetes"},
+        {"name": "System Configuration", "icon": "fa-solid fa-wrench", "path": "installation/system-configuration"},
+        {"name": "Security Best Practices", "icon": "fa-solid fa-shield", "path": "installation/security-best-practices"}
       ]
     },
     {
       "group": "Data Management",
+      "icon": "fa-solid fa-database",
       "pages": [
-        "data/device-management",
-        "data/device-profiles",
-        "data/collection-setup",
-        "data/ot-protocol-adapters",
-        "data/data-models",
-        "data/retention-policies"
+        {"name": "Device Management", "icon": "fa-solid fa-microchip", "path": "data/device-management"},
+        {"name": "Device Profiles", "icon": "fa-solid fa-id-card", "path": "data/device-profiles"},
+        {"name": "Collection Setup", "icon": "fa-solid fa-gear", "path": "data/collection-setup"},
+        {"name": "OT Protocol Adapters", "icon": "fa-solid fa-plug", "path": "data/ot-protocol-adapters"},
+        {"name": "Data Models", "icon": "fa-solid fa-diagram-project", "path": "data/data-models"},
+        {"name": "Retention Policies", "icon": "fa-solid fa-clock", "path": "data/retention-policies"}
       ]
     },
     {
       "group": "Edge Computing",
+      "icon": "fa-solid fa-network-wired",
       "pages": [
-        "edge/gateway-setup",
-        "edge/services",
-        "edge/deployment-strategies",
-        "edge/offline-operations",
-        "edge/synchronization"
+        {"name": "Gateway Setup", "icon": "fa-solid fa-router", "path": "edge/gateway-setup"},
+        {"name": "Services", "icon": "fa-solid fa-cogs", "path": "edge/services"},
+        {"name": "Deployment Strategies", "icon": "fa-solid fa-chess", "path": "edge/deployment-strategies"},
+        {"name": "Offline Operations", "icon": "fa-solid fa-wifi-slash", "path": "edge/offline-operations"},
+        {"name": "Synchronization", "icon": "fa-solid fa-sync", "path": "edge/synchronization"}
       ]
     },
     {
       "group": "Development",
+      "icon": "fa-solid fa-code",
       "pages": [
-        "development/built-in-ide",
-        "development/csharp",
-        "development/custom-functions",
-        "development/api-reference",
-        "development/sdk-docs",
-        "development/code-examples"
+        {"name": "Built-in IDE", "icon": "fa-solid fa-laptop-code", "path": "development/built-in-ide"},
+        {"name": "C#", "icon": "fa-brands fa-microsoft", "path": "development/csharp"},
+        {"name": "Custom Functions", "icon": "fa-solid fa-function", "path": "development/custom-functions"},
+        {"name": "API Reference", "icon": "fa-solid fa-book", "path": "development/api-reference"},
+        {"name": "SDK Docs", "icon": "fa-solid fa-puzzle-piece", "path": "development/sdk-docs"},
+        {"name": "Code Examples", "icon": "fa-solid fa-file-code", "path": "development/code-examples"}
       ]
     },
     {
       "group": "Visualization",
+      "icon": "fa-solid fa-chart-pie",
       "pages": [
-        "visualization/dashboard-designer",
-        "visualization/charts-widgets",
-        "visualization/sql-query-builder",
-        "visualization/templates",
-        "visualization/best-practices"
+        {"name": "Dashboard Designer", "icon": "fa-solid fa-palette", "path": "visualization/dashboard-designer"},
+        {"name": "Charts & Widgets", "icon": "fa-solid fa-chart-column", "path": "visualization/charts-widgets"},
+        {"name": "SQL Query Builder", "icon": "fa-solid fa-database", "path": "visualization/sql-query-builder"},
+        {"name": "Templates", "icon": "fa-solid fa-copy", "path": "visualization/templates"},
+        {"name": "Best Practices", "icon": "fa-solid fa-thumbs-up", "path": "visualization/best-practices"}
       ]
     },
     {
       "group": "Integration",
+      "icon": "fa-solid fa-plug",
       "pages": [
-        "integration/connectors",
-        "integration/setup",
-        "integration/data-mapping",
-        "integration/authentication",
-        "integration/troubleshooting"
+        {"name": "Connectors", "icon": "fa-solid fa-plug-circle-plus", "path": "integration/connectors"},
+        {"name": "Setup", "icon": "fa-solid fa-screwdriver-wrench", "path": "integration/setup"},
+        {"name": "Data Mapping", "icon": "fa-solid fa-map", "path": "integration/data-mapping"},
+        {"name": "Authentication", "icon": "fa-solid fa-key", "path": "integration/authentication"},
+        {"name": "Troubleshooting", "icon": "fa-solid fa-bug", "path": "integration/troubleshooting"}
       ]
     },
     {
       "group": "Administration",
+      "icon": "fa-solid fa-user-gear",
       "pages": [
-        "admin/user-management",
-        "admin/access-control",
-        "admin/system-monitoring",
-        "admin/backup-recovery",
-        "admin/performance-tuning"
+        {"name": "User Management", "icon": "fa-solid fa-users", "path": "admin/user-management"},
+        {"name": "Access Control", "icon": "fa-solid fa-lock", "path": "admin/access-control"},
+        {"name": "System Monitoring", "icon": "fa-solid fa-tv", "path": "admin/system-monitoring"},
+        {"name": "Backup & Recovery", "icon": "fa-solid fa-cloud-arrow-up", "path": "admin/backup-recovery"},
+        {"name": "Performance Tuning", "icon": "fa-solid fa-gauge-high", "path": "admin/performance-tuning"}
       ]
     },
     {
       "group": "Reference",
+      "icon": "fa-solid fa-book",
       "pages": [
-        "reference/api-docs",
-        "reference/cli-commands",
-        "reference/configuration",
-        "reference/error-codes",
-        "reference/glossary"
+        {"name": "API Docs", "icon": "fa-solid fa-file-code", "path": "reference/api-docs"},
+        {"name": "CLI Commands", "icon": "fa-solid fa-terminal", "path": "reference/cli-commands"},
+        {"name": "Configuration", "icon": "fa-solid fa-sliders", "path": "reference/configuration"},
+        {"name": "Error Codes", "icon": "fa-solid fa-circle-exclamation", "path": "reference/error-codes"},
+        {"name": "Glossary", "icon": "fa-solid fa-book-bookmark", "path": "reference/glossary"}
       ]
     }
   ],
