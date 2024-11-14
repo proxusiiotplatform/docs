@@ -1,0 +1,248 @@
+---
+title: 'Installation Guide'
+description: 'Complete installation guide for Proxus IIoT Platform using Docker'
+---
+
+## Prerequisites
+
+<Card title="System Requirements" icon="microchip">
+  Before starting the installation, ensure you have:
+
+  * Docker Engine installed
+
+  * Docker Compose installed
+
+  * Minimum 4GB RAM
+
+  * 20GB free disk space
+
+  * Internet connection for pulling Docker images
+</Card>
+
+## Installation Instructions
+
+<Tabs>
+  <Tab title="Linux">
+    ### Using wget
+
+    ```bash
+    wget https://downloads.proxus.io/docker/docker-compose.yml
+    wget https://downloads.proxus.io/docker/Proxus-config.toml
+    ```
+
+    ### Using curl
+
+    ```bash
+    curl -O https://downloads.proxus.io/docker/docker-compose.yml
+    curl -O https://downloads.proxus.io/docker/Proxus-config.toml
+    ```
+
+    ### Setting Permissions
+
+    ```bash
+    sudo chmod +x docker-compose.yml
+    sudo mkdir -p /opt/proxus/config
+    sudo mv Proxus-config.toml /opt/proxus/config/
+    ```
+
+    ### Starting Services
+
+    ```bash
+    sudo docker-compose up -d
+    ```
+  </Tab>
+
+  <Tab title="macOS">
+    ### Using curl
+
+    ```bash
+    curl -O https://downloads.proxus.io/docker/docker-compose.yml
+    curl -O https://downloads.proxus.io/docker/Proxus-config.toml
+    ```
+
+    ### Setting Permissions
+
+    ```bash
+    chmod +x docker-compose.yml
+    mkdir -p ~/proxus/config
+    mv Proxus-config.toml ~/proxus/config/
+    ```
+
+    ### Starting Services
+
+    ```bash
+    docker-compose up -d
+    ```
+  </Tab>
+
+  <Tab title="Windows">
+    ### Using PowerShell
+
+    ```powershell
+    Invoke-WebRequest -Uri https://downloads.proxus.io/docker/docker-compose.yml -OutFile docker-compose.yml
+    Invoke-WebRequest -Uri https://downloads.proxus.io/docker/Proxus-config.toml -OutFile Proxus-config.toml
+    ```
+
+    ### Using Command Prompt
+
+    ```cmd
+    curl -O https://downloads.proxus.io/docker/docker-compose.yml
+    curl -O https://downloads.proxus.io/docker/Proxus-config.toml
+    ```
+
+    ### Setting Up Directory
+
+    ```cmd
+    mkdir C:\Proxus\config
+    move Proxus-config.toml C:\Proxus\config\
+    ```
+
+    ### Starting Services
+
+    ```cmd
+    docker-compose up -d
+    ```
+  </Tab>
+</Tabs>
+
+## Configuration Management
+
+<Tabs>
+  <Tab title="Linux/macOS">
+    ### Viewing Configuration
+
+    ```bash
+    sudo docker exec -it proxus-ui cat /app/config/Proxus-config.toml
+    ```
+
+    ### Editing Configuration
+
+    ```bash
+    sudo docker exec -it proxus-ui nano /app/config/Proxus-config.toml
+    ```
+
+    ### Copying Files to Container
+
+    ```bash
+    sudo docker cp Proxus-config.toml proxus-ui:/app/config/
+    sudo docker cp Oracle.ManagedDataAccess.dll proxus-server:/app/
+    ```
+  </Tab>
+
+  <Tab title="Windows">
+    ### Viewing Configuration
+
+    ```cmd
+    docker exec -it proxus-ui type C:\app\config\Proxus-config.toml
+    ```
+
+    ### Editing Configuration
+
+    ```cmd
+    docker exec -it proxus-ui notepad C:\app\config\Proxus-config.toml
+    ```
+
+    ### Copying Files to Container
+
+    ```cmd
+    docker cp Proxus-config.toml proxus-ui:C:\app\config\
+    docker cp Oracle.ManagedDataAccess.dll proxus-server:C:\app\
+    ```
+  </Tab>
+</Tabs>
+
+## Backup and Restore
+
+<Tabs>
+  <Tab title="Linux/macOS">
+    ### Backup
+
+    ```bash
+    sudo mkdir proxus_backup
+    sudo docker run --rm -v proxus_config:/config -v $(pwd)/proxus_backup:/backup alpine tar czf /backup/config.tar.gz /config
+    sudo docker run --rm -v proxus_data:/data -v $(pwd)/proxus_backup:/backup alpine tar czf /backup/data.tar.gz /data
+    ```
+
+    ### Restore
+
+    ```bash
+    sudo docker run --rm -v proxus_config:/config -v $(pwd)/proxus_backup:/backup alpine sh -c "cd /config && tar xzf /backup/config.tar.gz --strip 1"
+    sudo docker run --rm -v proxus_data:/data -v $(pwd)/proxus_backup:/backup alpine sh -c "cd /data && tar xzf /backup/data.tar.gz --strip 1"
+    ```
+  </Tab>
+
+  <Tab title="Windows">
+    ### Backup
+
+    ```cmd
+    mkdir proxus_backup
+    docker run --rm -v proxus_config:C:\config -v %cd%\proxus_backup:C:\backup alpine tar czf C:\backup\config.tar.gz C:\config
+    docker run --rm -v proxus_data:C:\data -v %cd%\proxus_backup:C:\backup alpine tar czf C:\backup\data.tar.gz C:\data
+    ```
+
+    ### Restore
+
+    ```cmd
+    docker run --rm -v proxus_config:C:\config -v %cd%\proxus_backup:C:\backup alpine sh -c "cd C:\config && tar xzf C:\backup\config.tar.gz --strip 1"
+    docker run --rm -v proxus_data:C:\data -v %cd%\proxus_backup:C:\backup alpine sh -c "cd C:\data && tar xzf C:\backup\data.tar.gz --strip 1"
+    ```
+  </Tab>
+</Tabs>
+
+## Troubleshooting
+
+<Tabs>
+  <Tab title="Linux/macOS">
+    ### View Logs
+
+    ```bash
+    sudo docker logs proxus-ui
+    sudo docker logs proxus-server
+    ```
+
+    ### Check Container Status
+
+    ```bash
+    sudo docker ps -a
+    ```
+
+    ### Service Health Check
+
+    ```bash
+    sudo docker-compose ps
+    ```
+  </Tab>
+
+  <Tab title="Windows">
+    ### View Logs
+
+    ```cmd
+    docker logs proxus-ui
+    docker logs proxus-server
+    ```
+
+    ### Check Container Status
+
+    ```cmd
+    docker ps -a
+    ```
+
+    ### Service Health Check
+
+    ```cmd
+    docker-compose ps
+    ```
+  </Tab>
+</Tabs>
+
+<Note>
+  After installation, access the platform at http://localhost:8080
+
+  * Username: Admin
+
+  * Password: \[leave blank]
+</Note>
+
+<Warning>
+  Remember to request a demo license at https://www.proxus.io/demo to start using the platform.
+</Warning>
