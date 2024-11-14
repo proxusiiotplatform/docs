@@ -30,11 +30,11 @@
     {
       "group": "Getting Started",
       "pages": [
-        "introduction",
-        "key-features", 
-        "system-requirements",
-        "quick-start-guide",
-        "architecture-overview"
+        "overview/introduction",
+        "overview/key-features", 
+        "overview/system-requirements",
+        "overview/quick-start-guide",
+        "overview/architecture-overview"
       ]
     },
     {
