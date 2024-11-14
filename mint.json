@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Proxus Docs",
+  "name": "Proxus Documentation",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
@@ -14,7 +14,6 @@
       "from": "#0D9373",
       "to": "#07C983"
     }
-    
   },
   "topbarLinks": [
     {
@@ -23,113 +22,95 @@
     }
   ],
   "topbarCtaButton": {
-    "name": "Get Started",
-    "url": "https://proxus.io/"
+    "name": "Schedule a Demo",
+    "url": "https://www.proxus.io/demo"
   },
   "navigation": [
     {
-  "overview": {
-    "title": "Overview",
-    "icon": "book-open",
-    "iconType": "solid",
-    "pages": [
-      "introduction",
-      "key-features", 
-      "architecture",
-      "getting-started"
-    ]
-  },
-  "data-management": {
-    "title": "Data Management",
-    "icon": "database",
-    "iconType": "solid",
-    "pages": [
-      "data-acquisition",
-      "ot-protocols",
-      "device-profiles",
-      "data-storage"
-    ]
-  },
-  "rules-engine": {
-    "title": "Rules Engine",
-    "icon": "gear", 
-    "iconType": "solid",
-    "pages": [
-      "rules-overview",
-      "creating-rules",
-      "alerts-notifications",
-      "anomaly-detection"
-    ]
-  },
-  "functions": {
-    "title": "Functions",
-    "icon": "code",
-    "iconType": "solid", 
-    "pages": [
-      "functions-overview",
-      "ide-usage",
-      "deployment",
-      "monitoring"
-    ]
-  },
-  "visualization": {
-    "title": "Visualization",
-    "icon": "table-columns",
-    "iconType": "solid",
-    "pages": [
-      "dashboards",
-      "components",
-      "data-binding",
-      "query-builder"
-    ]
-  },
-  "integration": {
-    "title": "Integration",
-    "icon": "network-wired",
-    "iconType": "solid",
-    "pages": [
-      "integration-overview", 
-      "supported-systems",
-      "configuration",
-      "monitoring"
-    ]
-  },
-  "edge-computing": {
-    "title": "Edge Computing",
-    "icon": "microchip",
-    "iconType": "solid",
-    "pages": [
-      "edge-overview",
-      "deployment",
-      "management", 
-      "limitations"
-    ]
-  },
-  "deployment": {
-    "title": "Deployment",
-    "icon": "docker",
-    "iconType": "brands",
-    "pages": [
-      "docker-deployment",
-      "kubernetes",
-      "scaling",
-      "monitoring"
-    ]
-  },
-  "api": {
-    "title": "API Reference",
-    "icon": "code",
-    "iconType": "solid",
-    "pages": [
-      "authentication",
-      "endpoints",
-      "models",
-      "examples" 
-    ]
-  }
-}
+      "group": "Getting Started",
+      "pages": [
+        "introduction",
+        "key-features", 
+        "system-requirements",
+        "quick-start-guide",
+        "architecture-overview"
+      ]
+    },
+    {
+      "group": "Core Platform",
+      "pages": [
+        "core/data-collection",
+        "core/edge-computing",
+        "core/data-storage",
+        "core/analytics",
+        "core/visualization",
+        "core/integration"
+      ]
+    },
+    {
+      "group": "Installation & Setup",
+      "pages": [
+        "installation/requirements",
+        "installation/docker",
+        "installation/kubernetes",
+        "installation/configuration",
+        "installation/security"
+      ]
+    },
+    {
+      "group": "Data Integration",
+      "pages": [
+        "integration/protocols",
+        "integration/connectors",
+        "integration/ot-adapters",
+        "integration/it-systems",
+        "integration/cloud-platforms"
+      ]
+    },
+    {
+      "group": "Edge Features",
+      "pages": [
+        "edge/architecture",
+        "edge/deployment",
+        "edge/ml-models",
+        "edge/offline-mode",
+        "edge/management"
+      ]
+    },
+    {
+      "group": "Data Management",
+      "pages": [
+        "data/collection",
+        "data/processing",
+        "data/storage",
+        "data/visualization",
+        "data/security"
+      ]
+    },
+    {
+      "group": "Administration",
+      "pages": [
+        "admin/users",
+        "admin/roles",
+        "admin/monitoring",
+        "admin/maintenance",
+        "admin/backup"
+      ]
+    },
+    {
+      "group": "Developer Resources",
+      "pages": [
+        "api/overview",
+        "api/authentication",
+        "api/endpoints",
+        "api/examples",
+        "api/sdks"
+      ]
+    }
   ],
   "footerSocials": {
-    "linkedin": "https://www.linkedin.com/company/proxus-iiot-platform"
+    "website": "https://www.proxus.io",
+    "linkedin": "https://www.linkedin.com/company/proxus-iiot-platform",
+    "email": "hello@proxus.io"
   }
 }
