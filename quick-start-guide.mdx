@@ -1,198 +1,221 @@
 ---
-title: 'Deployment Guide'
-description: 'Step-by-step deployment guide for Proxus Platform'
+title: 'Quick Start Guide'
+description: 'Get started with Proxus in minutes by following this step-by-step guide'
 ---
 
-# Deployment Guide
+# Quick Start Guide
 
-<Tabs>
-  <Tab title="Windows">
-    ## Windows Installation
+This guide will help you set up Proxus and configure your first data collection pipeline. Follow these steps to quickly experience the power of Proxus.
 
-    <Steps>
-      <Step title="Install Docker Desktop">
-        1. Download [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop)
+## Prerequisites
 
-        2. Double-click installer and follow setup wizard
+Before you begin, ensure you have:
 
-        3. Launch Docker Desktop and wait for "Docker is running" message
+<Check>
+  - Docker installed on your system
+  - Access to an industrial device or simulator
+  - Network connectivity to your data source
+  - Minimum 4GB RAM and 2 CPU cores available
+</Check>
 
-        <Note>
-          Requires Windows 10 Pro/Enterprise or Windows 11. WSL2 installation may be required.
-        </Note>
-      </Step>
-
-      <Step title="Download Configuration">
-        <CodeGroup>
-          <CodeBlock title="PowerShell">
-            ```powershell
-            # Create project directory
-            New-Item -ItemType Directory -Path "C:\proxus"
-            Set-Location -Path "C:\proxus"
-
-            # Download configuration
-            Invoke-WebRequest -Uri "https://download.proxus.io/docker-compose.yml" -OutFile "docker-compose.yml"
-            ```
-          </CodeBlock>
-
-          <CodeBlock title="CMD">
-            ```batch
-            mkdir C:\proxus
-            cd C:\proxus
-            curl -O https://download.proxus.io/docker-compose.yml
-            ```
-          </CodeBlock>
-        </CodeGroup>
-      </Step>
-
-      <Step title="Deploy Platform">
-        ```powershell
-        docker compose up -d
-        ```
-
-        <Note>
-          First deployment may take several minutes to download required images.
-        </Note>
-      </Step>
-
-      <Step title="Verify Installation">
-        1. Open browser to `http://localhost:8080`
-
-        2. Login with:
-
-           * Username: `Admin`
-
-           * Password: (leave blank)
-      </Step>
-    </Steps>
-  </Tab>
-
-  <Tab title="Linux">
-    ## Linux Installation
-
-    <Steps>
-      <Step title="Install Docker">
-        <CodeGroup>
-          <CodeBlock title="Ubuntu/Debian">
-            ```bash
-            # Add Docker repository
-            curl -fsSL https://get.docker.com | sudo sh
-
-            # Start Docker
-            sudo systemctl enable docker
-            sudo systemctl start docker
-
-            # Add user to docker group
-            sudo usermod -aG docker $USER
-            newgrp docker
-            ```
-          </CodeBlock>
-
-          <CodeBlock title="CentOS/RHEL">
-            ```bash
-            # Add Docker repository
-            sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-
-            # Install Docker
-            sudo dnf install docker-ce docker-ce-cli containerd.io
-
-            # Start Docker
-            sudo systemctl enable docker
-            sudo systemctl start docker
-
-            # Add user to docker group
-            sudo usermod -aG docker $USER
-            newgrp docker
-            ```
-          </CodeBlock>
-        </CodeGroup>
-      </Step>
-
-      <Step title="Install Docker Compose">
-        ```bash
-        # Download Docker Compose
-        sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-
-        # Make executable
-        sudo chmod +x /usr/local/bin/docker-compose
-        ```
-      </Step>
-
-      <Step title="Download Configuration">
-        ```bash
-        # Create project directory
-        mkdir ~/proxus && cd ~/proxus
-
-        # Download configuration
-        curl -O https://download.proxus.io/docker-compose.yml
-        ```
-      </Step>
-
-      <Step title="Deploy Platform">
-        ```bash
-        docker compose up -d
-        ```
-
-        <Warning>
-          Ensure ports 8080, 8082, 8083, 4222, and 5442 are not in use and firewall allows these ports.
-        </Warning>
-      </Step>
-    </Steps>
-  </Tab>
-
-  <Tab title="macOS">
-    ## macOS Installation
-
-    <Steps>
-      <Step title="Install Docker Desktop">
-        1. Download [Docker Desktop for Mac](https://www.docker.com/products/docker-desktop)
-
-        2. Drag Docker.app to Applications folder
-
-        3. Launch Docker and wait for "Docker is running" message
-
-        <Note>
-          Supports both Intel and Apple Silicon Macs.
-        </Note>
-      </Step>
-
-      <Step title="Download Configuration">
-        ```bash
-        # Create project directory
-        mkdir ~/proxus && cd ~/proxus
-
-        # Download configuration
-        curl -O https://download.proxus.io/docker-compose.yml
-        ```
-      </Step>
-
-      <Step title="Deploy Platform">
-        ```bash
-        docker compose up -d
-        ```
-      </Step>
-    </Steps>
-  </Tab>
-</Tabs>
-
-## Post-Installation Steps
-
-### Request License
-
-1. Visit [proxus.io/demo](https://www.proxus.io/demo)
-
-2. Fill out the demo request form
-
-3. Apply received license in platform settings
-
-### Verify Services
+## Step 1: Deploy Proxus
 
 ```bash
-# Check all containers are running
-docker compose ps
+# Pull the Proxus Docker image
+docker pull proxus/platform:latest
 
-# Verify each service health
-curl http://localhost:8080/healthz  # UI
-curl http://localhost:8083/healthz  # Server
-curl http://localhost:8222         # Message Broker
+# Create a persistent volume for TimescaleDB
+docker volume create proxus-timescaledb-data
+
+# Start Proxus using Docker Compose
+docker-compose up -d
 ```
+
+<Note>
+Default credentials for first-time login:
+- Username: `admin`
+- Password: `proxus123`
+
+**Important:** Change these credentials immediately after your first login.
+</Note>
+
+## Step 2: Access the Platform
+
+1. Open your web browser
+2. Navigate to `http://localhost:8080`
+3. Log in using the default credentials
+4. Complete the initial setup wizard
+
+## Step 3: Configure Your First Device
+
+### Create a Device Profile
+
+<Steps>
+  <Step title="Navigate to Device Profiles">
+    Click on "Configuration" → "Device Profiles" in the main menu
+  </Step>
+  
+  <Step title="Add New Profile">
+    Click the "+" button to create a new device profile
+  </Step>
+  
+  <Step title="Configure Profile">
+    ```json
+    {
+      "name": "ModbusDevice",
+      "protocol": "ModbusTCP",
+      "settings": {
+        "ipAddress": "192.168.1.100",
+        "port": 502,
+        "unitId": 1,
+        "scanRate": 1000
+      }
+    }
+    ```
+  </Step>
+</Steps>
+
+### Configure Tags
+
+<Frame>
+  ```mermaid
+  graph LR
+    A[Create Tag] --> B[Set Address]
+    B --> C[Define Data Type]
+    C --> D[Set Scan Rate]
+    D --> E[Enable Tag]
+    style A fill:#d4e6ff,stroke:#333,stroke-width:2px
+    style B fill:#d4e6ff,stroke:#333,stroke-width:2px
+    style C fill:#d4e6ff,stroke:#333,stroke-width:2px
+    style D fill:#d4e6ff,stroke:#333,stroke-width:2px
+    style E fill:#d4e6ff,stroke:#333,stroke-width:2px
+  ```
+</Frame>
+
+1. Navigate to "Tags" section
+2. Click "Add New Tag"
+3. Configure basic tag settings:
+```json
+{
+  "name": "Temperature",
+  "address": "40001",
+  "dataType": "Float",
+  "scanRate": 1000,
+  "enabled": true
+}
+```
+
+## Step 4: Create Your First Rule
+
+### Set Up Real-time Analysis
+
+<Steps>
+  <Step title="Navigate to Rules">
+    Open "Rules Engine" from the main menu
+  </Step>
+  
+  <Step title="Create Rule">
+    Create a simple temperature threshold rule:
+    ```csharp
+    if (Tag["Temperature"].Value > 30) {
+        Alert("High Temperature", $"Temperature exceeded: {Tag["Temperature"].Value}°C");
+    }
+    ```
+  </Step>
+  
+  <Step title="Activate Rule">
+    Enable the rule and set its execution priority
+  </Step>
+</Steps>
+
+## Step 5: Build a Dashboard
+
+### Create Visualization
+
+<Steps>
+  <Step title="Open Dashboard Designer">
+    Navigate to "Dashboards" → "New Dashboard"
+  </Step>
+  
+  <Step title="Add Components">
+    Drag and drop these components:
+    - Line Chart (for temperature trend)
+    - Current Value Display
+    - Alert History
+  </Step>
+  
+  <Step title="Configure Data Source">
+    ```sql
+    SELECT time, value 
+    FROM tags.temperature 
+    WHERE time > now() - interval '1 hour'
+    ```
+  </Step>
+</Steps>
+
+## Step 6: Verify Data Flow
+
+1. Monitor the "Live Data" view
+2. Check TimescaleDB storage:
+```sql
+SELECT * FROM tags.temperature 
+ORDER BY time DESC 
+LIMIT 10;
+```
+3. Verify rule triggers in the alert history
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Explore OT Adapters" icon="plug" href="/data-collection/ot-adapters">
+    Learn about all available protocols and connection options
+  </Card>
+  <Card title="Advanced Rules" icon="gear" href="/data-processing/rules">
+    Create complex rules with multiple conditions
+  </Card>
+  <Card title="Dashboard Design" icon="chart-line" href="/dashboards">
+    Build sophisticated visualizations
+  </Card>
+  <Card title="Edge Computing" icon="microchip" href="/edge">
+    Deploy Proxus capabilities to edge devices
+  </Card>
+</CardGroup>
+
+## Troubleshooting Common Issues
+
+<Accordion title="Can't connect to the device?">
+  1. Verify network connectivity (ping device IP)
+  2. Check firewall settings
+  3. Confirm device protocol settings
+  4. Review adapter configuration
+</Accordion>
+
+<Accordion title="No data in dashboard?">
+  1. Verify tag configuration
+  2. Check device connection status
+  3. Confirm SQL query syntax
+  4. Review time range settings
+</Accordion>
+
+<Accordion title="Rules not triggering?">
+  1. Check rule syntax
+  2. Verify rule is enabled
+  3. Review trigger conditions
+  4. Check tag data quality
+</Accordion>
+
+## Support Resources
+
+Need help? Here are some resources:
+
+<CardGroup cols={3}>
+  <Card title="Documentation" icon="book" href="/introduction">
+    Comprehensive guides and references
+  </Card>
+  <Card title="Community Forum" icon="users" href="https://community.proxus.io">
+    Connect with other Proxus users
+  </Card>
+  <Card title="Technical Support" icon="headset" href="/support">
+    Contact our support team
+  </Card>
+</CardGroup>
