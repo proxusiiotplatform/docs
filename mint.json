@@ -36,6 +36,15 @@
       ]
     },
     {
+      "group": "Deployment",
+      "pages": [
+        "deployment/docker-deployment",
+        "deployment/kubernetes",
+        "deployment/scaling",
+        "deployment/monitoring"
+      ]
+    },
+    {
       "group": "Data Management",
       "pages": [
         "data-management/devices",
@@ -90,15 +99,7 @@
         "edge-computing/limitations"
       ]
     },
-    {
-      "group": "Deployment",
-      "pages": [
-        "deployment/docker-deployment",
-        "deployment/kubernetes",
-        "deployment/scaling",
-        "deployment/monitoring"
-      ]
-    },
+
     {
       "group": "API",
       "pages": [
