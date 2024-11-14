@@ -1,85 +1,163 @@
 ---
-title: 'Introduction to Proxus'
-description: 'Learn about Proxus, a next-generation Industrial IoT Platform for high-performance distributed data management'
+title: "Welcome to Proxus"
+description: "Discover Proxus, the high-performance distributed Industrial IoT platform that revolutionizes industrial data management"
+sidebarTitle: "Introduction"
+icon: "cube"
+iconType: "solid"
+mode: "wide"
 ---
 
-# Welcome to Proxus
+# Welcome to Proxus Platform
 
-Proxus is a high-performance, distributed next-generation Industrial IoT Platform that unifies all essential features for industrial data management in a single system. It provides comprehensive capabilities for data collection, analysis, storage, enrichment, monitoring, and integration.
+<Tip>
+**Latest Version:** 2024.1 
+Get started with the most advanced IIoT platform designed for enterprise-scale industrial operations.
+</Tip>
 
 ## What is Proxus?
 
-Proxus serves as an end-to-end solution for managing industrial data workflows, offering:
+Proxus is a next-generation Industrial IoT (IIoT) platform that unifies data collection, analysis, storage, enrichment, monitoring, and integration capabilities into a single powerful system. Purpose-built for high performance and scalability, Proxus transforms how organizations manage and leverage their industrial data.
 
-- **Seamless Data Collection**: With support for over 50 OT protocols, making industrial data collection effortless
-- **Real-time Analytics**: Process data streams with user-defined rules and trigger notifications, including anomaly detection
-- **Enterprise-grade Storage**: Powered by TimescaleDB for reliable and scalable data management
-- **Integrated Development**: Built-in IDE for C#-based development with deploy/undeploy capabilities
-- **Visual Analytics**: Create powerful dashboards using the integrated designer with SQL-based data queries
-- **Extensive Integration**: Connect with 20+ IT systems for seamless data flow
-- **Edge Computing**: Deploy all features (except visualization) to edge devices
-- **Container-Native**: Full Docker support, including edge computing services
-- **Cloud-Ready**: Support for cloud-native deployments including Kubernetes
+## Platform Overview
 
-## Why Proxus?
-
-### Unmatched Performance
-
-Proxus stands out in the market with its exceptional performance characteristics:
-- Actor model architecture
-- Efficient message passing
-- State isolation
-- SIMD optimization
-
-### Simplified Workflow
-
-<CardGroup cols={2}>
-  <Card title="Collect" icon="database">
-    Connect to industrial devices and systems using 50+ protocols
+<CardGroup cols={3}>
+  <Card title="Collect" icon="plug" iconType="solid">
+    Connect to 50+ industrial protocols and devices with pre-built OT adapters
   </Card>
-  <Card title="Process" icon="gear">
-    Apply real-time analytics and rules to your data streams
+  <Card title="Process" icon="bolt" iconType="solid">
+    Apply real-time analytics and rules with built-in anomaly detection
   </Card>
-  <Card title="Store" icon="hard-drive">
-    Persist data efficiently in TimescaleDB
+  <Card title="Store" icon="database" iconType="solid">
+    Leverage TimescaleDB for efficient time-series data management
   </Card>
-  <Card title="Visualize" icon="chart-line">
-    Create interactive dashboards with built-in tools
+  <Card title="Develop" icon="code" iconType="solid">
+    Create custom functions with integrated C# IDE
+  </Card>
+  <Card title="Visualize" icon="chart-line" iconType="solid">
+    Design intuitive dashboards with drag-and-drop tools
+  </Card>
+  <Card title="Integrate" icon="network-wired" iconType="solid">
+    Connect with 20+ enterprise IT systems seamlessly
   </Card>
 </CardGroup>
 
-### Key Differentiators
+## Key Features
 
-<Steps>
-  <Step title="Unified Platform">
-    All essential IIoT features in a single, cohesive system
-  </Step>
-  <Step title="Developer-Friendly">
-    Built-in IDE with C# support for custom development
-  </Step>
-  <Step title="Edge-Ready">
-    Deploy capabilities to edge devices for local processing
-  </Step>
-  <Step title="Enterprise-Grade">
-    Built for scalability, reliability, and security
-  </Step>
-</Steps>
+### High-Performance Architecture
+
+<Frame>
+  ```mermaid
+  graph TD
+    A[Industrial Devices] -->|OT Adapters| B[Data Collection Layer]
+    B --> C[Processing Layer]
+    C --> D[Storage Layer]
+    D --> E[Visualization Layer]
+    D --> F[Integration Layer]
+    B --> G[Edge Computing]
+    
+    style A fill:#f9f9f9,stroke:#333,stroke-width:2px
+    style B fill:#d4e6ff,stroke:#333,stroke-width:2px
+    style C fill:#d4e6ff,stroke:#333,stroke-width:2px
+    style D fill:#d4e6ff,stroke:#333,stroke-width:2px
+    style E fill:#d4e6ff,stroke:#333,stroke-width:2px
+    style F fill:#d4e6ff,stroke:#333,stroke-width:2px
+    style G fill:#d4e6ff,stroke:#333,stroke-width:2px
+  ```
+</Frame>
+
+<CardGroup cols={2}>
+  <Card title="Actor Model" icon="diagram-project" iconType="solid">
+    Ensures robust concurrent operations and system reliability
+  </Card>
+  <Card title="Message Passing" icon="arrows-split-up-and-left" iconType="solid">
+    Enables efficient communication between components
+  </Card>
+  <Card title="State Isolation" icon="cube" iconType="solid">
+    Maintains system stability and predictability
+  </Card>
+  <Card title="SIMD Optimization" icon="rocket" iconType="solid">
+    Delivers superior performance through hardware acceleration
+  </Card>
+</CardGroup>
+
+## Platform Capabilities
+
+### Data Collection
+- **50+ OT Adapters** for seamless device connectivity
+- **Flexible Protocol Support** including Modbus, OPC-UA, BACnet
+- **Automatic Device Discovery** and configuration
+- **Built-in Data Buffering** for reliability
+
+### Real-time Processing
+- **Rule Engine** for instant data analysis
+- **Anomaly Detection** using advanced algorithms
+- **Custom Functions** with C# support
+- **Event-driven Architecture** for responsive actions
+
+### Edge Computing
+<Note>
+Deploy Proxus capabilities to edge devices for local processing and reduced latency
+</Note>
+
+- Full container support with Docker
+- Local data processing and buffering
+- Seamless synchronization with central platform
+- Offline operation capability
+
+## Deployment Options
+
+<CardGroup cols={3}>
+  <Card title="Docker" icon="docker" iconType="brands">
+    Run as containers for maximum flexibility
+  </Card>
+  <Card title="Kubernetes" icon="dharmachakra" iconType="brands">
+    Scale with cloud-native orchestration
+  </Card>
+  <Card title="Edge" icon="microchip" iconType="solid">
+    Deploy to edge devices for local processing
+  </Card>
+</CardGroup>
 
 ## Getting Started
 
-Ready to begin with Proxus? Here's how to get started:
+<Steps>
+  <Step title="Check Requirements">
+    Review [system requirements](/requirements) for your environment
+  </Step>
+  <Step title="Install Proxus">
+    Follow our [installation guide](/installation) for deployment
+  </Step>
+  <Step title="Quick Start">
+    Complete the [quick start tutorial](/quickstart) to begin
+  </Step>
+  <Step title="Learn More">
+    Explore [key concepts](/concepts) and advanced features
+  </Step>
+</Steps>
+
+## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Quick Start Guide" icon="rocket" href="../quick-start-guide">
+  <Card title="Quick Start Guide" icon="play" iconType="solid" href="/quickstart">
     Get up and running with Proxus in minutes
   </Card>
-  <Card title="Key Features" icon="stars" href="../key-features">
-    Explore the full capabilities of Proxus
+  <Card title="System Requirements" icon="server" iconType="solid" href="/requirements">
+    Ensure your environment is ready for Proxus
   </Card>
-  <Card title="System Requirements" icon="computer" href="../system-requirements">
-    Check the prerequisites for installation
+</CardGroup>
+
+## Support Resources
+
+Need help? Our support team and community are here to assist you:
+
+<CardGroup cols={3}>
+  <Card title="Documentation" icon="book" iconType="solid" href="/introduction">
+    Comprehensive guides and references
   </Card>
-  <Card title="Architecture" icon="diagram-project" href="../architecture-overview">
-    Understand how Proxus works
+  <Card title="Community" icon="users" iconType="solid" href="https://community.proxus.io">
+    Connect with other Proxus users
+  </Card>
+  <Card title="Support" icon="headset" iconType="solid" href="/support">
+    Get technical assistance
   </Card>
 </CardGroup>
