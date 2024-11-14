@@ -21,20 +21,18 @@
       "url": "mailto:hello@proxus.io"
     }
   ],
-  
   "topbarCtaButton": {
     "name": "Schedule a Demo",
     "url": "https://www.proxus.io/demo"
   },
   "navigation": [
     {
-      "group": "Getting Started",
+      "group": "Overview",
       "pages": [
         "overview/introduction",
-        "overview/key-features", 
-        "overview/system-requirements",
-        "overview/quick-start",
-        "overview/architecture"
+        "overview/key-features",
+        "overview/architecture",
+        "overview/getting-started"
       ]
     },
     {
@@ -43,68 +41,70 @@
         "data-management/data-acquisition",
         "data-management/ot-protocols",
         "data-management/device-profiles",
-        "data-management/analytics",
-        "core/visualization",
-        "core/integration"
+        "data-management/data-storage"
       ]
     },
     {
-      "group": "Installation & Setup",
+      "group": "Rules Engine",
+      "pages": [
+        "rules-engine/rules-overview",
+        "rules-engine/creating-rules",
+        "rules-engine/alerts-notifications",
+        "rules-engine/anomaly-detection"
+      ]
+    },
+    {
+      "group": "Functions",
+      "pages": [
+        "functions/functions-overview",
+        "functions/ide-usage",
+        "functions/deployment",
+        "functions/monitoring"
+      ]
+    },
+    {
+      "group": "Visualization",
+      "pages": [
+        "visualization/dashboards",
+        "visualization/components",
+        "visualization/data-binding",
+        "visualization/query-builder"
+      ]
+    },
+    {
+      "group": "Integration",
+      "pages": [
+        "integration/integration-overview",
+        "integration/supported-systems",
+        "integration/configuration",
+        "integration/monitoring"
+      ]
+    },
+    {
+      "group": "Edge Computing",
+      "pages": [
+        "edge-computing/edge-overview",
+        "edge-computing/deployment",
+        "edge-computing/management",
+        "edge-computing/limitations"
+      ]
+    },
+    {
+      "group": "Deployment",
       "pages": [
         "deployment/docker-deployment",
         "deployment/kubernetes",
-        "deployment/configuration",
-        "deployment/security"
+        "deployment/scaling",
+        "deployment/monitoring"
       ]
     },
     {
-      "group": "Data Integration",
+      "group": "API",
       "pages": [
-        "integration/protocols",
-        "integration/connectors",
-        "integration/ot-adapters",
-        "integration/it-systems",
-        "integration/cloud-platforms"
-      ]
-    },
-    {
-      "group": "Edge Features",
-      "pages": [
-        "edge/architecture",
-        "edge/deployment",
-        "edge/ml-models",
-        "edge/offline-mode",
-        "edge/management"
-      ]
-    },
-    {
-      "group": "Data Management",
-      "pages": [
-        "data/collection",
-        "data/processing",
-        "data/storage",
-        "data/visualization",
-        "data/security"
-      ]
-    },
-    {
-      "group": "Administration",
-      "pages": [
-        "admin/users",
-        "admin/roles",
-        "admin/monitoring",
-        "admin/maintenance",
-        "admin/backup"
-      ]
-    },
-    {
-      "group": "Developer Resources",
-      "pages": [
-        "api/overview",
         "api/authentication",
         "api/endpoints",
-        "api/examples",
-        "api/sdks"
+        "api/models",
+        "api/examples"
       ]
     }
   ],
