@@ -38,6 +38,7 @@
     {
       "group": "Data Management",
       "pages": [
+        "data-management/devices",
         "data-management/data-acquisition",
         "data-management/ot-protocols",
         "data-management/device-profiles",
