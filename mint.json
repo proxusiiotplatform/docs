@@ -51,11 +51,10 @@
     {
       "group": "Installation & Setup",
       "pages": [
-        "installation/requirements",
-        "installation/docker",
-        "installation/kubernetes",
-        "installation/configuration",
-        "installation/security"
+        "deployment/docker-deployment",
+        "deployment/kubernetes",
+        "deployment/configuration",
+        "deployment/security"
       ]
     },
     {
