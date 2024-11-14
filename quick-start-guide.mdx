@@ -1,221 +1,257 @@
 ---
-title: 'Quick Start Guide'
-description: 'Get started with Proxus in minutes by following this step-by-step guide'
+title: "Quick Start Guide"
+description: "Get started with Proxus in minutes with this step-by-step tutorial"
+sidebarTitle: "Quick Start"
+icon: "play"
+iconType: "solid"
+mode: "wide"
 ---
 
 # Quick Start Guide
 
-This guide will help you set up Proxus and configure your first data collection pipeline. Follow these steps to quickly experience the power of Proxus.
+<Info>
+This guide will help you deploy Proxus and set up your first data collection pipeline in under 30 minutes.
+</Info>
 
 ## Prerequisites
 
-Before you begin, ensure you have:
-
 <Check>
-  - Docker installed on your system
-  - Access to an industrial device or simulator
-  - Network connectivity to your data source
-  - Minimum 4GB RAM and 2 CPU cores available
+- Docker Engine 20.10.x or later
+- Minimum system requirements:
+  - 4GB RAM
+  - 2 CPU cores
+  - 20GB free disk space
+- Network access to your industrial devices
+- Web browser (Chrome, Firefox, or Edge latest versions)
 </Check>
 
 ## Step 1: Deploy Proxus
 
-```bash
-# Pull the Proxus Docker image
+<CodeGroup>
+
+```bash Docker
+# Pull the latest Proxus image
 docker pull proxus/platform:latest
 
-# Create a persistent volume for TimescaleDB
+# Create required volumes
 docker volume create proxus-timescaledb-data
+docker volume create proxus-config
 
-# Start Proxus using Docker Compose
+# Start the platform
 docker-compose up -d
 ```
 
+```yaml Docker Compose
+version: '3.8'
+services:
+  proxus-platform:
+    image: proxus/platform:latest
+    ports:
+      - "8080:8080"
+      - "1883:1883"
+    volumes:
+      - proxus-config:/etc/proxus
+      - proxus-timescaledb-data:/var/lib/postgresql/data
+    environment:
+      - PROXUS_LICENSE_KEY=${PROXUS_LICENSE_KEY}
+      - PROXUS_ADMIN_PASSWORD=${PROXUS_ADMIN_PASSWORD}
+    restart: unless-stopped
+```
+
+</CodeGroup>
+
 <Note>
-Default credentials for first-time login:
+Default login credentials:
 - Username: `admin`
 - Password: `proxus123`
 
-**Important:** Change these credentials immediately after your first login.
+**Security Notice:** Change these credentials immediately after first login.
 </Note>
 
-## Step 2: Access the Platform
-
-1. Open your web browser
-2. Navigate to `http://localhost:8080`
-3. Log in using the default credentials
-4. Complete the initial setup wizard
-
-## Step 3: Configure Your First Device
-
-### Create a Device Profile
+## Step 2: Initial Configuration
 
 <Steps>
-  <Step title="Navigate to Device Profiles">
-    Click on "Configuration" → "Device Profiles" in the main menu
+  <Step title="Access Platform">
+    Open your browser and navigate to `http://localhost:8080`
+  </Step>
+  
+  <Step title="First Login">
+    Use the default credentials to log in
+  </Step>
+  
+  <Step title="Change Password">
+    Navigate to Profile Settings and set a secure password
+  </Step>
+  
+  <Step title="License Activation">
+    Enter your license key in System Settings
+  </Step>
+</Steps>
+
+## Step 3: Configure Data Source
+
+### Create Device Profile
+
+<Frame>
+  <img src="/api/placeholder/800/400" alt="Device Profile Configuration" />
+</Frame>
+
+<Steps>
+  <Step title="Open Device Manager">
+    Navigate to Configuration → Device Profiles
   </Step>
   
   <Step title="Add New Profile">
-    Click the "+" button to create a new device profile
-  </Step>
-  
-  <Step title="Configure Profile">
+    Click the "+" button and select your protocol:
+    
     ```json
     {
-      "name": "ModbusDevice",
+      "name": "Test-Device-01",
       "protocol": "ModbusTCP",
       "settings": {
         "ipAddress": "192.168.1.100",
         "port": 502,
         "unitId": 1,
-        "scanRate": 1000
+        "scanRate": 1000,
+        "timeout": 3000,
+        "retryCount": 3
       }
     }
     ```
   </Step>
-</Steps>
-
-### Configure Tags
-
-<Frame>
-  ```mermaid
-  graph LR
-    A[Create Tag] --> B[Set Address]
-    B --> C[Define Data Type]
-    C --> D[Set Scan Rate]
-    D --> E[Enable Tag]
-    style A fill:#d4e6ff,stroke:#333,stroke-width:2px
-    style B fill:#d4e6ff,stroke:#333,stroke-width:2px
-    style C fill:#d4e6ff,stroke:#333,stroke-width:2px
-    style D fill:#d4e6ff,stroke:#333,stroke-width:2px
-    style E fill:#d4e6ff,stroke:#333,stroke-width:2px
-  ```
-</Frame>
-
-1. Navigate to "Tags" section
-2. Click "Add New Tag"
-3. Configure basic tag settings:
-```json
-{
-  "name": "Temperature",
-  "address": "40001",
-  "dataType": "Float",
-  "scanRate": 1000,
-  "enabled": true
-}
-```
-
-## Step 4: Create Your First Rule
-
-### Set Up Real-time Analysis
-
-<Steps>
-  <Step title="Navigate to Rules">
-    Open "Rules Engine" from the main menu
-  </Step>
   
-  <Step title="Create Rule">
-    Create a simple temperature threshold rule:
-    ```csharp
-    if (Tag["Temperature"].Value > 30) {
-        Alert("High Temperature", $"Temperature exceeded: {Tag["Temperature"].Value}°C");
+  <Step title="Configure Tags">
+    Add tags to monitor:
+    
+    ```json
+    {
+      "tags": [
+        {
+          "name": "Temperature",
+          "address": "40001",
+          "dataType": "Float",
+          "scanRate": 1000,
+          "enabled": true
+        },
+        {
+          "name": "Pressure",
+          "address": "40003",
+          "dataType": "Float",
+          "scanRate": 1000,
+          "enabled": true
+        }
+      ]
     }
     ```
   </Step>
-  
-  <Step title="Activate Rule">
-    Enable the rule and set its execution priority
-  </Step>
 </Steps>
 
-## Step 5: Build a Dashboard
+## Step 4: Create Processing Rule
 
-### Create Visualization
+<Accordion title="Rule Examples" icon="code" defaultOpen>
+  ```csharp Temperature Alert
+  // Simple temperature threshold alert
+  if (Tag["Temperature"].Value > 30) {
+      Alert("High Temperature", $"Temperature exceeded: {Tag["Temperature"].Value}°C");
+  }
+  ```
+
+  ```csharp Pressure Monitoring
+  // Pressure monitoring with multiple conditions
+  if (Tag["Pressure"].Value > 100 && Tag["Temperature"].Value > 25) {
+      Alert("Process Warning", "High pressure and temperature detected");
+      Tag["EmergencyValve"].Write(true);
+  }
+  ```
+</Accordion>
+
+## Step 5: Build Dashboard
 
 <Steps>
-  <Step title="Open Dashboard Designer">
-    Navigate to "Dashboards" → "New Dashboard"
+  <Step title="Create Dashboard">
+    Navigate to Dashboards → New Dashboard
   </Step>
   
   <Step title="Add Components">
-    Drag and drop these components:
-    - Line Chart (for temperature trend)
-    - Current Value Display
-    - Alert History
+    Drag and drop these essential components:
+    
+    <CardGroup cols={3}>
+      <Card title="Line Chart" icon="chart-line" iconType="solid">
+        Historical trend visualization
+      </Card>
+      <Card title="Value Display" icon="gauge" iconType="solid">
+        Real-time value monitoring
+      </Card>
+      <Card title="Alert Panel" icon="bell" iconType="solid">
+        Active alerts overview
+      </Card>
+    </CardGroup>
   </Step>
   
-  <Step title="Configure Data Source">
+  <Step title="Configure Data Sources">
+    Use this SQL query for historical data:
     ```sql
-    SELECT time, value 
-    FROM tags.temperature 
+    SELECT 
+      time_bucket('1 minute', time) AS minute,
+      avg(value) as avg_value,
+      max(value) as max_value,
+      min(value) as min_value
+    FROM tags.temperature
     WHERE time > now() - interval '1 hour'
+    GROUP BY minute
+    ORDER BY minute DESC;
     ```
   </Step>
 </Steps>
 
-## Step 6: Verify Data Flow
+## Step 6: Verify Setup
 
-1. Monitor the "Live Data" view
-2. Check TimescaleDB storage:
-```sql
-SELECT * FROM tags.temperature 
-ORDER BY time DESC 
-LIMIT 10;
-```
-3. Verify rule triggers in the alert history
+<CardGroup cols={2}>
+  <Card title="Check Data Flow" icon="database" iconType="solid">
+    Monitor real-time data in Live Data view
+  </Card>
+  <Card title="Validate Storage" icon="hard-drive" iconType="solid">
+    ```sql
+    SELECT * FROM tags.temperature 
+    ORDER BY time DESC 
+    LIMIT 10;
+    ```
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<Accordion title="Common Issues" defaultOpen>
+  ### Connection Problems
+  - Verify network connectivity
+  - Check firewall settings
+  - Confirm device protocol settings
+  
+  ### No Data Flow
+  - Validate tag configuration
+  - Check device connection status
+  - Review scan rate settings
+  
+  ### Dashboard Issues
+  - Verify SQL query syntax
+  - Check time range settings
+  - Confirm data exists in database
+</Accordion>
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Explore OT Adapters" icon="plug" href="/data-collection/ot-adapters">
-    Learn about all available protocols and connection options
+  <Card title="Explore Adapters" icon="puzzle-piece" iconType="solid" href="/data-collection/ot-adapters">
+    Learn about all available protocols and connections
   </Card>
-  <Card title="Advanced Rules" icon="gear" href="/data-processing/rules">
-    Create complex rules with multiple conditions
-  </Card>
-  <Card title="Dashboard Design" icon="chart-line" href="/dashboards">
-    Build sophisticated visualizations
-  </Card>
-  <Card title="Edge Computing" icon="microchip" href="/edge">
-    Deploy Proxus capabilities to edge devices
+  <Card title="Advanced Rules" icon="wand-magic-sparkles" iconType="solid" href="/data-processing/rules">
+    Create complex processing rules
   </Card>
 </CardGroup>
 
-## Troubleshooting Common Issues
-
-<Accordion title="Can't connect to the device?">
-  1. Verify network connectivity (ping device IP)
-  2. Check firewall settings
-  3. Confirm device protocol settings
-  4. Review adapter configuration
-</Accordion>
-
-<Accordion title="No data in dashboard?">
-  1. Verify tag configuration
-  2. Check device connection status
-  3. Confirm SQL query syntax
-  4. Review time range settings
-</Accordion>
-
-<Accordion title="Rules not triggering?">
-  1. Check rule syntax
-  2. Verify rule is enabled
-  3. Review trigger conditions
-  4. Check tag data quality
-</Accordion>
-
-## Support Resources
-
-Need help? Here are some resources:
-
-<CardGroup cols={3}>
-  <Card title="Documentation" icon="book" href="/introduction">
-    Comprehensive guides and references
-  </Card>
-  <Card title="Community Forum" icon="users" href="https://community.proxus.io">
-    Connect with other Proxus users
-  </Card>
-  <Card title="Technical Support" icon="headset" href="/support">
-    Contact our support team
-  </Card>
-</CardGroup>
+<Card title="Need Help?" icon="life-ring" iconType="solid">
+  ### Support Resources
+  - [Documentation](/docs)
+  - [Community Forum](https://community.proxus.io)
+  - [Technical Support](mailto:support@proxus.io)
+</Card>
