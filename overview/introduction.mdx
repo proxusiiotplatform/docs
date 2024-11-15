@@ -1,195 +1,352 @@
 ---
 title: "Introduction to Proxus IIoT Platform"
 description: "Learn about Proxus, the high-performance distributed Industrial IoT Platform for real-time data acquisition, analysis, and integration"
-sidebarTitle: "Introduction"
+sidebarTitle: "Introduction" 
 icon: "book-open"
 iconType: "solid"
 "og:title": "Proxus IIoT Platform Introduction | Proxus Docs"
 "og:description": "Discover Proxus, the comprehensive Industrial IoT platform that unifies data acquisition, analysis, storage, and integration capabilities"
 ---
 
+<Note>
 # Welcome to Proxus Platform
 
-<Tip>
-  **Latest Version:** 2024.1
-  Get started with the most advanced IIoT platform designed for enterprise-scale industrial operations.
-</Tip>
+**Latest Version:** 2024.1
+Get started with the most advanced IIoT platform designed for enterprise-scale industrial operations.
+</Note>
 
+<Info>
 ## What is Proxus?
 
 Proxus is a next-generation Industrial IoT (IIoT) platform that unifies data collection, analysis, storage, enrichment, monitoring, and integration capabilities into a single powerful system. Purpose-built for high performance and scalability, Proxus transforms how organizations manage and leverage their industrial data.
+</Info>
 
-<img alt="Proxus Arch" classname="block dark:hidden" src="/images/proxus-arch1.svg" />
-
+<Frame>
+  <img alt="Proxus Architecture" src="/images/proxus-arch1.svg" />
+</Frame>
 
 ## Platform Overview
 
 <CardGroup cols={3}>
   <Card title="Collect" icon="plug" iconType="solid">
-    Connect to 50+ industrial protocols and devices with pre-built OT adapters
+    <Box>
+      ### Data Collection Features
+      - Support for 50+ industrial protocols including Modbus, OPC UA, BACnet
+      - Pre-built OT adapters with auto-discovery capabilities
+      - High-speed data ingestion up to 1 million tags/second
+      - Automatic protocol detection and configuration
+      - Built-in data buffering and redundancy
+      - Edge computing support for local processing
+      - Real-time data validation and filtering
+      - Custom protocol development toolkit
+    </Box>
   </Card>
 
   <Card title="Process" icon="bolt" iconType="solid">
-    Apply real-time analytics and rules with built-in anomaly detection
+    <Box>
+      ### Processing Capabilities
+      - Advanced rule engine with visual programming
+      - Machine learning-based anomaly detection
+      - Complex event processing (CEP) engine
+      - Statistical analysis and signal processing
+      - Pattern recognition and trend analysis
+      - Custom C# functions with debugging support
+      - Real-time data enrichment and transformation
+      - Configurable alert and notification system
+      - Batch and stream processing support
+    </Box>
   </Card>
 
   <Card title="Store" icon="database" iconType="solid">
-    Leverage TimescaleDB for efficient time-series data management
+    <Box>
+      ### Storage Solutions
+      - TimescaleDB integration for efficient time-series data
+      - Automatic data partitioning and cleanup
+      - Configurable data retention policies
+      - Built-in compression algorithms
+      - Query optimization for fast data retrieval
+      - Data backup and recovery tools
+      - Historical data analysis capabilities
+      - Distributed storage architecture
+      - Data replication and high availability
+    </Box>
   </Card>
+</CardGroup>
 
+<CardGroup cols={3}>
   <Card title="Develop" icon="code" iconType="solid">
-    Create custom functions with integrated C# IDE
+    <Box>
+      ### Development Tools
+      - Integrated C# development environment
+      - Visual function builder
+      - Code version control system
+      - Unit testing framework
+      - API documentation generator
+      - Plugin development toolkit
+      - Debugging and profiling tools
+      - Source code management
+      - CI/CD pipeline integration
+      - Development best practices guide
+    </Box>
   </Card>
 
   <Card title="Visualize" icon="chart-line" iconType="solid">
-    Design intuitive dashboards with drag-and-drop tools
+    <Box>
+      ### Visualization Features
+      - Drag-and-drop dashboard builder
+      - 50+ pre-built widgets and charts
+      - Real-time data visualization
+      - Custom widget development
+      - Mobile-responsive design
+      - Multi-screen support
+      - Interactive data exploration
+      - Customizable themes
+      - Export and sharing capabilities
+      - Role-based dashboard access
+    </Box>
   </Card>
 
   <Card title="Integrate" icon="network-wired" iconType="solid">
-    Connect with 20+ enterprise IT systems seamlessly
+    <Box>
+      ### Integration Capabilities
+      - 20+ enterprise system connectors
+      - REST API and GraphQL support
+      - Message queue integration (Kafka, RabbitMQ)
+      - Database connectors (SQL, NoSQL)
+      - Cloud platform integration
+      - Custom protocol adapters
+      - Web service integration
+      - Authentication system integration
+      - Third-party app connectivity
+      - Enterprise service bus (ESB)
+    </Box>
   </Card>
 </CardGroup>
 
-## Key Features
-
-### High-Performance Architecture
-
-<Frame>
-  ```mermaid
-  graph TD
-    A[Industrial Devices] -->|OT Adapters| B[Data Collection Layer]
-    B --> C[Processing Layer]
-    C --> D[Storage Layer]
-    D --> E[Visualization Layer]
-    D --> F[Integration Layer]
-    B --> G[Edge Computing]
-    
-    style A fill:#f9f9f9,stroke:#333,stroke-width:2px
-    style B fill:#d4e6ff,stroke:#333,stroke-width:2px
-    style C fill:#d4e6ff,stroke:#333,stroke-width:2px
-    style D fill:#d4e6ff,stroke:#333,stroke-width:2px
-    style E fill:#d4e6ff,stroke:#333,stroke-width:2px
-    style F fill:#d4e6ff,stroke:#333,stroke-width:2px
-    style G fill:#d4e6ff,stroke:#333,stroke-width:2px
-  ```
-</Frame>
+## Advanced Features
 
 <CardGroup cols={2}>
-  <Card title="Actor Model" icon="diagram-project" iconType="solid">
-    Ensures robust concurrent operations and system reliability
+  <Card title="Security Features" icon="shield-halved">
+    <Box>
+      ### Comprehensive Security
+      - Role-based access control (RBAC)
+      - SSL/TLS encryption for all communications
+      - Multi-factor authentication
+      - Audit logging and tracking
+      - Security policy management
+      - Certificate management
+      - Data encryption at rest
+      - Network security features
+      - Compliance reporting
+      - Vulnerability scanning
+    </Box>
   </Card>
 
-  <Card title="Message Passing" icon="arrows-split-up-and-left" iconType="solid">
-    Enables efficient communication between components
-  </Card>
-
-  <Card title="State Isolation" icon="cube" iconType="solid">
-    Maintains system stability and predictability
-  </Card>
-
-  <Card title="SIMD Optimization" icon="rocket" iconType="solid">
-    Delivers superior performance through hardware acceleration
+  <Card title="High Availability" icon="server">
+    <Box>
+      ### System Reliability
+      - Automatic failover
+      - Load balancing
+      - Cluster management
+      - Data replication
+      - Health monitoring
+      - Performance optimization
+      - Disaster recovery
+      - Backup management
+      - System redundancy
+      - Zero downtime updates
+    </Box>
   </Card>
 </CardGroup>
 
-## Platform Capabilities
-
-### Data Collection
-
-* **50+ OT Adapters** for seamless device connectivity
-
-* **Flexible Protocol Support** including Modbus, OPC-UA, BACnet
-
-* **Automatic Device Discovery** and configuration
-
-* **Built-in Data Buffering** for reliability
-
-### Real-time Processing
-
-* **Rule Engine** for instant data analysis
-
-* **Anomaly Detection** using advanced algorithms
-
-* **Custom Functions** with C# support
-
-* **Event-driven Architecture** for responsive actions
-
-### Edge Computing
-
-<Note>
-  Deploy Proxus capabilities to edge devices for local processing and reduced latency
-</Note>
-
-* Full container support with Docker
-
-* Local data processing and buffering
-
-* Seamless synchronization with central platform
-
-* Offline operation capability
-
-## Deployment Options
+## Edge Computing Capabilities
 
 <CardGroup cols={3}>
-  <Card title="Docker" icon="docker" iconType="brands">
-    Run as containers for maximum flexibility
+  <Card title="Edge Processing" icon="microchip">
+    <Box>
+      ### Local Processing Features
+      - Container-based deployment
+      - Resource optimization
+      - Local data storage
+      - Offline operation
+      - Edge analytics
+      - Local rules engine
+      - Device management
+      - Remote configuration
+      - Performance monitoring
+      - Hardware optimization
+    </Box>
   </Card>
 
-  <Card title="Kubernetes" icon="dharmachakra" iconType="brands">
-    Scale with cloud-native orchestration
+  <Card title="Data Synchronization" icon="sync">
+    <Box>
+      ### Sync Features
+      - Automatic reconnection
+      - Data buffering
+      - Priority-based sync
+      - Bandwidth management
+      - Conflict resolution
+      - Delta synchronization
+      - Compression
+      - Encryption
+      - Audit trails
+      - Recovery mechanisms
+    </Box>
   </Card>
 
-  <Card title="Edge" icon="microchip" iconType="solid">
-    Deploy to edge devices for local processing
+  <Card title="Edge Security" icon="lock">
+    <Box>
+      ### Security Measures
+      - Device authentication
+      - Data encryption
+      - Access control
+      - Secure boot
+      - Network isolation
+      - Security monitoring
+      - Update management
+      - Threat detection
+      - Certificate handling
+      - Security policies
+    </Box>
   </Card>
 </CardGroup>
 
-## Getting Started
+## Industry Solutions
 
-<Steps>
-  <Step title="Check Requirements">
-    Review [system requirements](/requirements) for your environment
-  </Step>
+<CardGroup cols={3}>
+  <Card title="Manufacturing" icon="industry">
+    <Box>
+      ### Manufacturing Features
+      - Production monitoring
+      - Quality control
+      - Equipment effectiveness
+      - Predictive maintenance
+      - Process optimization
+      - Energy management
+      - Inventory tracking
+      - Supply chain integration
+      - Compliance reporting
+      - Performance analytics
+    </Box>
+  </Card>
 
-  <Step title="Install Proxus">
-    Follow our [installation guide](/installation) for deployment
-  </Step>
+  <Card title="Energy & Utilities" icon="bolt">
+    <Box>
+      ### Energy Solutions
+      - Grid monitoring
+      - Power quality analysis
+      - Demand response
+      - Asset management
+      - Outage management
+      - Smart metering
+      - Distribution automation
+      - Renewable integration
+      - Compliance tracking
+      - Energy optimization
+    </Box>
+  </Card>
 
-  <Step title="Quick Start">
-    Complete the [quick start tutorial](/quickstart) to begin
-  </Step>
+  <Card title="Smart Buildings" icon="building">
+    <Box>
+      ### Building Management
+      - HVAC control
+      - Energy optimization
+      - Occupancy monitoring
+      - Access control
+      - Lighting management
+      - Security integration
+      - Comfort management
+      - Maintenance planning
+      - Space utilization
+      - Environmental monitoring
+    </Box>
+  </Card>
+</CardGroup>
 
-  <Step title="Learn More">
-    Explore [key concepts](/concepts) and advanced features
-  </Step>
-</Steps>
-
-## Next Steps
+## Enterprise Integration
 
 <CardGroup cols={2}>
-  <Card title="Quick Start Guide" icon="play" iconType="solid" href="/quickstart">
-    Get up and running with Proxus in minutes
+  <Card title="IT Systems" icon="network-wired">
+    <Box>
+      ### Enterprise Connectivity
+      - ERP integration
+      - MES connectivity
+      - CMMS integration
+      - Historian systems
+      - Asset management
+      - Work order systems
+      - Quality systems
+      - Document management
+      - Business intelligence
+      - Analytics platforms
+    </Box>
   </Card>
 
-  <Card title="System Requirements" icon="server" iconType="solid" href="/requirements">
-    Ensure your environment is ready for Proxus
+  <Card title="Cloud Platforms" icon="cloud">
+    <Box>
+      ### Cloud Integration
+      - AWS integration
+      - Azure connectivity
+      - Google Cloud Platform
+      - Private cloud support
+      - Hybrid deployments
+      - Cloud storage
+      - Analytics services
+      - IoT platforms
+      - Machine learning
+      - AI services
+    </Box>
   </Card>
 </CardGroup>
 
-## Support Resources
-
-Need help? Our support team and community are here to assist you:
+## Implementation & Support
 
 <CardGroup cols={3}>
-  <Card title="Documentation" icon="book" iconType="solid" href="/introduction">
-    Comprehensive guides and references
+  <Card title="Professional Services" icon="handshake">
+    <Box>
+      ### Services Offered
+      - Implementation support
+      - Custom development
+      - System integration
+      - Training programs
+      - Technical consulting
+      - Project management
+      - Solution design
+      - Performance tuning
+      - Migration services
+      - Maintenance support
+    </Box>
   </Card>
 
-  <Card title="Community" icon="users" iconType="solid" href="https://community.proxus.io">
-    Connect with other Proxus users
+  <Card title="Training" icon="graduation-cap">
+    <Box>
+      ### Learning Resources
+      - Online courses
+      - Certification programs
+      - Technical documentation
+      - Video tutorials
+      - Hands-on labs
+      - Best practices
+      - Use cases
+      - Code examples
+      - Implementation guides
+      - Knowledge base
+    </Box>
   </Card>
 
-  <Card title="Support" icon="headset" iconType="solid" href="/support">
-    Get technical assistance
+  <Card title="Support" icon="headset">
+    <Box>
+      ### Support Services
+      - 24/7 technical support
+      - Remote assistance
+      - Issue tracking
+      - Problem resolution
+      - Performance monitoring
+      - System updates
+      - Security patches
+      - Maintenance
+      - Backup services
+      - Emergency support
+    </Box>
   </Card>
 </CardGroup>
