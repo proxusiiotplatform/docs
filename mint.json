@@ -81,7 +81,7 @@
         "visualization/query-builder"
       ]
     },
-    {
+{
       "group": "Integration",
       "pages": [
         "integration/integration-overview",
@@ -89,36 +89,134 @@
           "page": "integration/supported-systems",
           "subpages": [
             {
-              "title": "Supported Systems",
-              "description": "Explore the systems supported by Proxus for seamless integration.",
-              "systems": [
-                "Advantage",
-                "Firebird",
-                "HttpAPIKey",
-                "HttpBasicAuth",
-                "HttpOAuth",
-                "HttpTokenAuth",
-                "IBM DB2",
-                "InfluxDB",
-                "Kafka",
-                "MQTT",
-                "MS Access",
-                "MSSQL",
-                "MySQL",
-                "Oracle",
-                "Pervasive",
-                "PostgreSQL",
-                "RabbitMQ",
-                "Redis",
-                "SAP HANA",
-                "Splunk",
-                "SQL Anywhere",
-                "SQLite",
-                "Sybase ASE",
-                "SYSTEM INTERNAL DB",
-                "TDEngine",
-                "VistaDB"
-              ]
+              "title": "Advantage",
+              "url": "integration/supported-systems/advantage",
+              "description": "Learn how to integrate with Advantage, a reliable database solution."
+            },
+            {
+              "title": "Firebird",
+              "url": "integration/supported-systems/firebird",
+              "description": "Integration with Firebird, a high-performance relational database."
+            },
+            {
+              "title": "HttpAPIKey",
+              "url": "integration/supported-systems/httpapikey",
+              "description": "Integration with systems using HTTP API Key authentication."
+            },
+            {
+              "title": "HttpBasicAuth",
+              "url": "integration/supported-systems/httpbasicauth",
+              "description": "Integration with systems using HTTP Basic Authentication."
+            },
+            {
+              "title": "HttpOAuth",
+              "url": "integration/supported-systems/httpoauth",
+              "description": "Integration with systems using HTTP OAuth authentication."
+            },
+            {
+              "title": "HttpTokenAuth",
+              "url": "integration/supported-systems/httptokenauth",
+              "description": "Integration with systems using HTTP Token-based authentication."
+            },
+            {
+              "title": "IBM DB2",
+              "url": "integration/supported-systems/ibm-db2",
+              "description": "Integration with IBM DB2, a powerful enterprise database solution."
+            },
+            {
+              "title": "InfluxDB",
+              "url": "integration/supported-systems/influxdb",
+              "description": "Integration with InfluxDB, a time-series database for IoT and analytics."
+            },
+            {
+              "title": "Kafka",
+              "url": "integration/supported-systems/kafka",
+              "description": "Integration with Apache Kafka for real-time data streaming."
+            },
+            {
+              "title": "MQTT",
+              "url": "integration/supported-systems/mqtt",
+              "description": "Integration with MQTT for lightweight IoT messaging."
+            },
+            {
+              "title": "MS Access",
+              "url": "integration/supported-systems/ms-access",
+              "description": "Integration with Microsoft Access, a database management tool."
+            },
+            {
+              "title": "MSSQL",
+              "url": "integration/supported-systems/mssql",
+              "description": "Integration with Microsoft SQL Server, a scalable database solution."
+            },
+            {
+              "title": "MySQL",
+              "url": "integration/supported-systems/mysql",
+              "description": "Integration with MySQL, a widely-used open-source database."
+            },
+            {
+              "title": "Oracle",
+              "url": "integration/supported-systems/oracle",
+              "description": "Integration with Oracle Database for enterprise-grade solutions."
+            },
+            {
+              "title": "Pervasive",
+              "url": "integration/supported-systems/pervasive",
+              "description": "Integration with Pervasive SQL, a database for high-performance applications."
+            },
+            {
+              "title": "PostgreSQL",
+              "url": "integration/supported-systems/postgresql",
+              "description": "Integration with PostgreSQL, an advanced open-source database."
+            },
+            {
+              "title": "RabbitMQ",
+              "url": "integration/supported-systems/rabbitmq",
+              "description": "Integration with RabbitMQ, a robust message broker."
+            },
+            {
+              "title": "Redis",
+              "url": "integration/supported-systems/redis",
+              "description": "Integration with Redis, an in-memory data structure store."
+            },
+            {
+              "title": "SAP HANA",
+              "url": "integration/supported-systems/sap-hana",
+              "description": "Integration with SAP HANA, an enterprise in-memory database."
+            },
+            {
+              "title": "Splunk",
+              "url": "integration/supported-systems/splunk",
+              "description": "Integration with Splunk for data analytics and monitoring."
+            },
+            {
+              "title": "SQL Anywhere",
+              "url": "integration/supported-systems/sql-anywhere",
+              "description": "Integration with SQL Anywhere, a database for mobile and embedded systems."
+            },
+            {
+              "title": "SQLite",
+              "url": "integration/supported-systems/sqlite",
+              "description": "Integration with SQLite, a lightweight database for local storage."
+            },
+            {
+              "title": "Sybase ASE",
+              "url": "integration/supported-systems/sybase-ase",
+              "description": "Integration with Sybase ASE, a high-performance database."
+            },
+            {
+              "title": "SYSTEM INTERNAL DB",
+              "url": "integration/supported-systems/system-internal-db",
+              "description": "Integration with Proxus's internal database system."
+            },
+            {
+              "title": "TDEngine",
+              "url": "integration/supported-systems/tdengine",
+              "description": "Integration with TDEngine, a time-series database for IoT."
+            },
+            {
+              "title": "VistaDB",
+              "url": "integration/supported-systems/vistadb",
+              "description": "Integration with VistaDB, a lightweight embedded database."
             }
           ]
         },
