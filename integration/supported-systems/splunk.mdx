@@ -1,5 +1,200 @@
 ---
-title: 'New file'
-description: 'Description of your new file.'
+title: 'Splunk Integration'
+description: 'This guide explains all the steps required to establish integration between Proxus and Splunk, send data from devices to Splunk, and analyze this data within Splunk.'
 ---
+
+### **Overview**
+
+The Proxus-Splunk integration utilizes Splunk's HTTP Event Collector (HEC) to send device data securely and reliably. It supports both HTTP and HTTPS (SSL) protocols for secure data transfer.
+
+---
+
+## **1. Preparation on Splunk**
+
+### **1.1 Enabling Splunk HTTP Event Collector (HEC)**
+
+1. Log in to the Splunk web interface:
+   `http://<splunk-server-ip>:8000`
+2. Navigate to **Settings > Data Inputs > HTTP Event Collector**.
+3. Click on **Global Settings**:
+    * **All Tokens**: Enabled
+    * **SSL**: Enabled (This is enabled by default, configure a certificate if needed.)
+4. Save the changes by clicking the **Save** button.
+
+---
+
+### **1.2 Creating a New HEC Token**
+
+1. Click on the **New Token** button.
+2. Fill in the following details:
+    * **Name**: `ProxusIntegration` (Use a meaningful name for the token.)
+    * **Allowed Indexes**: Select the index where data will be written (Default: `main`).
+    * **Sourcetype**: `device_metrics` (Define a meaningful sourcetype for your JSON data.)
+3. After completing the token creation, copy the **Token Value**. This will be used in the Proxus interface.
+
+---
+
+## **2. Preparation on Proxus**
+
+### **2.1 Defining a Splunk Outbound Channel**
+
+1. Log in to the Proxus interface.
+2. Navigate to **Integrations > Outbound Channels**.
+3. Click the **+ New** button in the top-right corner.
+4. Fill in the form with the following details:
+    * **Target Type**: `Splunk`
+    * **Profile Name**: `Splunk` (You can use any name you prefer.)
+    * **Description**: `Sample target for Splunk` (Optional.)
+    * **Transport Strategy**: `Pass Through Strategy`
+
+---
+
+### **2.2 Adding Splunk Parameters**
+
+1. Switch to the **Parameters** tab.
+2. Add the following parameters:
+    * **Key**: `Url`,
+      **Value**: `https://<splunk-server-ip>:8088/services/collector`
+      (Enter the Splunk HEC URL. Use `https://` if SSL is enabled.)
+    * **Key**: `Token`,
+      **Value**: Paste your Splunk HEC Token here.
+    * **Key**: `UseAcknowledgment` *(optional)*,
+      **Value**: `true` (If indexer acknowledgment is enabled.)
+3. Click the **Save** button.
+
+---
+
+## **3. Sending Device Data to Splunk**
+
+### **3.1 Linking Splunk Profile to a Device**
+
+1. Navigate to **Data Management > Devices**.
+2. Select the device you want to send data from. For example, `Device Name: Energy`.
+3. In the device detail screen, go to the **Target Profiles** tab.
+4. If the Splunk profile is not already added:
+    * Click the **+ New** button.
+    * In the pop-up, fill in the following details:
+        * **Profile Name**: `Splunk`
+        * **Target Type**: `Splunk`
+        * **Description**: `Sample target for Splunk`
+        * **Transport Strategy**: `Pass Through Strategy`
+    * Save the profile by clicking the **Save** button.
+
+---
+
+### **3.2 Sending Device Data**
+
+1. Ensure the device’s **Status** is set to "Active."
+2. Check the types of data being sent by the device in the **Device Data** or **Data Metrics** tab:
+    * For example:
+        * **Key**: `temperature`, `energy`, etc.
+        * **Value**: The value of the data being sent.
+3. After these steps, device data will start being sent to Splunk.
+
+---
+
+## **4. Viewing Data in Splunk**
+
+### **4.1 Running a Search Query**
+
+1. Open the **Search & Reporting** app in the Splunk web interface.
+2. Run the following query to verify your device data:
+
+   ```spl
+   index="main" sourcetype="device_metrics"
+   ```
+
+    * **`index="main"`**: The index where data is written.
+    * **`sourcetype="device_metrics"`**: The sourcetype defined for JSON data.
+3. To narrow down the data, you can apply filters:
+
+    * For a specific device:
+      ```spl
+      index="main" sourcetype="device_metrics" deviceName="Energy"
+      ```
+    * To view time-series data:
+      ```spl
+      index="main" sourcetype="device_metrics" | timechart avg(value) by deviceName
+      ```
+
+---
+
+### **4.2 Decoding JSON Data in Splunk**
+
+The JSON data sent from Proxus to Splunk may look like this:
+
+```json
+{
+  "event": {
+    "deviceName": "Energy",
+    "deviceId": 1,
+    "key": "temperature",
+    "value": 35.5,
+    "timestamp": "2025-02-23T13:50:00Z"
+  },
+  "sourcetype": "device_metrics",
+  "source": "ProxusIntegration",
+  "host": "localhost"
+}
+```
+
+Splunk will automatically parse this JSON into the following fields:
+
+* **deviceName**: Name of the device (e.g., `Energy`).
+* **deviceId**: ID of the device (e.g., `1`).
+* **key**: The type of data sent (e.g., `temperature`).
+* **value**: The value of the data sent (e.g., `35.5`).
+* **timestamp**: The time the data was sent.
+
+---
+
+## **5. Creating Dashboards and Visualizations in Splunk**
+
+### **5.1 Creating a Dashboard Panel**
+
+1. After running a query in Splunk, click on **Save As > Dashboard Panel** in the top-right corner.
+2. You can create a new dashboard or add the panel to an existing dashboard.
+
+---
+
+### **5.2 Example Dashboard Queries**
+
+* **Time-Series Graph for Devices**:
+  ```spl
+  index="main" sourcetype="device_metrics" | timechart avg(value) by deviceName
+  ```
+* **Latest Values from Devices**:
+  ```spl
+  index="main" sourcetype="device_metrics" | stats latest(value) by deviceName
+  ```
+* **Viewing Error States**:
+  ```spl
+  index="main" sourcetype="device_metrics" key="Error"
+  ```
+
+---
+
+## **6. Troubleshooting**
+
+### **6.1 Checking Proxus Logs**
+
+* If data is not reaching Splunk, check the Proxus logs.
+* Common errors:
+    * **401 Unauthorized**: Incorrect HEC Token.
+    * **500 Internal Server Error**: Issue on the Splunk server.
+
+### **6.2 Checking Splunk Logs**
+
+* On the Splunk side, check the HEC logs:
+    * **Settings > Monitoring Console > Search Logs**
+
+---
+
+## **Conclusion**
+
+With this guide:
+
+1. You enabled Splunk HEC and integrated it with Proxus.
+2. You sent data from devices to Splunk.
+3. You analyzed and visualized the data in Splunk.
 
