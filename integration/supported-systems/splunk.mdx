@@ -273,22 +273,12 @@ Splunk will parse this JSON into fields:
 
   </Accordion>
   <Accordion title="500 Internal Server Error">
-    <Callout>
+   
       **Cause:** Splunk server issue.
       **Solution:** Check Splunk logs under **Settings > Monitoring Console > Search Logs**.
-    </Callout>
+   
   </Accordion>
-  <Accordion title="SSL/TLS Errors">
-    <Callout>
-      **Cause:** Self-signed or invalid SSL certificate.
-      **Solution:** Disable SSL validation in Proxus during testing (not recommended for production):
-        ```csharp
-        var handler = new HttpClientHandler {
-            ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
-        };
-        ```
-    </Callout>
-  </Accordion>
+
 </AccordionGroup>
 
 ---
