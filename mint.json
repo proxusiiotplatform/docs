@@ -85,7 +85,43 @@
       "group": "Integration",
       "pages": [
         "integration/integration-overview",
-        "integration/supported-systems",
+        {
+          "page": "integration/supported-systems",
+          "subpages": [
+            {
+              "title": "Supported Systems",
+              "description": "Explore the systems supported by Proxus for seamless integration.",
+              "systems": [
+                "Advantage",
+                "Firebird",
+                "HttpAPIKey",
+                "HttpBasicAuth",
+                "HttpOAuth",
+                "HttpTokenAuth",
+                "IBM DB2",
+                "InfluxDB",
+                "Kafka",
+                "MQTT",
+                "MS Access",
+                "MSSQL",
+                "MySQL",
+                "Oracle",
+                "Pervasive",
+                "PostgreSQL",
+                "RabbitMQ",
+                "Redis",
+                "SAP HANA",
+                "Splunk",
+                "SQL Anywhere",
+                "SQLite",
+                "Sybase ASE",
+                "SYSTEM INTERNAL DB",
+                "TDEngine",
+                "VistaDB"
+              ]
+            }
+          ]
+        },
         "integration/configuration",
         "integration/monitoring"
       ]
@@ -99,7 +135,6 @@
         "edge-computing/limitations"
       ]
     },
-
     {
       "group": "API",
       "pages": [
