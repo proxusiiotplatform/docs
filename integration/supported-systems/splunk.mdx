@@ -25,11 +25,12 @@ Integrating Proxus with Splunk enables seamless transmission of device-generated
 
 ---
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/cc_YUOMmnlE?si=wD7n0762fMr9kq-L" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" fullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cc_YUOMmnlE?si=wD7n0762fMr9kq-L" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## **1. Preparing Splunk**
 
-### **1.1 Enabling HTTP Event Collector (HEC)**
+## **Preparing Splunk**
+
+### **Enabling HTTP Event Collector (HEC)**
 
 HTTP Event Collector (HEC) is Splunk's endpoint for receiving data. Follow these steps to enable it:
 
@@ -43,7 +44,7 @@ HTTP Event Collector (HEC) is Splunk's endpoint for receiving data. Follow these
 
 ---
 
-### **1.2 Creating a New HEC Token**
+### **Creating a New HEC Token**
 
 To allow Proxus to send data to Splunk, create a token:
 
@@ -56,9 +57,9 @@ To allow Proxus to send data to Splunk, create a token:
 
 ---
 
-## **2. Configuring Proxus**
+## **Configuring Proxus**
 
-### **2.1 Defining a Splunk Outbound Channel**
+### **Defining a Splunk Outbound Channel**
 
 1. Log in to the Proxus interface.
 2. Navigate to **Integrations > Outbound Channels**.
@@ -71,7 +72,7 @@ To allow Proxus to send data to Splunk, create a token:
 
 ---
 
-### **2.2 Adding Splunk Parameters**
+### **Adding Splunk Parameters**
 
 1. Go to the **Parameters** tab and add the following key-value pairs:
     - **Key**: `Url`  
@@ -85,9 +86,9 @@ To allow Proxus to send data to Splunk, create a token:
 
 ---
 
-## **3. Sending Data to Splunk**
+## **Sending Data to Splunk**
 
-### **3.1 Linking Splunk Profile to a Device**
+### **Linking Splunk Profile to a Device**
 
 1. Navigate to **Data Management > Devices** in Proxus.
 2. Select the device whose data you want to send to Splunk.
@@ -99,7 +100,7 @@ To allow Proxus to send data to Splunk, create a token:
 
 ---
 
-### **3.2 Verifying Data Transmission**
+### **Verifying Data Transmission**
 
 1. Ensure the device's **Status** is set to "Active."
 2. Verify that the data being sent includes valid key-value pairs:
@@ -110,9 +111,9 @@ To allow Proxus to send data to Splunk, create a token:
 
 ---
 
-## **4. Viewing Data in Splunk**
+## **Viewing Data in Splunk**
 
-### **4.1 Searching for Device Data**
+### **Searching for Device Data**
 
 1. Navigate to the **Search & Reporting** app in the Splunk web interface.
 2. Use the following query to view incoming device data:
@@ -131,7 +132,7 @@ To allow Proxus to send data to Splunk, create a token:
 
 ---
 
-### **4.2 JSON Data Example**
+### **JSON Data Example**
 
 The JSON data sent from Proxus to Splunk may look like this:
 
@@ -159,16 +160,16 @@ Splunk will parse this JSON into fields such as:
 
 ---
 
-## **5. Creating Dashboards in Splunk**
+## **Creating Dashboards in Splunk**
 
-### **5.1 Adding Panels to a Dashboard**
+### **Adding Panels to a Dashboard**
 
 1. After running a search query in Splunk, click **Save As > Dashboard Panel**.
 2. You can create a new dashboard or add the panel to an existing one.
 
 ---
 
-### **5.2 Example Dashboard Queries**
+### **Example Dashboard Queries**
 
 - **Time-Series Graph**:
   ```spl
@@ -185,9 +186,9 @@ Splunk will parse this JSON into fields such as:
 
 ---
 
-## **6. Troubleshooting**
+## **Troubleshooting**
 
-### **6.1 Common Errors**
+### **Common Errors**
 
 #### **401 Unauthorized**
 - Cause: Invalid or expired HEC Token.
@@ -208,7 +209,7 @@ Splunk will parse this JSON into fields such as:
 
 ---
 
-## **7. Best Practices**
+## **Best Practices**
 
 1. **Secure Token Management**  
    Keep your Splunk HEC token private and do not expose it in logs or public files.
