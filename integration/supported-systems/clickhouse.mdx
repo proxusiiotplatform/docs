@@ -1,0 +1,278 @@
+---
+title: "ClickHouse Integration with Proxus"
+description: "Learn how to integrate Proxus with ClickHouse, send device data, and leverage high-performance analytics for real-time monitoring and insights."
+sidebarTitle: "ClickHouse Integration"
+icon: "database"
+iconType: "solid"
+"og:title": "Proxus ClickHouse Integration | Proxus Docs"
+"og:description": "Discover how to integrate Proxus with ClickHouse for efficient device data storage, real-time analytics, and visualization."
+---
+
+## Introduction
+
+This guide walks you through integrating Proxus with ClickHouse, an open-source columnar database optimized for real-time analytics. By connecting Proxus to ClickHouse, you can store and analyze device data at scale, enabling actionable insights and robust monitoring.
+
+### What is ClickHouse?
+
+[ClickHouse](https://clickhouse.com) is a high-performance, columnar database management system designed for online analytical processing (OLAP). It excels at handling large volumes of data with low-latency queries, making it ideal for time-series and real-time analytics.
+
+### Why Integrate Proxus with ClickHouse?
+
+Integrating Proxus with ClickHouse provides several advantages:
+
+* **High-Performance Analytics:** Process massive datasets with sub-second query times.
+* **Real-Time Data Ingestion:** Stream device data for immediate analysis.
+* **Scalability:** Handle growing data volumes effortlessly.
+* **Cost Efficiency:** Leverage an open-source solution for enterprise-grade analytics.
+
+---
+
+## Preparing ClickHouse
+
+### Deploying ClickHouse
+
+Deploy ClickHouse using Docker for simplicity. Below is an example Docker Compose configuration:
+
+```yaml
+clickhouse:
+  image: bitnami/clickhouse:latest
+  container_name: clickhouse
+  restart: always
+  environment:
+    - TZ=Europe/Istanbul
+    - ALLOW_EMPTY_PASSWORD=no
+    - CLICKHOUSE_ADMIN_USER=admin
+    - CLICKHOUSE_ADMIN_PASSWORD=clickhouse123
+    - CLICKHOUSE_HTTP_PORT=8123
+    - CLICKHOUSE_TCP_PORT=9000
+    - CLICKHOUSE_SETTINGS_async_insert=1
+    - CLICKHOUSE_SETTINGS_wait_for_async_insert=0
+    - CLICKHOUSE_SETTINGS_async_insert_busy_timeout_ms=5000
+    - CLICKHOUSE_SETTINGS_async_insert_max_data_size=100000000
+    - CLICKHOUSE_SETTINGS_async_insert_max_query_number=1000
+  ports:
+    - "8123:8123"
+    - "9000:9000"
+  volumes:
+    - clickhouse_data:/bitnami/clickhouse
+  healthcheck:
+    test: wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1
+    interval: 10s
+    timeout: 5s
+    retries: 3
+```
+
+<Steps>
+  <Step title="Deploy ClickHouse">
+    Run `docker-compose up -d` to start the ClickHouse container.
+  </Step>
+  <Step title="Verify Connectivity">
+    Access `http://localhost:8123/ping`. If it returns `OK`, ClickHouse is running.
+  </Step>
+</Steps>
+
+<Callout type="info">
+  **Note:** The `async_insert` settings optimize data ingestion by buffering writes, reducing the number of disk operations (parts).
+</Callout>
+
+---
+
+## Configuring Proxus
+
+### Defining a ClickHouse Outbound Channel
+
+<Steps>
+  <Step title="Log in to Proxus">
+    Log in to the Proxus web interface.
+  </Step>
+  <Step title="Navigate to Outbound Channels">
+    Go to **Integrations > Outbound Channels**.
+  </Step>
+  <Step title="Create New Channel">
+    Click **+ New** to add a new outbound channel.
+  </Step>
+  <Step title="Fill in Channel Details">
+    Provide the following details:
+    <ul>
+      <li>Target Type: `ClickHouse`</li>
+      <li>Profile Name: `ClickHouseAnalytics` (e.g.)</li>
+      <li>Description: `ClickHouse Integration for Device Data`</li>
+      <li>Transport Strategy: `Pass Through Strategy`</li>
+    </ul>
+  </Step>
+</Steps>
+
+### Adding ClickHouse Parameters
+
+<Steps>
+  <Step title="Go to Parameters Tab">
+    Navigate to the **Parameters** tab in the channel configuration.
+  </Step>
+  <Step title="Add Key-Value Pairs">
+    Add these parameters:
+    <Accordion title="Parameter Details">
+      <CardGroup>
+        <Card title="Host" description="ClickHouse server hostname or IP" />
+        <Card title="Port" description="ClickHouse HTTP port (default: 8123)" />
+        <Card title="Username" description="ClickHouse admin username" />
+        <Card title="Password" description="ClickHouse admin password" />
+        <Card title="Database" description="Target database name" />
+        <Card title="Table" description="Target table name" />
+        <Card title="WriteIntervalSeconds" description="Buffer flush interval in seconds" />
+        <Card title="TTLExpression" description="Optional: Time-to-live expression for data" />
+      </CardGroup>
+    </Accordion>
+    <ul>
+      <li>Key: `Host`, Value: `localhost` (or your ClickHouse server IP)</li>
+      <li>Key: `Port`, Value: `8123`</li>
+      <li>Key: `Username`, Value: `admin`</li>
+      <li>Key: `Password`, Value: `clickhouse123`</li>
+      <li>Key: `Database`, Value: `proxus` (default)</li>
+      <li>Key: `Table`, Value: `DeviceRawData` (default)</li>
+      <li>Key: `WriteIntervalSeconds`, Value: `5` (buffer every 5 seconds)</li>
+      <li>Key: `TTLExpression`, Value: `toDateTime(Time) + INTERVAL 30 DAY` (optional, 30-day retention)</li>
+    </ul>
+  </Step>
+  <Step title="Save Configuration">
+    Click **Save** to apply the settings.
+  </Step>
+</Steps>
+
+---
+
+## Sending Data to ClickHouse
+
+### Linking ClickHouse Profile to a Device
+
+<Steps>
+  <Step title="Navigate to Devices">
+    Go to **Data Management > Devices** in Proxus.
+  </Step>
+  <Step title="Select Device">
+    Choose the device to send data from.
+  </Step>
+  <Step title="Go to Target Profiles">
+    In the device details, navigate to **Target Profiles**.
+  </Step>
+  <Step title="Add ClickHouse Profile">
+    Add the profile:
+    <ul>
+      <li>Profile Name: `ClickHouseAnalytics`</li>
+      <li>Target Type: `ClickHouse`</li>
+      <li>Transport Strategy: `Pass Through Strategy`</li>
+    </ul>
+  </Step>
+</Steps>
+
+### Verifying Data Transmission
+
+<Steps>
+  <Step title="Activate Device">
+    Ensure the device’s **Status** is "Active."
+  </Step>
+  <Step title="Check Logs">
+    Verify Proxus logs for messages like `[ClickHouse] Added X records to buffer` and `[ClickHouse] Flushed Y records`.
+  </Step>
+</Steps>
+
+---
+
+## Querying Data in ClickHouse
+
+### Accessing ClickHouse
+
+Connect to ClickHouse using a client (e.g., `clickhouse-client` or HTTP interface at `http://localhost:8123`).
+
+### Basic Queries
+
+<Steps>
+  <Step title="Verify Data">
+    Run this query to see recent data:
+    ```sql
+    SELECT * FROM proxus.DeviceRawData ORDER BY Time DESC LIMIT 10;
+    ```
+  </Step>
+  <Step title="Aggregate Data">
+    Calculate average values by device:
+    ```sql
+    SELECT DeviceName, AVG(NumericValue) as AvgValue
+    FROM proxus.DeviceRawData
+    GROUP BY DeviceName;
+    ```
+  </Step>
+</Steps>
+
+### Data Structure
+
+The `DeviceRawData` table in ClickHouse has the following schema:
+
+| Column         | Type         | Description                          | Example              |
+|----------------|--------------|--------------------------------------|----------------------|
+| Time           | DateTime64(3)| Timestamp of data collection         | `2025-02-25 09:36:00.000` |
+| DeviceId       | UInt32       | Unique device identifier             | `1`                  |
+| DeviceName     | String       | Name of the device                   | `Sensor1`            |
+| Key            | String       | Data key (e.g., temperature)         | `temperature`        |
+| DataType       | Enum8        | Type of data (e.g., Double, String)  | `8` (Double)         |
+| NumericValue   | Float64      | Numeric value of the data            | `25.5`               |
+| StringValue    | String       | String value (if applicable)         | `""` or `"High"`     |
+
+---
+
+## Optimizing Performance
+
+### Asynchronous Inserts
+
+The integration uses ClickHouse’s asynchronous insert feature to buffer data, reducing the number of disk writes (parts). Settings are configured in the Docker environment:
+
+* `async_insert=1`: Enables asynchronous inserts.
+* `async_insert_busy_timeout_ms=5000`: Flushes buffer every 5 seconds.
+* `async_insert_max_data_size=100000000`: Limits buffer to 100 MB.
+
+### Monitoring Parts
+
+Check the number of active parts to ensure optimization:
+
+```sql
+SELECT table, name, rows, bytes_on_disk
+FROM system.parts
+WHERE table = 'DeviceRawData' AND active = 1
+ORDER BY modification_time DESC;
+```
+
+<Callout type="tip">
+  **Goal:** Fewer parts with more rows per part (e.g., 50+ rows/part) indicate efficient buffering.
+</Callout>
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+<AccordionGroup>
+  <Accordion title="Connection Failed">
+    **Cause:** Incorrect Host or Port.
+    **Solution:** Verify `Host` and `Port` in Proxus parameters match Docker settings.
+  </Accordion>
+  <Accordion title="Too Many Parts">
+    **Cause:** Frequent inserts bypassing async buffer.
+    **Solution:** Increase `WriteIntervalSeconds` (e.g., to 10) or check `async_insert` settings.
+  </Accordion>
+  <Accordion title="Data Not Visible">
+    **Cause:** Buffer not flushed.
+    **Solution:** Wait 5 seconds or check logs for `[ClickHouse] Flushed` messages.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Best Practices
+
+* **Buffer Tuning:** Adjust `WriteIntervalSeconds` based on data volume (e.g., 5-10 seconds for high throughput).
+* **Retention Policy:** Use `TTLExpression` to manage data lifecycle (e.g., 30 days).
+* **Monitoring:** Regularly query `system.parts` to optimize part count.
+
+## Conclusion
+
+This guide has shown you how to integrate Proxus with ClickHouse using the `ClickHouseIntegrationActor`. You can now store device data efficiently, perform real-time analytics, and scale your monitoring solution with ease.
+```
