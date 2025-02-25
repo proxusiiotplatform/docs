@@ -81,17 +81,30 @@ This guide assumes you already have a running ClickHouse instance. Ensure it’s
     Add these parameters to connect to your ClickHouse instance:
     <Accordion title="Parameter Details">
       <CardGroup>
-        <Card title="Host" />
+        <Card title="Host">
           ClickHouse server hostname or IP
           </Card>
-        <Card title="Port" description="" />
+        <Card title="Port" >
           ClickHouse HTTP port (default: 8123)
-        <Card title="Username" description="ClickHouse username" />
-        <Card title="Password" description="ClickHouse password" />
-        <Card title="Database" description="Target database name" />
-        <Card title="Table" description="Target table name" />
-        <Card title="WriteIntervalSeconds" description="Buffer flush interval in seconds" />
-        <Card title="TTLExpression" description="Optional: Time-to-live expression for data retention" />
+          </Card>
+        <Card title="Username" >
+          ClickHouse username
+           </Card>
+        <Card title="Password">
+          ClickHouse password
+           </Card>
+        <Card title="Database">
+          Target database name
+           </Card>
+        <Card title="Table">
+          Target table name
+           </Card>
+        <Card title="WriteIntervalSeconds">
+          Buffer flush interval in seconds
+           </Card>
+        <Card title="TTLExpression">
+          Optional: Time-to-live expression for data retention
+           </Card>
       </CardGroup>
     </Accordion>
     <ul>
