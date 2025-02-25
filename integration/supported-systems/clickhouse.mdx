@@ -21,11 +21,14 @@ This guide explains how to integrate Proxus with an existing ClickHouse instance
 Integrating Proxus with ClickHouse offers several benefits:
 
 * **High-Performance Analytics:** Process massive datasets with sub-second query times.
+
 * **Real-Time Data Ingestion:** Stream device data for immediate analysis.
+
 * **Scalability:** Handle growing data volumes effortlessly.
+
 * **Cost Efficiency:** Leverage an open-source solution for enterprise-grade analytics.
 
----
+***
 
 ## Preparing ClickHouse
 
@@ -35,6 +38,7 @@ This guide assumes you already have a running ClickHouse instance. Ensure it’s
   <Step title="Verify Connectivity">
     Test connectivity to your ClickHouse server using the HTTP interface (e.g., `http://<clickhouse-host>:8123/ping`). It should return `OK`.
   </Step>
+
   <Step title="Check Credentials">
     Confirm you have the correct username and password for ClickHouse access (e.g., `admin`/`clickhouse123`).
   </Step>
@@ -44,7 +48,7 @@ This guide assumes you already have a running ClickHouse instance. Ensure it’s
   **Note:** For optimal performance, configure ClickHouse with asynchronous inserts (e.g., `async_insert=1`) on the server side. Consult your ClickHouse administrator or documentation.
 </Callout>
 
----
+***
 
 ## Configuring Proxus
 
@@ -54,14 +58,18 @@ This guide assumes you already have a running ClickHouse instance. Ensure it’s
   <Step title="Log in to Proxus">
     Log in to the Proxus web interface.
   </Step>
+
   <Step title="Navigate to Outbound Channels">
     Go to **Integrations > Outbound Channels**.
   </Step>
+
   <Step title="Create New Channel">
     Click **+ New** to add a new outbound channel.
   </Step>
+
   <Step title="Fill in Channel Details">
     Provide the following details:
+
     <ul>
       <li>Target Type: `ClickHouse`</li>
       <li>Profile Name: `ClickHouseAnalytics` (e.g.)</li>
@@ -77,75 +85,47 @@ This guide assumes you already have a running ClickHouse instance. Ensure it’s
   <Step title="Go to Parameters Tab">
     Navigate to the **Parameters** tab in the channel configuration.
   </Step>
+
   <Step title="Add Key-Value Pairs">
     Add these parameters to connect to your ClickHouse instance:
-<Accordion title="Parameter Details">
 
-<CardGroup>
+    <Accordion title="Parameter Details">
+      <CardGroup>
+        <Card title="Host" icon="network-wired">
+          ClickHouse server hostname or IP
+        </Card>
 
-<Card 
-  title="Host" 
-  icon="network-wired" 
+        <Card title="Port" icon="plug">
+          ClickHouse HTTP port (default: 8123)
+        </Card>
 
->
-  ClickHouse server hostname or IP
-</Card>
+        <Card title="Username" icon="user">
+          ClickHouse username
+        </Card>
 
-<Card 
-  title="Port" 
-  icon="plug" 
+        <Card title="Password" icon="key">
+          ClickHouse password
+        </Card>
 
->
-  ClickHouse HTTP port (default: 8123)
-</Card>
+        <Card title="Database" icon="database">
+          Target database name
+        </Card>
 
-<Card 
-  title="Username" 
-  icon="user" 
->
-  ClickHouse username
-</Card>
+        <Card title="Table" icon="table">
+          Target table name
+        </Card>
 
-<Card 
-  title="Password" 
-  icon="key" 
+        <Card title="WriteIntervalSeconds" icon="clock">
+          Buffer flush interval in seconds
+        </Card>
 
->
-  ClickHouse password
-</Card>
+        <Card title="TTLExpression" icon="hourglass">
+          Optional: Time-to-live expression for data retention
+        </Card>
+      </CardGroup>
+    </Accordion>
 
-<Card 
-  title="Database" 
-  icon="database" 
->
-  Target database name
-</Card>
-
-<Card 
-  title="Table" 
-  icon="table" 
->
-  Target table name
-</Card>
-
-<Card 
-  title="WriteIntervalSeconds" 
-  icon="clock" 
->
-  Buffer flush interval in seconds
-</Card>
-
-<Card 
-  title="TTLExpression" 
-  icon="hourglass" 
->
-  Optional: Time-to-live expression for data retention
-</Card>
-
-</CardGroup>
-
-</Accordion>
-<ul>
+    <ul>
       <li>Key: `Host`, Value: `<clickhouse-host>` (e.g., `localhost`)</li>
       <li>Key: `Port`, Value: `8123` (or your ClickHouse HTTP port)</li>
       <li>Key: `Username`, Value: `admin` (or your username)</li>
@@ -156,6 +136,7 @@ This guide assumes you already have a running ClickHouse instance. Ensure it’s
       <li>Key: `TTLExpression`, Value: See examples below (optional)</li>
     </ul>
   </Step>
+
   <Step title="Save Configuration">
     Click **Save** to apply the settings.
   </Step>
@@ -170,24 +151,31 @@ The `TTLExpression` parameter defines how long data remains in ClickHouse before
     ```sql
     toDateTime(Time) + INTERVAL 30 DAY
     ```
+
     **Description:** Keeps data for 30 days from the timestamp.
   </Accordion>
+
   <Accordion title="1 Week Retention">
     ```sql
     toDateTime(Time) + INTERVAL 1 WEEK
     ```
+
     **Description:** Retains data for 7 days.
   </Accordion>
+
   <Accordion title="6 Months Retention">
     ```sql
     toDateTime(Time) + INTERVAL 6 MONTH
     ```
+
     **Description:** Stores data for 6 months.
   </Accordion>
+
   <Accordion title="Custom Retention with Condition">
     ```sql
     toDateTime(Time) + INTERVAL 90 DAY DELETE WHERE DeviceName != 'Critical'
     ```
+
     **Description:** Deletes data after 90 days, except for devices named 'Critical'.
   </Accordion>
 </AccordionGroup>
@@ -196,7 +184,7 @@ The `TTLExpression` parameter defines how long data remains in ClickHouse before
   **Tip:** Choose a TTL based on your storage needs and compliance requirements. Test with a small interval (e.g., 1 day) before applying longer durations.
 </Callout>
 
----
+***
 
 ## Sending Data to ClickHouse
 
@@ -206,14 +194,18 @@ The `TTLExpression` parameter defines how long data remains in ClickHouse before
   <Step title="Navigate to Devices">
     Go to **Data Management > Devices** in Proxus.
   </Step>
+
   <Step title="Select Device">
     Choose the device to send data from.
   </Step>
+
   <Step title="Go to Target Profiles">
     In the device details, navigate to **Target Profiles**.
   </Step>
+
   <Step title="Add ClickHouse Profile">
     Add the profile:
+
     <ul>
       <li>Profile Name: `ClickHouseAnalytics`</li>
       <li>Target Type: `ClickHouse`</li>
@@ -228,12 +220,13 @@ The `TTLExpression` parameter defines how long data remains in ClickHouse before
   <Step title="Activate Device">
     Ensure the device’s **Status** is "Active."
   </Step>
+
   <Step title="Check Logs">
     Verify Proxus logs for messages like `[ClickHouse] Added X records to buffer` and `[ClickHouse] Flushed Y records`.
   </Step>
 </Steps>
 
----
+***
 
 ## Querying Data in ClickHouse
 
@@ -246,12 +239,15 @@ Connect to your ClickHouse instance using a client (e.g., `clickhouse-client`) o
 <Steps>
   <Step title="Verify Data">
     Run this query to see recent data:
+
     ```sql
     SELECT * FROM proxus.DeviceRawData ORDER BY Time DESC LIMIT 10;
     ```
   </Step>
+
   <Step title="Aggregate Data">
     Calculate average values by device:
+
     ```sql
     SELECT DeviceName, AVG(NumericValue) as AvgValue
     FROM proxus.DeviceRawData
@@ -264,17 +260,17 @@ Connect to your ClickHouse instance using a client (e.g., `clickhouse-client`) o
 
 The `DeviceRawData` table in ClickHouse has the following schema:
 
-| Column         | Type         | Description                          | Example              |
-|----------------|--------------|--------------------------------------|----------------------|
-| Time           | DateTime64(3)| Timestamp of data collection         | `2025-02-25 09:36:00.000` |
-| DeviceId       | UInt32       | Unique device identifier             | `1`                  |
-| DeviceName     | String       | Name of the device                   | `Sensor1`            |
-| Key            | String       | Data key (e.g., temperature)         | `temperature`        |
-| DataType       | Enum8        | Type of data (e.g., Double, String)  | `8` (Double)         |
-| NumericValue   | Float64      | Numeric value of the data            | `25.5`               |
-| StringValue    | String       | String value (if applicable)         | `""` or `"High"`     |
+| Column       | Type          | Description                         | Example                   |
+| ------------ | ------------- | ----------------------------------- | ------------------------- |
+| Time         | DateTime64(3) | Timestamp of data collection        | `2025-02-25 09:36:00.000` |
+| DeviceId     | UInt32        | Unique device identifier            | `1`                       |
+| DeviceName   | String        | Name of the device                  | `Sensor1`                 |
+| Key          | String        | Data key (e.g., temperature)        | `temperature`             |
+| DataType     | Enum8         | Type of data (e.g., Double, String) | `8` (Double)              |
+| NumericValue | Float64       | Numeric value of the data           | `25.5`                    |
+| StringValue  | String        | String value (if applicable)        | `""` or `"High"`          |
 
----
+***
 
 ## Optimizing Performance
 
@@ -297,7 +293,7 @@ ORDER BY modification_time DESC;
   **Goal:** Aim for fewer parts with more rows per part (e.g., 50+ rows/part) for optimal performance.
 </Callout>
 
----
+***
 
 ## Troubleshooting
 
@@ -305,27 +301,36 @@ ORDER BY modification_time DESC;
 
 <AccordionGroup>
   <Accordion title="Connection Failed">
-    -**Cause:** Incorrect Host or Port.
-    -**Solution:** Verify `Host` and `Port` match your ClickHouse instance.
+    * **Cause:** Incorrect Host or Port.
+
+    * **Solution:** Verify `Host` and `Port` match your ClickHouse instance.
   </Accordion>
+
   <Accordion title="Too Many Parts">
-    -**Cause:** Frequent inserts bypassing buffer.
-    -**Solution:** Increase `WriteIntervalSeconds` (e.g., to 10) or ensure server-side `async_insert` is enabled.
+    * **Cause:** Frequent inserts bypassing buffer.
+
+    * **Solution:** Increase `WriteIntervalSeconds` (e.g., to 10) or ensure server-side `async_insert` is enabled.
   </Accordion>
+
   <Accordion title="Data Not Visible">
-    -**Cause:** Buffer not flushed.
-    -**Solution:** Wait 5 seconds or check logs for `[ClickHouse] Flushed` messages.
+    * **Cause:** Buffer not flushed.
+
+    * **Solution:** Wait 5 seconds or check logs for `[ClickHouse] Flushed` messages.
   </Accordion>
 </AccordionGroup>
 
----
+***
 
 ## Best Practices
 
 * **Buffer Tuning:** Set `WriteIntervalSeconds` based on data volume (e.g., 5-10 seconds for high throughput).
+
 * **Retention Management:** Use `TTLExpression` to control data lifecycle. Examples:
-  - Short-term: `toDateTime(Time) + INTERVAL 1 WEEK`
-  - Long-term: `toDateTime(Time) + INTERVAL 1 YEAR`
+
+  * Short-term: `toDateTime(Time) + INTERVAL 1 WEEK`
+
+  * Long-term: `toDateTime(Time) + INTERVAL 1 YEAR`
+
 * **Monitoring:** Regularly query `system.parts` to optimize part count and storage.
 
 ## Conclusion
