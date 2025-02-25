@@ -305,16 +305,16 @@ ORDER BY modification_time DESC;
 
 <AccordionGroup>
   <Accordion title="Connection Failed">
-    **Cause:** Incorrect Host or Port.
-    **Solution:** Verify `Host` and `Port` match your ClickHouse instance.
+    -**Cause:** Incorrect Host or Port.
+    -**Solution:** Verify `Host` and `Port` match your ClickHouse instance.
   </Accordion>
   <Accordion title="Too Many Parts">
-    **Cause:** Frequent inserts bypassing buffer.
-    **Solution:** Increase `WriteIntervalSeconds` (e.g., to 10) or ensure server-side `async_insert` is enabled.
+    -**Cause:** Frequent inserts bypassing buffer.
+    -**Solution:** Increase `WriteIntervalSeconds` (e.g., to 10) or ensure server-side `async_insert` is enabled.
   </Accordion>
   <Accordion title="Data Not Visible">
-    **Cause:** Buffer not flushed.
-    **Solution:** Wait 5 seconds or check logs for `[ClickHouse] Flushed` messages.
+    -**Cause:** Buffer not flushed.
+    -**Solution:** Wait 5 seconds or check logs for `[ClickHouse] Flushed` messages.
   </Accordion>
 </AccordionGroup>
 
