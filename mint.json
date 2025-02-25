@@ -89,6 +89,7 @@
           "group": "Supported Systems",
           "pages": [
             "integration/supported-systems/advantage",
+            "integration/supported-systems/clickhouse",
             "integration/supported-systems/firebird",
             "integration/supported-systems/httpapikey",
             "integration/supported-systems/httpbasicauth",
