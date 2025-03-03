@@ -14,8 +14,6 @@ This document provides a step-by-step guide for integrating Proxus with AWS IoT 
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/dIQIEuowICc?si=bzd93JWsIjx5nnbI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-
-
 ## Prerequisites
 
 *   An active AWS account.
@@ -100,6 +98,10 @@ An IoT policy defines the permissions for your "Thing."
 2.  **Connection details:** Verify the connection status.
 3.  **Subscribe to a topic:** Subscribe to the topic you defined in the policy (e.g., `enterprise/bits/data/process_cell/equipment/module/test`).
 4.  Monitor incoming messages from your Proxus device.
+
+## Topic Structure
+
+Proxus automatically creates AWS IoT Core topics. It constructs these topics using the fields from the Hierarchy tab (except for Group) and appends the device name to the end. If these fields are left blank, the resulting topic will resemble: `unknown/unknown/unknown/unknown/unknown/test`.
 
 ## Conclusion
 
