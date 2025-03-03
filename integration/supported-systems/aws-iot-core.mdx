@@ -1,0 +1,105 @@
+---
+title: "Integrating Proxus with AWS IoT Core"
+description: "Connect your Proxus devices to AWS IoT Core for secure data ingestion, device management, and leveraging AWS cloud services."
+sidebarTitle: "AWS IoT Core Integration"
+icon: "plug"
+iconType: "solid"
+"og:title": "Proxus AWS IoT Core Integration | Proxus Docs"
+"og:description": "Integrate Proxus with AWS IoT Core for device management, data ingestion, and more."
+---
+
+## Introduction
+
+This document provides a step-by-step guide for integrating Proxus with AWS IoT Core. This integration allows you to connect your Proxus-managed devices to the AWS cloud, enabling secure data transfer, device management, and access to various AWS services.
+
+## Prerequisites
+
+*   An active AWS account.
+*   A Proxus instance.
+*   An existing device in Proxus.
+
+## Steps
+
+### 1. Configure AWS IoT Core
+
+1.  Log in to the AWS Management Console and navigate to the AWS IoT Core service.
+2.  **Domain Configuration:** Under **Connect**, select **Domain configurations**. Note the domain name for your instance (e.g., *xxxxxxxxxxxx-ats.iot.us-east-1.amazonaws.com*). This will be used later in Proxus.
+
+### 2. Create a "Thing" in AWS IoT Core
+
+A "Thing" in AWS IoT Core represents a physical or logical device.
+
+1.  Navigate to **Manage > Things** and click **Create things**.
+2.  Choose **Create a single thing** and click **Next**.
+3.  Provide a **Thing name** (e.g., `proxus_demo`). Click **Next**.
+4.  **Configure device certificate:** Select **Auto-generate a new certificate (recommended)**. Click **Next**.
+5.  **Attach policies to certificate:** Click **Create thing** without attaching any policies for now.
+6.  **Download certificates and keys:** Download the following files:
+    *   Device certificate (.pem)
+    *   Public key (.pem)
+    *   Private key (.pem)
+    *   Amazon Root CA 1
+
+    **Important:** Store the private key securely, as it cannot be downloaded again.
+
+### 3. Create an AWS IoT Policy
+
+An IoT policy defines the permissions for your "Thing."
+
+1.  Navigate to **Security > Policies** and click **Create policy**.
+2.  Provide a **Policy name** (e.g., `proxus_policy`).
+3.  **Policy document:** Use the builder to add the following policy statements (replace resources with your account details):
+
+    | Policy Effect | Policy Action          | Policy Resource                                                                     |
+    | :----------- | :-------------------- | :--------------------------------------------------------------------------------- |
+    | Allow        | iot:Connect            | `arn:aws:iot:${region}:${account}:client/${thingName}`                               |
+    | Allow        | iot:Publish            | `arn:aws:iot:${region}:${account}:topic/enterprise/bits/data/process_cell/equipment/module/test` |
+    | Allow        | iot:Subscribe          | `arn:aws:iot:${region}:${account}:topicfilter/enterprise/bits/data/process_cell/equipment/module/test` |
+    | Allow        | iot:Receive            | `arn:aws:iot:${region}:${account}:topic/enterprise/bits/data/process_cell/equipment/module/test` |
+
+4.  Click **Create**.
+
+### 4. Attach Policy to Certificate
+
+1.  Navigate to **Security > Certificates**.
+2.  Select the certificate created for your "Thing."
+3.  Click **Attach policies** and select the policy you created (`proxus_policy`). Click **Attach policies**.
+
+### 5. Configure Proxus Outbound Channel
+
+1.  In Proxus, navigate to **Rule Management > Outbound Channels**.
+2.  Click **+ New**.
+3.  Select **AWS IoT Core** as the **Target Type**. Provide a **Profile Name** (e.g., `AWS IoT Core`).
+4.  **Parameters:** Add the following parameters:
+
+    | Key          | Value                                                                           |
+    | :----------- | :------------------------------------------------------------------------------ |
+    | EndPoint     | Your AWS IoT Core domain name (e.g., *xxxxxxxxxxxx-ats.iot.us-east-1.amazonaws.com*) |
+    | Port         | `8883`                                                                          |
+    | ClientId     | Your "Thing" name (e.g., `proxus`)                                                |
+    | UseTls       | `True`                                                                          |
+    | PfxCertificate | Upload the device certificate (.pem file) you downloaded earlier.                |
+
+5.  Click **Save**.
+
+### 6. Link Outbound Channel to Device
+
+1.  In Proxus, navigate to **Data Management > Devices**.
+2.  Select your device and go to the **Target Profiles** tab.
+3.  Click **+ New**.
+4.  Select the **AWS IoT Core** profile you created.
+5.  Click **Save**.
+
+### 7. Test the Connection
+
+1.  In the AWS IoT Core console, navigate to **Test > MQTT test client**.
+2.  **Connection details:** Verify the connection status.
+3.  **Subscribe to a topic:** Subscribe to the topic you defined in the policy (e.g., `enterprise/bits/data/process_cell/equipment/module/test`).
+4.  Monitor incoming messages from your Proxus device.
+
+## Conclusion
+
+You have successfully integrated Proxus with AWS IoT Core. Your Proxus devices can now securely communicate with AWS, enabling you to collect data, manage devices, and leverage the power of the AWS cloud.
+
+
+This comprehensive documentation includes clear steps, explanations, and examples to guide Proxus users through the integration process. It also covers important aspects like security and troubleshooting. Remember to replace the placeholder values with your specific AWS account and Proxus instance details.
