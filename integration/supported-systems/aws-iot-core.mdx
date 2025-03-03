@@ -71,7 +71,7 @@ An IoT policy defines the permissions for your "Thing."
 
 ### 5. Configure Proxus Outbound Channel
 
-1.  In Proxus, navigate to **Rule Management > Outbound Channels**.
+1.  In Proxus, navigate to **Integrations > Outbound Channels**.
 2.  Click **+ New**.
 3.  Select **AWS IoT Core** as the **Target Type**. Provide a **Profile Name** (e.g., `AWS IoT Core`).
 4.  **Parameters:** Add the following parameters:
@@ -82,7 +82,7 @@ An IoT policy defines the permissions for your "Thing."
     | Port         | `8883`                                                                          |
     | ClientId     | Your "Thing" name (e.g., `proxus`)                                                |
     | UseTls       | `True`                                                                          |
-    | PfxCertificate | Upload the device certificate (.pem file) you downloaded earlier.                |
+    | PfxCertificate | Upload the device certificates (xxx.certificate.pem.crt and xxx.private.pem.key file) you downloaded earlier.                |
 
 5.  Click **Save**.
 
