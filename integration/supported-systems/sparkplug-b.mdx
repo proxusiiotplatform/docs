@@ -1,0 +1,259 @@
+---
+title: "Sparkplug B Integration with Proxus"
+description: "Learn how to integrate Proxus with Sparkplug B MQTT protocol for real-time industrial IoT data communication."
+sidebarTitle: "Sparkplug B Integration"
+icon: "bolt"
+iconType: "solid"
+---
+
+## Introduction
+
+This document guides you through integrating Proxus with Sparkplug B, an MQTT-based protocol designed for industrial IoT applications. Sparkplug B provides a standardized way to communicate with industrial devices and systems using the MQTT protocol.
+
+### What is Sparkplug B?
+
+Sparkplug B is a specification that defines how industrial IoT devices should communicate over MQTT. It provides:
+- State management
+- Data modeling
+- Payload formatting
+- Birth/Death certificate handling
+
+### Benefits of Integration
+
+- **Standardized Communication:** Consistent data format across devices
+- **Auto-discovery:** Automatic device and metric discovery
+- **State Management:** Built-in state tracking for nodes and devices
+- **Bidirectional Communication:** Support for commands and data flow
+- **Industrial IoT Ready:** Designed for industrial applications
+
+## Configuration Parameters
+
+| Parameter | Description | Default | Required |
+|-----------|-------------|----------|----------|
+| BrokerHost | MQTT broker hostname | localhost | Yes |
+| BrokerPort | MQTT broker port | 1883 | No |
+| GroupId | Sparkplug group identifier | ProxusGroup | No |
+| EdgeNodeId | Edge node identifier | Edge_{UUID} | No |
+| UseWebSocket | Enable WebSocket connection | false | No |
+| ScadaHostIdentifier | SCADA host identifier | scada1 | No |
+| Username | MQTT broker username | - | No |
+| Password | MQTT broker password | - | No |
+
+### TLS Configuration
+
+| Parameter | Description | Default | Required |
+|-----------|-------------|----------|----------|
+| UseTls | Enable TLS connection | false | No |
+| TlsVersion | TLS protocol version | Tls12 | No |
+| PfxCertificate | Base64 encoded PFX certificate | - | No* |
+
+*Required if UseTls is true
+
+## Setup Guide
+
+### Step 1: Create Integration Profile
+
+<Steps>
+  <Step title="Navigate to Integrations">
+    Go to **Integrations > Outbound Channels**
+  </Step>
+  <Step title="Create New Channel">
+    Click **+ New** and select "Sparkplug B"
+  </Step>
+  <Step title="Configure Basic Settings">
+    ```json
+    {
+      "BrokerHost": "mqtt.example.com",
+      "BrokerPort": 1883,
+      "GroupId": "ProxusGroup",
+      "EdgeNodeId": "Edge_001"
+    }
+    ```
+  </Step>
+</Steps>
+
+### Step 2: TLS Configuration (Optional)
+
+If your MQTT broker requires TLS:
+
+```json
+{
+  "UseTls": true,
+  "TlsVersion": "Tls12",
+  "PfxCertificate": "base64_encoded_certificate"
+}
+```
+
+### Step 3: WebSocket Configuration (Optional)
+
+For WebSocket connections:
+
+```json
+{
+  "UseWebSocket": true,
+  "BrokerHost": "mqtt.example.com",
+  "BrokerPort": 443
+}
+```
+
+## Data Mapping
+
+Proxus automatically maps device data to Sparkplug B metrics:
+
+| Proxus Data Type | Sparkplug B Data Type |
+|------------------|----------------------|
+| Boolean | Boolean |
+| Integer | Int32 |
+| Float | Float |
+| Double | Double |
+| DateTime | DateTime |
+| String | String |
+
+### Example Metric Structure
+
+```json
+{
+  "name": "temperature",
+  "value": 23.5,
+  "dataType": "Float",
+  "timestamp": 1709731200000
+}
+```
+
+## Message Flow
+
+<Steps>
+  <Step title="Node Birth (NBIRTH)">
+    Sent when the Proxus Sparkplug B node connects
+  </Step>
+  <Step title="Device Birth (DBIRTH)">
+    Sent when a device first publishes data
+  </Step>
+  <Step title="Device Data (DDATA)">
+    Regular device data publications
+  </Step>
+  <Step title="Device Death (DDEATH)">
+    Sent when a device stops publishing
+  </Step>
+</Steps>
+
+## Topics Structure
+
+Sparkplug B uses the following topic structure:
+
+```
+namespace/group_id/message_type/edge_node_id/device_id
+```
+
+Example:
+```
+spBv1.0/ProxusGroup/DDATA/Edge_001/Device1
+```
+
+## Error Handling
+
+Common errors and solutions:
+
+<AccordionGroup>
+  <Accordion title="Connection Failed">
+    - Verify broker host and port
+    - Check network connectivity
+    - Validate credentials
+  </Accordion>
+  <Accordion title="TLS Certificate Error">
+    - Ensure PFX certificate is valid
+    - Check TLS version compatibility
+    - Verify certificate chain
+  </Accordion>
+  <Accordion title="Topic Permission Error">
+    - Verify MQTT broker permissions
+    - Check topic structure
+    - Validate client credentials
+  </Accordion>
+</AccordionGroup>
+
+## Best Practices
+
+1. **Naming Conventions**
+   - Use consistent group and node IDs
+   - Avoid spaces in device IDs
+   - Use descriptive metric names
+
+2. **Security**
+   - Enable TLS when possible
+   - Use strong passwords
+   - Implement access control
+
+3. **Performance**
+   - Monitor message rates
+   - Balance update frequency
+   - Handle reconnections gracefully
+
+## Monitoring
+
+Monitor your Sparkplug B integration:
+
+```js
+// Example metrics to monitor
+{
+  "connection_status": "connected",
+  "messages_sent": 1000,
+  "last_birth_time": "2025-03-06T12:00:00Z",
+  "active_devices": 5
+}
+```
+
+## Troubleshooting
+
+<Steps>
+  <Step title="Check Connectivity">
+    Verify network connection to MQTT broker
+  </Step>
+  <Step title="Validate Configuration">
+    Review all configuration parameters
+  </Step>
+  <Step title="Monitor Logs">
+    Check Proxus logs for detailed error messages
+  </Step>
+  <Step title="Test Certificates">
+    Verify TLS certificate validity if using TLS
+  </Step>
+</Steps>
+
+## Example Implementation
+
+```javascript
+// Sample device data configuration
+{
+  "integration": "SparkplugB",
+  "config": {
+    "brokerHost": "mqtt.example.com",
+    "brokerPort": 1883,
+    "groupId": "ProxusGroup",
+    "edgeNodeId": "Edge_001",
+    "useTls": true,
+    "tlsVersion": "Tls12"
+  },
+  "devices": [
+    {
+      "deviceId": "Device1",
+      "metrics": [
+        {
+          "name": "temperature",
+          "dataType": "Float"
+        },
+        {
+          "name": "status",
+          "dataType": "String"
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Conclusion
+
+This integration enables seamless communication between Proxus and industrial IoT systems using the Sparkplug B protocol. Follow the configuration guide and best practices for optimal performance and reliability.
+
+For additional support or questions, contact Proxus support or consult the [Sparkplug B specification](https://www.eclipse.org/tahu/spec/sparkplug_spec.pdf).

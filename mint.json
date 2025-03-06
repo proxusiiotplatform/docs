@@ -110,6 +110,7 @@
             "integration/supported-systems/redis",
             "integration/supported-systems/sap-hana",
             "integration/supported-systems/splunk",
+            "integration/supported-systems/sparkplug-b",
             "integration/supported-systems/sql-anywhere",
             "integration/supported-systems/sqlite",
             "integration/supported-systems/sybase-ase",
