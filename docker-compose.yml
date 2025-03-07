@@ -45,7 +45,7 @@ services:
   proxus-api:
     restart: always
     container_name: proxus-api
-    image: proxusplatform/proxus-api:1.0.0.0-x64
+    image: proxusplatform/proxus-api:1.1.2.0-amd64
     user: "0"
     networks:
       - proxus
@@ -65,7 +65,7 @@ services:
   proxus-server:
     restart: always
     container_name: proxus-server
-    image: proxusplatform/proxus-server:1.0.0.0-x64
+    image: proxusplatform/proxus-server:1.1.2.0-amd64
     user: "0"
     networks:
       - proxus
@@ -109,7 +109,7 @@ services:
   proxus-ui:
     restart: always
     container_name: proxus-ui
-    image: proxusplatform/proxus-ui:1.0.0.0-x64
+    image: proxusplatform/proxus-ui:1.1.2.0-amd64
     user: "0"
     networks:
       - proxus
