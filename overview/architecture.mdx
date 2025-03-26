@@ -1,9 +1,74 @@
 ---
-title: "Proxus Platform Architecture"
-description: "Deep dive into Proxus's distributed architecture, Actor model, and high-performance design principles"
+title: "Proxus Architecture"
+description: "Explore the high-performance, scalable, and reliable architecture of the Proxus platform."
 sidebarTitle: "Architecture"
-icon: "diagram-project"
+icon: "chip"
 iconType: "solid"
-"og:title": "Proxus IIoT Platform Architecture | Proxus Docs"
-"og:description": "Understanding Proxus's distributed architecture, Actor model, and performance optimization techniques"
 ---
+
+# Proxus Architecture
+
+Proxus is built on a distributed edge architecture designed for scalability, performance, and resilience. The architecture consists of the following key components:
+
+*   **Hub:** A Blazor server application (C# .NET 9) that serves as the central management and control point for the Proxus platform. The Hub provides a web-based interface for:
+    *   Device Management: Adding, configuring, and managing devices.
+    *   Data Flow Configuration: Defining data collection rules, processing pipelines, and data destinations.
+    *   User Management: Managing user accounts and permissions.
+    *   Monitoring and Alerting: Monitoring the health and performance of the platform and generating alerts when issues occur.
+    *   Data Visualization: Creating dashboards and reports to visualize data.
+
+*   **Edge Services:** Lightweight, distributed services that run at the edge, close to the data source. Edge Services are deployed as Docker containers for easy deployment and management. They are responsible for:
+    *   Data Acquisition: Collecting data from connected devices using various protocols.
+    *   Data Processing: Transforming, filtering, and aggregating data.
+    *   Local Analytics: Performing real-time analysis and generating insights.
+    *   Data Buffering: Buffering data in case of network connectivity issues.
+    *   Secure Communication: Encrypting data and authenticating with the Hub.
+
+### Communication
+
+Communication between the Hub and Edge Services is facilitated by NATS Jetstream, a high-performance, distributed messaging system. NATS Jetstream provides:
+
+*   **Reliable Messaging:** Ensures that messages are delivered even in the event of network outages.
+*   **Scalability:** Supports a large number of concurrent connections and high message throughput.
+*   **Low Latency:** Minimizes the delay in message delivery.
+
+Edge Services connect to the Hub using leaf nodes, which provide a secure and efficient way to connect to the central NATS cluster.
+
+### Data Storage
+
+Data storage is handled by TimescaleDB, a time-series database built on PostgreSQL. TimescaleDB is optimized for:
+
+*   **High-Volume Data Ingestion:** Supports high write throughput for storing large amounts of time-series data.
+*   **Efficient Querying:** Provides optimized query performance for analyzing time-series data.
+*   **Data Retention Policies:** Allows users to define data retention policies to automatically delete old data.
+*   **Data Compression:** Supports data compression to reduce storage costs.
+
+### Data Flow - Detailed Explanation
+
+1.  **Device Configuration:** A user configures a device within the Proxus Hub, specifying the following parameters:
+    *   **Protocol:** The protocol used to communicate with the device (e.g., Modbus TCP, OPC UA).
+    *   **Connection Parameters:** The connection details for the device (e.g., IP address, port number).
+    *   **Data Sampling Rate:** The frequency at which data is collected from the device.
+    *   **Data Destination:** The destination for the collected data (e.g., TimescaleDB, an external API).
+2.  **Edge Service Deployment:** The device configuration is deployed to an Edge Service that is located near the device.
+3.  **Data Collection:** The Edge Service connects to the device using the specified protocol and collects data at the configured sampling rate.
+4.  **Data Processing:** The Edge Service processes the collected data using configured rules and User-Defined Functions (UDFs). This can include:
+    *   Filtering out irrelevant data.
+    *   Converting data to a standard format.
+    *   Aggregating data over time.
+    *   Performing calculations on the data.
+5.  **Data Storage:** The processed data is stored in TimescaleDB.
+6.  **Data Visualization and Analysis:** Users can visualize and analyze the data using the Proxus Hub's built-in dashboards or external tools connected to TimescaleDB.
+
+## Architecture Highlights
+
+Proxus is built on modern architectural principles that ensure high performance, scalability, and reliability:
+
+*   **Actor Model**: For concurrent and distributed processing
+*   **Message-Based Communication**: Ensuring loose coupling and scalability
+*   **Stateless Design**: Enabling true horizontal scalability
+*   **SIMD Optimization**: For high-performance data processing
+*   **Container-Native**: Full Docker and Kubernetes support
+
+**Next:** [Key Features](/key-features)
+**Previous:** [What is Proxus?](/what-is-proxus)
