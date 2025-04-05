@@ -80,7 +80,11 @@ An IoT policy defines the permissions for your "Thing."
     | Port         | `8883`                                                                          |
     | ClientId     | Your "Thing" name (e.g., `proxus`)                                                |
     | UseTls       | `True`                                                                          |
-    | PfxCertificate | Upload the device certificates (xxx.certificate.pem.crt and xxx.private.pem.key file) you downloaded earlier.                |
+    | PfxCertificate | Upload the device certificates (xxx.certificate.pem.crt and xxx.private.pem.key file) you downloaded earlier. |
+    | QualityOfServiceLevel | `AtLeastOnce` | Ensures message delivery with confirmation (QoS 1) |
+    | MaxReconnectAttempts | `10` | Number of reconnection attempts on failure |
+    | HealthCheckIntervalSec | `10` | Interval for connection health checks |
+    | KeepAliveSeconds | `30` | Keep-alive interval for MQTT connection |
 
 5.  Click **Save**.
 
@@ -102,6 +106,37 @@ An IoT policy defines the permissions for your "Thing."
 ## Topic Structure
 
 Proxus automatically creates AWS IoT Core topics. It constructs these topics using the fields from the Hierarchy tab (except for Group) and appends the device name to the end. If these fields are left blank, the resulting topic will resemble: `unknown/unknown/unknown/unknown/unknown/test`.
+
+## Advanced Configuration Options
+
+The following additional parameters can be configured for enhanced reliability:
+
+| Parameter | Description | Default Value |
+| :-------- | :---------- | :------------ |
+| InitialReconnectDelayMs | Initial delay before first reconnection attempt (ms) | 1000 |
+| MaxReconnectDelayMs | Maximum delay between reconnection attempts (ms) | 30000 |
+| MessageBatchTimeoutMs | Time window for collecting messages into batches (ms) | 500 |
+| MaxBatchSize | Maximum number of messages to batch together | 50 |
+| ConnectionTimeoutSec | Timeout for connection attempts (seconds) | 5 |
+
+## Key Integration Features
+
+The Proxus-AWS IoT integration includes these reliability features:
+
+* **Automatic Reconnection**: Built-in exponential backoff reconnection if connectivity issues occur
+* **Message Persistence**: Messages are queued during connection loss and transmitted when connectivity is restored
+* **Secure Communication**: All data is encrypted using TLS 1.2
+* **Configurable QoS**: Ensures message delivery even through intermittent connection issues
+
+## Troubleshooting
+
+If you encounter issues with the integration:
+
+1. **Verify Connection**: Check if the device is enabled in Proxus
+2. **Confirm Certificate**: Ensure the certificate is active in AWS IoT Core
+3. **Check Topics**: Verify you're subscribed to the correct topic in AWS IoT test client
+4. **Network Access**: Confirm your Proxus server has internet connectivity
+5. **Credentials**: Double-check that the certificates were correctly uploaded
 
 ## Conclusion
 
