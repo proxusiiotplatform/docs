@@ -1,429 +1,146 @@
 ---
-title: "Rule Engine"
-description: "Comprehensive guide to using the Proxus Rule Engine and criteria language syntax for real-time industrial data processing and automation"
-sidebarTitle: "Rule Engine"
-icon: "gears"
+title: "Real-time Rules Engine"
+description: "Understanding Proxus's powerful real-time data processing and rules engine"
+sidebarTitle: "Rules Overview"
+icon: "gear"
 iconType: "solid"
+og:title: "Real-time Rules Engine | Proxus Docs"
+og:description: "Comprehensive guide to Proxus's real-time data processing and rules engine capabilities"
 ---
 
-# Proxus Rule Engine
+# Proxus Rules Engine
 
-<Note>
-  The Rule Engine is a core component of the Proxus IIoT Platform that enables real-time data filtering and automated action triggering based on customizable conditions.
-</Note>
+The Proxus Rules Engine is a powerful automation tool designed for IoT-based industrial systems that analyzes data from devices and performs automated actions based on predefined conditions.
 
-## Introduction
+## What is the Rules Engine?
 
-The Proxus Rule Engine is a powerful automation tool designed for IoT-based systems that analyzes data from devices and performs automated actions (such as sending alerts or system shutdown) based on predefined conditions. The criteria language syntax used to define these conditions has an SQL-like structure and provides a flexible, powerful filtering mechanism.
+The Rules Engine processes data streams from industrial devices in real-time, evaluates them against custom criteria, and triggers appropriate actions when conditions are met. This core component of the Proxus platform enables automated decision-making without manual intervention.
 
-<Frame>
-  <img src="/images/rule-engine-overview.png" alt="Rule Engine Overview" />
-</Frame>
+![Rules Engine Overview](/images/rule-engine-overview.png)
 
-### Key Benefits
+## Key Benefits
 
 <CardGroup cols={2}>
   <Card title="Flexibility" icon="sliders" iconType="solid">
-    Customize conditions based on your specific requirements
+    Customize conditions based on your specific requirements with an SQL-like criteria language
   </Card>
   <Card title="Real-Time Processing" icon="bolt" iconType="solid">
-    Analyze data instantly and trigger actions with minimal latency
+    Analyze data instantly and trigger actions with millisecond latency
   </Card>
-  <Card title="Comprehensiveness" icon="layer-group" iconType="solid">
-    Support for various data types and sources
+  <Card title="Comprehensive Coverage" icon="layer-group" iconType="solid">
+    Support for various data types, sources, and complex conditions
   </Card>
   <Card title="Scalability" icon="arrow-up-right-dots" iconType="solid">
-    Adaptable from small systems to large facilities
+    Adaptable from small systems to large enterprise facilities
   </Card>
 </CardGroup>
 
-## Data Structure
+## Common Use Cases
 
-The Rule Engine processes incoming data within a `TransportData` object, which organizes different data categories into sub-sections: Payload, MetaData, Topic, and Attributes. Each section serves a specific function and is structured as key-value pairs.
+The Rules Engine can be applied to numerous industrial scenarios:
 
-### Data Structure Definitions
+### Automated Monitoring
 
-```csharp
-internal record TransportData {
-    public List<Payload> Payload { get; set; }       // Sensor or PLC data
-    public List<MetaData> MetaData { get; set; }     // Device meta information
-    public string Topic { get; set; }                // Device ID or data source
-    public List<Attributes> Attributes { get; set; } // Additional properties or contextual information
-}
+Monitor equipment parameters in real-time and trigger alerts when values exceed safe thresholds. For example, alert maintenance teams when a motor's temperature rises above 80°C.
 
-internal record Payload {
-    public string Key { get; set; }                  // Data point name (e.g., "Temperature")
-    public string Value { get; set; }                // Data value (as string)
-    public string Type { get; set; }                 // Data type (e.g., "int", "double", "bool")
-    public string PreviousValue { get; set; }        // Previous value
-    public DateTime PreviousValueTime { get; set; }  // Timestamp of previous value
-}
+### Predictive Maintenance
 
-internal record MetaData {
-    public string Key { get; set; }                  // Meta data name (e.g., "DeviceName")
-    public string Value { get; set; }                // Meta data value (e.g., "Sensor001")
-}
+Detect early warning signs of equipment failure by analyzing changes in performance metrics over time.
 
-internal record Attributes {
-    public string Key { get; set; }                  // Attribute name (e.g., "Location")
-    public string Value { get; set; }                // Attribute value (e.g., "FactoryA")
-}
-```
+### Process Control
 
-### Data Structure Explanations
+Automatically adjust process parameters based on incoming sensor data to maintain optimal operating conditions.
 
-<AccordionGroup>
-  <Accordion title="TransportData" icon="box" defaultOpen>
-    The main container for all data, combining different data types.
-  </Accordion>
-  
-  <Accordion title="Payload" icon="microchip">
-    Contains real-time measurements from sensors, PLCs, or other data sources.
-    
-    - **Key**: Defines the name of the data point (e.g., "Temperature", "Pressure", "Humidity")
-    - **Value**: Stores the measurement value as a string (e.g., "25.5", "101.3")
-    - **Type**: Indicates the value's type, ensuring proper data conversion (e.g., "double", "int")
-    - **PreviousValue**: Holds the previous value of the data point; used for change analysis
-    - **PreviousValueTime**: Shows when the previous value was recorded; useful for time-based comparisons
-  </Accordion>
-  
-  <Accordion title="MetaData" icon="tag">
-    Contains identity or status information about the device; typically static data.
-    
-    - **Key**: Defines the meta data field (e.g., "DeviceName", "SerialNumber")
-    - **Value**: Holds the value of the related meta data (e.g., "Sensor001", "SN12345")
-  </Accordion>
-  
-  <Accordion title="Topic" icon="sitemap">
-    Indicates which device or source the data belongs to; typically matches the device ID in MQTT-like systems.
-  </Accordion>
-  
-  <Accordion title="Attributes" icon="list">
-    Stores additional contextual information about the device or data; provides customizable fields.
-    
-    - **Key**: Defines the attribute name (e.g., "Location", "Priority")
-    - **Value**: Holds the attribute value (e.g., "FactoryA", "High")
-  </Accordion>
-</AccordionGroup>
+### Safety Systems
 
-### Sample Data
+Create automated safety responses to dangerous conditions, such as emergency shutdowns when critical thresholds are breached.
 
-The following JSON exemplifies the structure of data coming from an industrial device:
+### Quality Control
 
-```json
-{
-  "Payload": [
-    {
-      "Key": "Temperature",
-      "Value": "25.5",
-      "Type": "double",
-      "PreviousValue": "24.8",
-      "PreviousValueTime": "2025-04-03T10:00:00Z"
-    },
-    {
-      "Key": "Pressure",
-      "Value": "101.3",
-      "Type": "double",
-      "PreviousValue": "100.9",
-      "PreviousValueTime": "2025-04-03T10:00:00Z"
-    },
-    {
-      "Key": "Humidity",
-      "Value": "65",
-      "Type": "int",
-      "PreviousValue": "63",
-      "PreviousValueTime": "2025-04-03T10:00:00Z"
-    }
-  ],
-  "MetaData": [
-    {
-      "Key": "DeviceName",
-      "Value": "Sensor001"
-    },
-    {
-      "Key": "SerialNumber",
-      "Value": "SN12345"
-    }
-  ],
-  "Topic": "Device123",
-  "Attributes": [
-    {
-      "Key": "Location",
-      "Value": "FactoryA"
-    },
-    {
-      "Key": "Priority",
-      "Value": "High"
-    }
-  ]
-}
-```
+Monitor production parameters and flag products that may not meet quality standards based on process data.
 
-This example includes multiple measurements (temperature, pressure, humidity) from a device, along with its identity and additional properties. The criteria language is used to create detailed queries on this data.
+## Architecture Overview
 
-## Criteria Language Syntax
+The Rules Engine operates within the Proxus platform architecture:
 
-The Rule Engine's criteria language is based on an SQL-like syntax that allows precise filtering of industrial data. The language consists of building blocks such as constants, operators, section selectors, and list operations. These components are explained in detail below.
+1. **Data Collection**: Sensors and industrial devices send data to Proxus
+2. **Data Preprocessing**: The platform normalizes and prepares data
+3. **Rule Evaluation**: The Rules Engine evaluates the criteria against incoming data
+4. **Action Triggering**: When conditions are met, predefined actions are executed
+5. **Logging & Feedback**: All activities are logged for audit and improvement
 
-### Constants
+## Components of the Rules Engine
+
+The Rules Engine consists of several key components:
+
+### Data Structure
+
+All data processed by the Rules Engine follows a standardized structure called `TransportData`, which includes:
+
+- **Payload**: Real-time measurements from sensors and devices
+- **MetaData**: Device information and identifiers
+- **Topic**: Data source identifier
+- **Attributes**: Additional contextual properties
+
+[Learn more about data structure](/rules-engine/data-structure)
+
+### Criteria Language
+
+The Rules Engine uses a powerful SQL-like criteria language to define conditions. This language supports:
+
+- Various data types (numeric, string, boolean, datetime)
+- Comparison operators (=, >, <, etc.)
+- Logical operators (AND, OR, NOT)
+- Pattern matching and range checks
+
+[Learn more about criteria language](/rules-engine/criteria-language)
+
+### Actions
+
+When conditions are met, the Rules Engine can trigger various actions:
+
+- Send notifications (email, SMS, in-app alerts)
+- Execute commands on devices
+- Log events
+- Trigger workflows
+- Update dashboards
+
+[Learn more about actions](/rules-engine/actions)
+
+## Getting Started
+
+Ready to start using the Proxus Rules Engine? Follow these steps:
+
+<Steps>
+  <Step title="Define Your Objective">
+    Identify the specific condition you want to monitor and what action should be triggered
+  </Step>
+  <Step title="Understand Your Data">
+    Examine the data structure from your devices to identify relevant parameters
+  </Step>
+  <Step title="Create a Rule">
+    Use the criteria language to define your condition and set up appropriate actions
+  </Step>
+  <Step title="Test and Refine">
+    Validate your rule with test data and refine as needed
+  </Step>
+</Steps>
+
+For a hands-on approach, see our [Quick Start Guide](/rules-engine/quick-start) or continue to the [Data Structure](/rules-engine/data-structure) documentation.
+
+## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="String Constants" icon="quote-left">
-    Written inside single quotes, representing textual data.
-    
-    Example: 'Sensor001', 'FactoryA'
+  <Card title="Data Structure" icon="database" iconType="solid" href="/rules-engine/data-structure">
+    Learn about the TransportData structure used by the Rules Engine
   </Card>
-  
-  <Card title="Numeric Constants" icon="calculator">
-    Written directly as numbers; decimal numbers are supported.
-    
-    Example: 28, 25.5
+  <Card title="Criteria Language" icon="code" iconType="solid" href="/rules-engine/criteria-language">
+    Master the SQL-like syntax for defining conditions
   </Card>
-  
-  <Card title="Boolean Constants" icon="toggle-on">
-    Take True or False values; typically used for state checks.
+  <Card title="Actions Configuration" icon="bolt" iconType="solid" href="/rules-engine/actions">
+    Configure actions to be triggered when conditions are met
   </Card>
-  
-  <Card title="Date and Time Constants" icon="calendar">
-    Written in ISO 8601 format between # symbols.
-    
-    Example: #2025-04-03 10:00:00#
-  </Card>
-  
-  <Card title="Null Value" icon="ban">
-    Represented by NULL; represents missing or undefined data.
+  <Card title="Examples & Use Cases" icon="lightbulb" iconType="solid" href="/rules-engine/examples">
+    Explore real-world examples and common use cases
   </Card>
 </CardGroup>
-
-### Section Selectors
-
-- **[Payload]**: Accesses sensor data; targets real-time measurements.
-- **[MetaData]**: Accesses device meta data; contains static information.
-- **[Topic]**: Accesses the device ID or data source; a single string value.
-- **[Attributes]**: Accesses additional properties; targets contextual data.
-
-### List Operators
-
-For Payload, MetaData, and Attributes: Use the format `[Key = 'key' AND Value = 'value']` to select a specific key-value pair in the list.
-
-Example: `[MetaData][Key = 'DeviceName' AND Value = 'Sensor001']` selects the meta data with the key "DeviceName" and value "Sensor001".
-
-### Operators
-
-<Tabs>
-  <Tab title="Comparison Operators">
-    <ul>
-      <li><b>=</b>: Equal to</li>
-      <li><b>!=</b>: Not equal to</li>
-      <li><b>></b>: Greater than</li>
-      <li><b><</b>: Less than</li>
-      <li><b>>=</b>: Greater than or equal to</li>
-      <li><b><=</b>: Less than or equal to</li>
-    </ul>
-  </Tab>
-  
-  <Tab title="Logical Operators">
-    <ul>
-      <li><b>AND</b>: Requires both conditions to be true</li>
-      <li><b>OR</b>: Requires at least one condition to be true</li>
-      <li><b>NOT</b>: Inverts the condition</li>
-    </ul>
-  </Tab>
-  
-  <Tab title="String Operators">
-    <ul>
-      <li><b>LIKE</b>: Checks for a pattern match; supports wildcard characters % (any string of characters) and _ (single character). Example: Value LIKE 'Sensor%' (starts with "Sensor")</li>
-      <li><b>NOT LIKE</b>: Selects those that don't match the pattern. Example: Value NOT LIKE '%001' (does not end with "001")</li>
-    </ul>
-  </Tab>
-  
-  <Tab title="List Operators">
-    <ul>
-      <li><b>IN</b>: Searches for a match among multiple values. Example: Value IN ('FactoryA', 'FactoryB', 'FactoryC')</li>
-      <li><b>BETWEEN</b>: Checks if the value is in a range (inclusive). Example: Value BETWEEN (95, 105)</li>
-    </ul>
-  </Tab>
-  
-  <Tab title="Null Check Operators">
-    <ul>
-      <li><b>IS NULL</b>: Checks if the value is null. Example: Value IS NULL</li>
-      <li><b>IS NOT NULL</b>: Verifies that the value is not null. Example: Value IS NOT NULL</li>
-    </ul>
-  </Tab>
-</Tabs>
-
-## Condition Examples
-
-Below are rich and comprehensive examples covering different usage scenarios of the criteria language. Each example is based on real-world industrial scenarios and is explained step by step.
-
-<AccordionGroup>
-  <Accordion title="Basic Condition" icon="cubes">
-    **Scenario**: Filter data where the device name is "Sensor001".
-    
-    **Criteria**: `[MetaData][Key = 'DeviceName' AND Value = 'Sensor001']`
-    
-    **Explanation**: Filters by device name in the meta data.
-  </Accordion>
-  
-  <Accordion title="Numeric Filtering with Payload" icon="gauge-high">
-    **Scenario**: Select data where the temperature value is greater than 28 degrees.
-    
-    **Criteria**: `[Payload][Key = 'Temperature' AND Value > 28]`
-    
-    **Explanation**: Targets the temperature measurement in sensor data and makes a numerical comparison.
-  </Accordion>
-  
-  <Accordion title="Device Selection with Topic" icon="sitemap">
-    **Scenario**: Filter data coming from the device with ID "Device123".
-    
-    **Criteria**: `[Topic] = 'Device123'`
-    
-    **Explanation**: Directly queries the Topic field, which is a single string.
-  </Accordion>
-  
-  <Accordion title="Combining Multiple Conditions" icon="network-wired">
-    **Scenario**: Select data where the device name is "Sensor001" and the temperature is greater than 25.
-    
-    **Criteria**: `[MetaData][Key = 'DeviceName' AND Value = 'Sensor001'] AND [Payload][Key = 'Temperature' AND Value > 25]`
-    
-    **Explanation**: Combines meta data and Payload sections to check two conditions.
-  </Accordion>
-  
-  <Accordion title="Pattern Matching with Strings (LIKE)" icon="magnifying-glass">
-    **Scenario**: Filter data where the device name starts with "Sensor".
-    
-    **Criteria**: `[MetaData][Key = 'DeviceName' AND Value LIKE 'Sensor%']`
-    
-    **Explanation**: Uses the % wildcard character to select all devices starting with "Sensor".
-  </Accordion>
-  
-  <Accordion title="Filtering with Lists (IN)" icon="list-check">
-    **Scenario**: Select data from devices located in "FactoryA", "FactoryB", or "FactoryC".
-    
-    **Criteria**: `[Attributes][Key = 'Location' AND Value IN ('FactoryA', 'FactoryB', 'FactoryC')]`
-    
-    **Explanation**: Checks against a list of multiple values.
-  </Accordion>
-  
-  <Accordion title="Range Check (BETWEEN)" icon="arrows-left-right">
-    **Scenario**: Filter data where the pressure value is between the limits 95 and 105.
-    
-    **Criteria**: `[Payload][Key = 'Pressure' AND Value BETWEEN (95, 105)]`
-    
-    **Explanation**: Selects numerical values within the specified range (inclusive).
-  </Accordion>
-  
-  <Accordion title="Negative Condition (NOT)" icon="ban">
-    **Scenario**: Select data where the humidity value is not less than 50.
-    
-    **Criteria**: `[Payload][Key = 'Humidity' AND NOT Value < 50]`
-    
-    **Explanation**: Inverts a negative condition to select values that are 50 or greater.
-  </Accordion>
-  
-  <Accordion title="Complex Condition" icon="puzzle-piece">
-    **Scenario**: Select data where the device name is "Sensor001", temperature is greater than 25, and pressure is not less than 100.
-    
-    **Criteria**: `[MetaData][Key = 'DeviceName' AND Value = 'Sensor001'] AND [Payload][Key = 'Temperature' AND Value > 25] AND NOT [Payload][Key = 'Pressure' AND Value < 100]`
-    
-    **Explanation**: Combines three different conditions and fine-tunes with logical operators.
-  </Accordion>
-  
-  <Accordion title="Nested Condition" icon="layer-group">
-    **Scenario**: Select data from device "Device123" where pressure is greater than 100, but not if temperature is less than 25 and location is "FactoryA".
-    
-    **Criteria**: `[Topic] = 'Device123' AND [Payload][Key = 'Pressure' AND Value > 100] AND NOT ([Payload][Key = 'Temperature' AND Value < 25] AND [Attributes][Key = 'Location' AND Value = 'FactoryA'])`
-    
-    **Explanation**: Uses parentheses to define nested conditions and creates a complex filter.
-  </Accordion>
-  
-  <Accordion title="Time-Based Filtering" icon="clock">
-    **Scenario**: Select data where the previous temperature value is older than 24 hours.
-    
-    **Criteria**: `[Payload][Key = 'Temperature' AND PreviousValueTime < #2025-04-02 10:00:00#]`
-    
-    **Explanation**: Uses the timestamp field in Payload to filter historical data.
-  </Accordion>
-  
-  <Accordion title="Null Check" icon="ban">
-    **Scenario**: Filter data where the device's serial number is not defined.
-    
-    **Criteria**: `[MetaData][Key = 'SerialNumber' AND Value IS NULL]`
-    
-    **Explanation**: Performs a null check to detect missing meta data.
-  </Accordion>
-  
-  <Accordion title="Multiple Payload Condition" icon="layer-group">
-    **Scenario**: Select data where temperature is greater than 25 and humidity is greater than 60.
-    
-    **Criteria**: `[Payload][Key = 'Temperature' AND Value > 25] AND [Payload][Key = 'Humidity' AND Value > 60]`
-    
-    **Explanation**: Queries multiple data points in the same section.
-  </Accordion>
-  
-  <Accordion title="Real-World Scenario: Emergency Detection" icon="triangle-exclamation">
-    **Scenario**: Select data from device "Device123" where temperature is greater than 30, pressure is greater than 110, and priority is "High" (e.g., an overheating machine situation).
-    
-    **Criteria**: `[Topic] = 'Device123' AND [Payload][Key = 'Temperature' AND Value > 30] AND [Payload][Key = 'Pressure' AND Value > 110] AND [Attributes][Key = 'Priority' AND Value = 'High']`
-    
-    **Explanation**: Combines multiple sections to filter for emergency detection.
-  </Accordion>
-  
-  <Accordion title="Change Analysis" icon="chart-line">
-    **Scenario**: Select data where the temperature value has increased by more than 5 units from its previous value.
-    
-    **Criteria**: `[Payload][Key = 'Temperature' AND (Value - PreviousValue) > 5]`
-    
-    **Explanation**: Analyzes data change with a mathematical operation (Note: Such calculations depend on system support).
-  </Accordion>
-  
-  <Accordion title="Out-of-Range Filtering (NOT BETWEEN)" icon="arrows-right-left">
-    **Scenario**: Select data where the pressure value is not between 95 and 105.
-    
-    **Criteria**: `[Payload][Key = 'Pressure' AND Value NOT BETWEEN (95, 105)]`
-    
-    **Explanation**: Selects values outside the specified range.
-  </Accordion>
-  
-  <Accordion title="Multi-Layer Condition" icon="layer-group">
-    **Scenario**: Select data from device "Device123" where temperature is between 20 and 30, humidity is greater than 50, and location is "FactoryA" or "FactoryB".
-    
-    **Criteria**: `[Topic] = 'Device123' AND [Payload][Key = 'Temperature' AND Value BETWEEN (20, 30)] AND [Payload][Key = 'Humidity' AND Value > 50] AND [Attributes][Key = 'Location' AND Value IN ('FactoryA', 'FactoryB')]`
-    
-    **Explanation**: Combines multiple sections and operators to create a detailed filter.
-  </Accordion>
-</AccordionGroup>
-
-## Usage Tips
-
-<CardGroup cols={2}>
-  <Card title="Correct Data Type Usage" icon="database">
-    Value is always stored as a string, but use appropriate operators based on the Type field (e.g., numerical comparisons for ">").
-  </Card>
-  
-  <Card title="Condition Order" icon="arrow-down-a-z">
-    Use parentheses to define priorities in complex conditions; be cautious with NOT and nested conditions.
-  </Card>
-  
-  <Card title="Debugging" icon="bug">
-    Start testing your criteria with small datasets and verify the results.
-  </Card>
-  
-  <Card title="Performance" icon="gauge-high">
-    Avoid unnecessarily complex criteria; simple and targeted conditions improve system performance.
-  </Card>
-  
-  <Card title="Wildcard Characters" icon="star">
-    Use % and _ with LIKE to create flexible patterns (e.g., Value LIKE 'S_n%' selects those starting with "San" or "Sen").
-  </Card>
-  
-  <Card title="Time Analysis" icon="clock">
-    Use PreviousValueTime for time-based trend analysis.
-  </Card>
-</CardGroup>
-
-## Conclusion
-
-The Proxus IIoT Rule Engine is a powerful and flexible tool for industrial data processing and automation. This document provides a comprehensive guide for users who want to learn and apply the criteria language syntax. The rich examples cover both basic and advanced scenarios, allowing you to fully utilize the platform's potential.
-
-For more customization or support, contact the technical team of the Proxus IIoT platform. With this tool, you can make your facilities safer, more efficient, and smarter.
