@@ -1,38 +1,66 @@
 services:
-  
+  # NATS Server (Message Broker)
   hub-server:
+    restart: always
     image: nats:alpine
     container_name: hub-server
     networks:
       - proxus
     ports:
-      - "4222:4222"
-      - "8222:8222"
-      - "7422:7422"
+      - "4222:4222"  # NATS client port
+      - "8222:8222"  # NATS monitoring port
+      - "7422:7422"  # NATS leaf node port
     volumes:
       - nats:/data
-      - ./Configs/hub.conf:/etc/nats/hub.conf
-      - ./Configs/accounts.conf:/etc/nats/accounts.conf
-    command:
-      - "--name=hub-server"
-      - "--http_port=8222"
-      - "-c"
-      - "/etc/nats/hub.conf"
-  
-  
+      - config:/nats-config
+    command: |
+      /bin/sh -c "
+      mkdir -p /nats-config
+      if [ ! -f /nats-config/hub.conf ]; then
+        cat > /nats-config/hub.conf << EOF
+      port: 4222
+      server_name: hub-server
+      jetstream {
+        store_dir: \"/data/jetstream\"
+        domain: hub
+      }
+      leafnodes {
+        port: 7422
+      }
+      include ./accounts.conf
+      EOF
+      fi
+      if [ ! -f /nats-config/accounts.conf ]; then
+        cat > /nats-config/accounts.conf << EOF
+      accounts: {
+        USERS: {
+          users: [
+            {user: acc, password: acc}
+          ],
+          jetstream: enabled
+        },
+        SYS: {
+          users: [
+            {user: admin, password: admin}
+          ]
+        }
+      }
+      system_account: SYS
+      EOF
+      fi
+      nats-server -c /nats-config/hub.conf -m 8222
+      "
+
+  # Database Service
   timescaledb:
     restart: always
     container_name: timescaledb
-    image: timescale/timescaledb-ha:pg16 # HA image includes the TimescaleDB Toolkit, and support for PostGIS and Patroni but does not support ARM64. For ARM64 environments, use the timescaledb Docker image. 
-    # image: timescale/timescaledb:latest-pg16
+    image: timescale/timescaledb-ha:pg16
     command: postgres -c shared_preload_libraries=timescaledb -p 5442
     user: "0"
+    shm_size: 1g
     volumes:
-      - type: volume
-        source: proxus-db-volume
-        # target: /var/lib/postgresql/data # Non HA image data location
-        target: /home/postgres/pgdata/data
-        read_only: false
+      - proxus-db-volume:/home/postgres/pgdata/data
     networks:
       - proxus
     ports:
@@ -41,44 +69,42 @@ services:
       - POSTGRES_DB=proxus
       - POSTGRES_USER=proxus
       - POSTGRES_PASSWORD=proxus
-  
+
+  # Proxus API Service
   proxus-api:
     restart: always
     container_name: proxus-api
-    image: proxusplatform/proxus-api:1.1.2.0-amd64
+    image: proxusplatform/proxus-api:latest
     user: "0"
     networks:
       - proxus
     ports:
       - "8082:8082"
     volumes:
-      - type: volume
-        source: config
-        target: /app/config
-        read_only: false
+      - config:/app/config
     environment:
-      - TZ=Europe/Istanbul  # Set the timezone for the container
+      - TZ=Europe/Istanbul
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8081
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
-  
+    depends_on:
+      - timescaledb
+
+  # Proxus Server (connected to NATS)
   proxus-server:
     restart: always
     container_name: proxus-server
-    image: proxusplatform/proxus-server:1.1.2.0-amd64
+    image: proxusplatform/proxus-server:latest
     user: "0"
     networks:
       - proxus
     ports:
       - "8083:8083"
-      - "1883:1883"
+      - "1883:1883"  # MQTT port
     volumes:
-      - type: volume
-        source: config
-        target: /app/config
-        read_only: false
+      - config:/app/config
     environment:
-      - TZ=Europe/Istanbul  # Set the timezone for the container
+      - TZ=Europe/Istanbul
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
       - AdvertisedHost=proxus-server
       - ASPNETCORE_ENVIRONMENT=Production
@@ -86,30 +112,29 @@ services:
       - OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES=Proto.Actor
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
       - OTEL_DOTNET_AUTO_METRICS_CONSOLE_EXPORTER_ENABLED=true
-      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
-      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
-      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    command: >
+      ./Proxus.Server
+      GatewayID=1
+      EdgeMode=Proxus
+      BrokerUrl=nats://hub-server:4222
+      BrokerUser=acc
+      BrokerPassword=acc
+      UI-Address=proxus-ui
     
-    
-    command: [ "./Proxus.Server",
-               "GatewayID=1",
-               "EdgeMode=Proxus",
-               "BrokerUrl=nats://hub-server:4222",
-               "BrokerUser=acc",
-               "BrokerPassword=acc",
-               "UI-Address=proxus-ui" ]
-    
+    depends_on:
+      - hub-server
+      - proxus-ui
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8083/healthz | grep -q 'Healthy' || exit 1" ]
       interval: 30s
       timeout: 10s
       retries: 5
-  
+
+  # Proxus UI (connected to NATS)
   proxus-ui:
     restart: always
     container_name: proxus-ui
-    image: proxusplatform/proxus-ui:1.1.2.0-amd64
+    image: proxusplatform/proxus-ui:latest
     user: "0"
     networks:
       - proxus
@@ -117,150 +142,27 @@ services:
       - "8080:8080"
     volumes:
       - proxus_modules:/app/Modules
-      - type: volume
-        source: config
-        target: /app/config
-        read_only: false
+      - config:/app/config
       - /var/run/docker.sock:/var/run/docker.sock
       - ./Configs/accounts.conf:/app/accounts.conf
     environment:
-      - TZ=Europe/Istanbul  # Set the timezone for the container
+      - TZ=Europe/Istanbul
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
-      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
-      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
-      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
-    command: [ "./Proxus.Blazor.Server",
-               "BrokerUrl=nats://hub-server:4222",
-               "BrokerUser=acc",
-               "BrokerPassword=acc" ]
+    command: >
+      ./Proxus.Blazor.Server
+      BrokerUrl=nats://hub-server:4222
+      BrokerUser=acc
+      BrokerPassword=acc
     
+    depends_on:
+      - hub-server
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8080/healthz | grep -q 'Healthy' || exit 1" ]
       interval: 30s
       timeout: 10s
       retries: 5
-
-#  jaeger:
-#    image: jaegertracing/all-in-one:1.52
-#    command: --query.ui-config=/etc/jaeger/jaeger-ui.json --collector.otlp.enabled=true --prometheus.server-url=http://prometheus:9090 --prometheus.query.support-spanmetrics-connector=true
-#    environment:
-#      - METRICS_STORAGE_TYPE=prometheus
-#      - PROMETHEUS_QUERY_NORMALIZE_CALLS=true
-#      - PROMETHEUS_QUERY_NORMALIZE_DURATION=true
-#    volumes:
-#      - ./Configs/jaeger-ui.json:/etc/jaeger/jaeger-ui.json
-#    ports:
-#      - "127.0.0.1:16686:16686"
-#    networks:
-#      - proxus
-#
-#  otel-collector:
-#    image: otel/opentelemetry-collector-contrib:0.91.0
-#    command: --config /etc/otelcol/otel-collector-config.yml
-#    volumes:
-#      - ./Configs/otel-collector-config.yml:/etc/otelcol/otel-collector-config.yml
-#    ports:
-#      - "127.0.0.1:4317:4317"
-#    networks:
-#      - proxus
-#    depends_on:
-#      - jaeger
-#
-#  prometheus:
-#    image: prom/prometheus:v2.48.1
-#    volumes:
-#      - ./Configs/prometheus.yml:/etc/prometheus/prometheus.yml
-#    ports:
-#      - "127.0.0.1:9090:9090"
-#    networks:
-#      - proxus
-#
-#  loki:
-#    image: grafana/loki:2.9.3
-#    command: -config.file=/mnt/config/loki-config.yml
-#    volumes:
-#      - ./Configs/loki.yml:/mnt/config/loki-config.yml
-#    ports:
-#      - "127.0.0.1:3100:3100"
-#    networks:
-#      - proxus
-#
-#  grafana:
-#    image: grafana/grafana:10.2.3
-#    environment:
-#      - GF_AUTH_ANONYMOUS_ENABLED=true
-#      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-#      - GF_AUTH_DISABLE_LOGIN_FORM=true
-#    volumes:
-#      - ./Configs/grafana.ini:/etc/grafana/grafana.ini
-#      - ./Configs/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
-#      - ./Configs/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
-#      - ./Configs/dotnet-otel-dashboard.json:/etc/grafana/provisioning/dashboards/dotnet-otel-dashboard.json
-#      - ./Configs/logs-dashboard.json:/etc/grafana/provisioning/dashboards/logs-dashboard.json
-#    ports:
-#      - "3000:3000"
-#    networks:
-#      - proxus
-#
-#  mindsdb:
-#    image: mindsdb/mindsdb:devel
-#    # If you want to build the image instead:
-#    # build:
-#    #   context: .
-#    #   dockerfile: docker/mindsdb.Dockerfile
-#    #   target: dev  # Makes sure dev dependencies are installed
-#    restart: always
-#    networks:
-#      - proxus
-#    ports:
-#      - '47334:47334'
-#      - '47335:47335'
-#      - '47336:47336'
-#    # watchfiles will reload the app when python files are changed
-#    command: bash -c "watchfiles --filter python 'python -m mindsdb' ."
-#    environment:
-#      MINDSDB_DOCKER_ENV: "True"
-#      MINDSDB_STORAGE_DIR: "/mindsdb/var"
-#      FLASK_DEBUG: 1  # This will make sure http requests are logged regardless of log level
-#      # MINDSDB_LOG_LEVEL: "DEBUG"
-#      # OPENAI_API_KEY: "..."
-#    volumes:
-#      - type: bind
-#        source: .
-#        target: /mindsdb
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://localhost:47334/api/util/ping" ]
-#      interval: 30s
-#      timeout: 4s
-#      retries: 100
-#      
-#  nats-box:
-#    image: natsio/nats-box:latest
-#    networks:
-#      - proxus
-#    volumes:
-#      - ./nsc:/nsc
-#    stdin_open: true  # docker run -i
-#    tty: true         # docker run -t
-#    command: tail -f /dev/null  # Container'ı sürekli çalışır durumda tutar
-#       
-#  pgadmin:
-#      image: dpage/pgadmin4
-#      restart: always
-#      container_name: pgadmin
-#      environment:
-#        PGADMIN_DEFAULT_EMAIL: 'admin@admin.com' # Replace with your desired admin email
-#        PGADMIN_DEFAULT_PASSWORD: 'admin' # Replace with your desired admin password
-#        PGADMIN_LISTEN_PORT: 5050
-#      ports:
-#        - "5050:5050" # Maps port 5050 on the host to port 80 in the container
-#      volumes:
-#        - pgadmin-data:/var/lib/pgadmin
-#      networks:
-#        - proxus
 
 networks:
   proxus:
@@ -271,4 +173,3 @@ volumes:
   proxus-db-volume:
   config:
   nats:
-  
