@@ -1,38 +1,39 @@
 ---
+
 title: "Introduction to Proxus IIoT Platform"
 description: "Learn about Proxus, the high-performance distributed Industrial IoT Platform for real-time data acquisition, analysis, and integration"
-sidebarTitle: "Introduction" 
+sidebarTitle: "Introduction"
 icon: "book-open"
 iconType: "solid"
-"og:title": "Proxus IIoT Platform Introduction | Proxus Docs"
-"og:description": "Discover Proxus, the comprehensive Industrial IoT platform that unifies data acquisition, analysis, storage, and integration capabilities"
----
+"og\:title": "Proxus IIoT Platform Introduction | Proxus Docs"
+"og\:description": "Discover Proxus, the comprehensive Industrial IoT platform that unifies data acquisition, analysis, storage, and integration capabilities"
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Welcome to Proxus
 
-Proxus is a next-generation Industrial IoT (IIoT) platform that unifies data collection, analysis, storage, enrichment, monitoring, and integration capabilities in a single, high-performance system. Designed for modern industrial environments, Proxus enables organizations to harness the full potential of their operational data.
+**Proxus** is a next-generation Industrial IoT (IIoT) platform that unifies data collection, real-time analytics, rule-based processing, long-term storage, edge computing, and enterprise integration in a single high-performance system. Designed for the demands of modern industrial environments, Proxus empowers manufacturers, energy providers, utilities, and mining operators to transform raw operational data into actionable insights — securely, reliably, and at scale.
 
 ## What is Proxus?
 
-Proxus is a comprehensive IIoT platform that bridges the gap between Operational Technology (OT) and Information Technology (IT) systems. Built on cutting-edge technologies and architectural patterns, it delivers unprecedented performance and scalability for industrial data management.
+Proxus is a **comprehensive IIoT and UNS (Unified Namespace)** platform that bridges the gap between Operational Technology (OT) and Information Technology (IT). By combining real-time data ingestion, event-based processing, edge analytics, and cloud-native integrations, Proxus delivers a unified data infrastructure built for Industry 4.0.
 
 ### Core Capabilities
 
 <CardGroup cols={2}>
   <Card title="Data Collection" icon="database">
-    Connect and collect data from 50+ industrial protocols and OT systems effortlessly
+    Connect and collect from 50+ industrial protocols including OPC UA, Modbus, MQTT, and proprietary PLC formats
   </Card>
 
   <Card title="Real-time Analytics" icon="chart-line">
-    Process and analyze data in real-time with user-defined rules and anomaly detection
+    Define and deploy rule-based analytics, anomaly detection, and alerts across distributed assets
   </Card>
 
   <Card title="Edge Computing" icon="microchip">
-    Deploy powerful edge computing capabilities with near-zero latency
+    Perform low-latency analytics and transformation directly at the edge, even when offline
   </Card>
 
   <Card title="Integration Hub" icon="plug">
-    Connect with 20+ IT systems for seamless data flow across your organization
+    Integrate seamlessly with 20+ enterprise systems including SAP, AWS, PostgreSQL, InfluxDB, and more
   </Card>
 </CardGroup>
 
@@ -40,88 +41,71 @@ Proxus is a comprehensive IIoT platform that bridges the gap between Operational
 
 <CardGroup cols={3}>
   <Card title="High Performance" icon="gauge-high">
-    Built using Actor model, message passing, and SIMD optimizations for maximum throughput
+    Designed using Actor-based concurrency, SIMD optimization, and zero-GC architecture for ultra-fast throughput
   </Card>
 
   <Card title="Cloud Native" icon="cloud">
-    Designed for modern cloud environments with full Kubernetes support
+    Deploy anywhere — from edge devices to Kubernetes clusters, with full containerization support
   </Card>
 
   <Card title="Developer Friendly" icon="code">
-    Integrated IDE for C# development with hot-deploy capabilities
+    Build and deploy custom logic using C# in an integrated web IDE with full hot-reload capabilities
   </Card>
 </CardGroup>
 
 ## Key Features
 
-### Advanced Data Management
+### 🔄 Advanced Data Management
 
-* Real-time data collection from diverse industrial sources
+* Real-time data ingestion from distributed and heterogeneous industrial sources
+* Efficient time-series storage with built-in TimescaleDB or external connectors
+* Automatic cleanup, partitioning, and data retention policies
 
-* Built-in TimescaleDB integration for efficient time-series data storage
+### 🧠 Powerful Analytics Engine
 
-* Sophisticated data enrichment and transformation capabilities
+* Visual rule builder for defining triggers and actions
+* Anomaly detection powered by streaming evaluation
+* Alerting via Email, SMS, WhatsApp, HTTP API, and more
 
-### Powerful Analytics Engine
+### 🛰️ Edge Computing
 
-* User-defined rules for real-time data analysis
+* Docker-based edge agent for ARM/x86 devices
+* Offline-first design with local processing and buffering
+* Seamless upstream sync to centralized Proxus Hub
 
-* Advanced anomaly detection
+### 📊 Visual Analytics
 
-* Customizable alerting and notification system
+* Drag-and-drop dashboard designer with real-time widgets
+* SQL-powered visualizations and user-defined queries
+* Embed dashboards across web and mobile interfaces
 
-### Edge Computing
+### 🔌 Enterprise Integration
 
-* Distributed edge computing architecture
-
-* Offline operation support
-
-* Seamless edge-to-cloud synchronization
-
-### Visual Analytics
-
-* Integrated dashboard designer
-
-* SQL-based data visualization
-
-* Custom widget support
-
-### Enterprise Integration
-
-* Connect with 20+ enterprise systems
-
-* Flexible data mapping
-
-* Secure authentication and transmission
+* 20+ out-of-the-box connectors for databases, brokers, and cloud APIs
+* Webhooks, REST APIs, gRPC, MQTT, and Sparkplug B
+* Role-based access control and audit logs for compliance
 
 ## Architecture Highlights
 
-Proxus is built on modern architectural principles that ensure high performance, scalability, and reliability:
+Proxus is built on modern principles for high-throughput, fault-tolerant, and horizontally scalable performance:
 
-* **Actor Model**: For concurrent and distributed processing
-
-* **Message-Based Communication**: Ensuring loose coupling and scalability
-
-* **Stateless Design**: Enabling true horizontal scalability
-
-* **SIMD Optimization**: For high-performance data processing
-
-* **Container-Native**: Full Docker and Kubernetes support
+* **Actor Model Architecture**: Event-driven processing with distributed concurrency
+* **SIMD Optimization**: Hardware-accelerated transformation and filtering
+* **Message-Passing Core**: Decoupled, asynchronous internal communication
+* **Zero-GC Runtime**: Ultra-low latency, garbage-collection-free data flow
+* **Container-Native Design**: Works across Docker, Kubernetes, and embedded Linux
 
 ## Getting Started
 
-Ready to begin with Proxus? Follow our quick start guide to:
+Start your Proxus journey in minutes:
 
 <Steps>
-  1. Install Proxus using Docker
-
-  2. Configure your first data source
-
-  3. Create your first dashboard
-
-  4. Set up real-time analytics
+  1. Install Proxus using our official Docker image
+  2. Configure device profiles and data acquisition pipelines
+  3. Define rules and deploy your first user-defined function (UDF)
+  4. Design dashboards and integrate with your IT ecosystem
 </Steps>
 
-<Card title="Quick Start Guide" icon="rocket" href="/getting-started/quickstart">
-  Get up and running with Proxus in minutes
+<Card title="Quick Start Guide" icon="rocket" href="/overview/getting-started">
+  Deploy Proxus in under 5 minutes and start unlocking real-time insights
 </Card>
