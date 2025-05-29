@@ -1,13 +1,3 @@
----
-title: "Introduction to Proxus IIoT Platform"
-description: "Learn about Proxus, the high-performance distributed Industrial IoT Platform for real-time data acquisition, analysis, and integration"
-sidebarTitle: "Introduction"
-icon: "book-open"
-iconType: "solid"
-"og\:title": "Proxus IIoT Platform Introduction | Proxus Docs"
-"og\:description": "Discover Proxus, the comprehensive Industrial IoT platform that unifies data acquisition, analysis, storage, and integration capabilities"
----
-
 # Welcome to Proxus
 
 Industrial operations today are more connected than ever — yet more fragmented. Data is trapped across PLCs, SCADA systems, MES tools, and siloed databases. Complex toolchains and vendor lock-in make integration costly and fragile.
@@ -26,17 +16,14 @@ Built with performance and flexibility in mind, Proxus helps organizations manag
 
 <CardGroup cols={2}>
   <Card title="Data Collection" icon="database">
-    Connect and collect from 50+ industrial protocols including OPC UA, Modbus, MQTT, and proprietary PLC formats
+    Connect and collect from 50\+ industrial protocols including OPC UA, Modbus, MQTT, and proprietary PLC formats
   </Card>
-
   <Card title="Real-time Analytics" icon="chart-line">
     Define threshold-based or event-driven rules, detect anomalies, and trigger alerts
   </Card>
-
   <Card title="Edge Computing" icon="microchip">
     Analyze and process data on-site, reducing latency and enabling offline resilience
   </Card>
-
   <Card title="Integration Hub" icon="plug">
     Communicate with over 20 IT systems including SAP, AWS, PostgreSQL, InfluxDB, Azure, and more
   </Card>
@@ -48,11 +35,9 @@ Built with performance and flexibility in mind, Proxus helps organizations manag
   <Card title="Simplified Architecture" icon="layer-group">
     Consolidates data flow from sensor to cloud without third-party middleware or custom ETL scripting
   </Card>
-
   <Card title="High Performance" icon="gauge-high">
     Built with Actor-based concurrency, SIMD acceleration, and zero-GC runtime for millions of data points per second
   </Card>
-
   <Card title="Platform-Agnostic" icon="cloud">
     Runs on any environment: Docker, Kubernetes, ARM, x86, Windows, macOS, Linux
   </Card>
@@ -62,42 +47,42 @@ Built with performance and flexibility in mind, Proxus helps organizations manag
 
 ### 🔄 Advanced Data Management
 
-* Real-time data ingestion from diverse industrial sources
-* Optimized time-series storage (e.g., TimescaleDB)
-* Retention, partitioning, and cleanup strategies
+- Real-time data ingestion from diverse industrial sources
+- Optimized time-series storage (e.g., TimescaleDB)
+- Retention, partitioning, and cleanup strategies
 
 ### 🧠 Rule Engine and Alerts
 
-* Visual rule builder with drag-and-drop logic
-* Conditional rules for alerts, triggers, or data forwarding
-* Output via email, SMS, WhatsApp, HTTP, MQTT, or IT API
+- Visual rule builder with drag-and-drop logic
+- Conditional rules for alerts, triggers, or data forwarding
+- Output via email, SMS, WhatsApp, HTTP, MQTT, or IT API
 
 ### 🛰️ Distributed Edge Analytics
 
-* Lightweight edge agents for ARM/x86 hardware
-* Local buffering and logic execution in disconnected mode
-* Edge-to-cloud synchronization when connected
+- Lightweight edge agents for ARM/x86 hardware
+- Local buffering and logic execution in disconnected mode
+- Edge-to-cloud synchronization when connected
 
 ### 📊 Visualization and Dashboards
 
-* Modern dashboard designer with live updating widgets
-* SQL and filter-based queries
-* Responsive across web, tablet, and mobile views
+- Modern dashboard designer with live updating widgets
+- SQL and filter-based queries
+- Responsive across web, tablet, and mobile views
 
 ### 🔌 IT Integration Layer
 
-* Connectors for 20+ databases, brokers, and cloud APIs
-* Secure communication: REST, gRPC, MQTT, Webhooks
-* Role-based access and audit logs for security and compliance
+- Connectors for 20\+ databases, brokers, and cloud APIs
+- Secure communication: REST, gRPC, MQTT, Webhooks
+- Role-based access and audit logs for security and compliance
 
 ## Architecture Overview
 
 The architecture behind Proxus focuses on performance, modularity, and scale:
 
-* **Edge + Central Duality**: Workloads are executed locally when needed, with minimal cloud dependence
-* **Actor System Core**: Enables lightweight and parallel message processing
-* **Event Stream Pipeline**: Optimized for ingestion and transformation
-* **Container-Native**: Portable and lightweight deployments on any device
+- **Edge \+ Central Duality**: Workloads are executed locally when needed, with minimal cloud dependence
+- **Actor System Core**: Enables lightweight and parallel message processing
+- **Event Stream Pipeline**: Optimized for ingestion and transformation
+- **Container-Native**: Portable and lightweight deployments on any device
 
 ## Getting Started
 
@@ -113,4 +98,3 @@ To begin using Proxus:
 <Card title="Quick Start Guide" icon="rocket" href="/overview/getting-started">
   Get Proxus up and running in minutes — no complex configuration required
 </Card>
-
