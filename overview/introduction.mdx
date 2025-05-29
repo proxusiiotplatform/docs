@@ -10,11 +10,17 @@ iconType: "solid"
 
 # Welcome to Proxus
 
-**Proxus** is a next-generation Industrial IoT (IIoT) platform that unifies data collection, real-time analytics, rule-based processing, long-term storage, edge computing, and enterprise integration in a single high-performance system. Designed for the demands of modern industrial environments, Proxus empowers manufacturers, energy providers, utilities, and mining operators to transform raw operational data into actionable insights — securely, reliably, and at scale.
+Industrial operations today are more connected than ever — yet more fragmented. Data is trapped across PLCs, SCADA systems, MES tools, and siloed databases. Complex toolchains and vendor lock-in make integration costly and fragile.
 
-## What is Proxus?
+**Proxus** is built to solve this. It’s a distributed, edge-first IIoT platform that brings together data acquisition, analytics, visualization, and IT/OT integration in one unified environment. Instead of relying on fragile central systems, Proxus processes and enriches data where it’s created — at the edge.
 
-Proxus is a **comprehensive IIoT and UNS (Unified Namespace)** platform that bridges the gap between Operational Technology (OT) and Information Technology (IT). By combining real-time data ingestion, event-based processing, edge analytics, and cloud-native integrations, Proxus delivers a unified data infrastructure built for Industry 4.0.
+With built-in support for the Unified Namespace (UNS) and Single Source of Truth (SSoT) principles, Proxus ensures that all operational data is consistent, accessible, and contextualized across teams and systems — in real time.
+
+Whether you're monitoring a CNC machine, managing a remote solar inverter, or synchronizing hundreds of devices across a plant network, Proxus offers the speed, clarity, and interoperability needed for modern industrial intelligence.
+
+**Proxus** is a distributed Industrial IoT (IIoT) platform designed to simplify data acquisition, analysis, and integration across industrial operations. It centralizes multiple complex functions — including collection, rule processing, edge computing, storage, visualization, and enterprise integration — into a unified system.
+
+Built with performance and flexibility in mind, Proxus helps organizations manage industrial data at scale while reducing the time, cost, and effort typically required by fragmented, traditional solutions.
 
 ### Core Capabilities
 
@@ -24,31 +30,31 @@ Proxus is a **comprehensive IIoT and UNS (Unified Namespace)** platform that bri
   </Card>
 
   <Card title="Real-time Analytics" icon="chart-line">
-    Define and deploy rule-based analytics, anomaly detection, and alerts across distributed assets
+    Define threshold-based or event-driven rules, detect anomalies, and trigger alerts
   </Card>
 
   <Card title="Edge Computing" icon="microchip">
-    Perform low-latency analytics and transformation directly at the edge, even when offline
+    Analyze and process data on-site, reducing latency and enabling offline resilience
   </Card>
 
   <Card title="Integration Hub" icon="plug">
-    Integrate seamlessly with 20+ enterprise systems including SAP, AWS, PostgreSQL, InfluxDB, and more
+    Communicate with over 20 IT systems including SAP, AWS, PostgreSQL, InfluxDB, Azure, and more
   </Card>
 </CardGroup>
 
 ## Why Proxus?
 
 <CardGroup cols={3}>
+  <Card title="Simplified Architecture" icon="layer-group">
+    Consolidates data flow from sensor to cloud without third-party middleware or custom ETL scripting
+  </Card>
+
   <Card title="High Performance" icon="gauge-high">
-    Designed using Actor-based concurrency, SIMD optimization, and zero-GC architecture for ultra-fast throughput
+    Built with Actor-based concurrency, SIMD acceleration, and zero-GC runtime for millions of data points per second
   </Card>
 
-  <Card title="Cloud Native" icon="cloud">
-    Deploy anywhere — from edge devices to Kubernetes clusters, with full containerization support
-  </Card>
-
-  <Card title="Developer Friendly" icon="code">
-    Build and deploy custom logic using C# in an integrated web IDE with full hot-reload capabilities
+  <Card title="Platform-Agnostic" icon="cloud">
+    Runs on any environment: Docker, Kubernetes, ARM, x86, Windows, macOS, Linux
   </Card>
 </CardGroup>
 
@@ -56,55 +62,54 @@ Proxus is a **comprehensive IIoT and UNS (Unified Namespace)** platform that bri
 
 ### 🔄 Advanced Data Management
 
-* Real-time data ingestion from distributed and heterogeneous industrial sources
-* Efficient time-series storage with built-in TimescaleDB or external connectors
-* Automatic cleanup, partitioning, and data retention policies
+* Real-time data ingestion from diverse industrial sources
+* Optimized time-series storage (e.g., TimescaleDB)
+* Retention, partitioning, and cleanup strategies
 
-### 🧠 Powerful Analytics Engine
+### 🧠 Rule Engine and Alerts
 
-* Visual rule builder for defining triggers and actions
-* Anomaly detection powered by streaming evaluation
-* Alerting via Email, SMS, WhatsApp, HTTP API, and more
+* Visual rule builder with drag-and-drop logic
+* Conditional rules for alerts, triggers, or data forwarding
+* Output via email, SMS, WhatsApp, HTTP, MQTT, or IT API
 
-### 🛰️ Edge Computing
+### 🛰️ Distributed Edge Analytics
 
-* Docker-based edge agent for ARM/x86 devices
-* Offline-first design with local processing and buffering
-* Seamless upstream sync to centralized Proxus Hub
+* Lightweight edge agents for ARM/x86 hardware
+* Local buffering and logic execution in disconnected mode
+* Edge-to-cloud synchronization when connected
 
-### 📊 Visual Analytics
+### 📊 Visualization and Dashboards
 
-* Drag-and-drop dashboard designer with real-time widgets
-* SQL-powered visualizations and user-defined queries
-* Embed dashboards across web and mobile interfaces
+* Modern dashboard designer with live updating widgets
+* SQL and filter-based queries
+* Responsive across web, tablet, and mobile views
 
-### 🔌 Enterprise Integration
+### 🔌 IT Integration Layer
 
-* 20+ out-of-the-box connectors for databases, brokers, and cloud APIs
-* Webhooks, REST APIs, gRPC, MQTT, and Sparkplug B
-* Role-based access control and audit logs for compliance
+* Connectors for 20+ databases, brokers, and cloud APIs
+* Secure communication: REST, gRPC, MQTT, Webhooks
+* Role-based access and audit logs for security and compliance
 
-## Architecture Highlights
+## Architecture Overview
 
-Proxus is built on modern principles for high-throughput, fault-tolerant, and horizontally scalable performance:
+The architecture behind Proxus focuses on performance, modularity, and scale:
 
-* **Actor Model Architecture**: Event-driven processing with distributed concurrency
-* **SIMD Optimization**: Hardware-accelerated transformation and filtering
-* **Message-Passing Core**: Decoupled, asynchronous internal communication
-* **Zero-GC Runtime**: Ultra-low latency, garbage-collection-free data flow
-* **Container-Native Design**: Works across Docker, Kubernetes, and embedded Linux
+* **Edge + Central Duality**: Workloads are executed locally when needed, with minimal cloud dependence
+* **Actor System Core**: Enables lightweight and parallel message processing
+* **Event Stream Pipeline**: Optimized for ingestion and transformation
+* **Container-Native**: Portable and lightweight deployments on any device
 
 ## Getting Started
 
-Start your Proxus journey in minutes:
+To begin using Proxus:
 
 <Steps>
-  1. Install Proxus using our official Docker image
-  2. Configure device profiles and data acquisition pipelines
-  3. Define rules and deploy your first user-defined function (UDF)
-  4. Design dashboards and integrate with your IT ecosystem
+  1. Deploy Proxus using Docker on your edge or cloud environment
+  2. Register your OT devices and define data acquisition rules
+  3. Create processing logic using the rule engine or C# UDFs
+  4. Build dashboards and configure integrations to your IT systems
 </Steps>
 
 <Card title="Quick Start Guide" icon="rocket" href="/overview/getting-started">
-  Deploy Proxus in under 5 minutes and start unlocking real-time insights
+  Get Proxus up and running in minutes — no complex configuration required
 </Card>
