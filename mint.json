@@ -49,6 +49,12 @@
       "pages": [
         "data-management/devices",
         "data-management/data-acquisition",
+        {
+          "group": "Supported OT Protocols",
+          "pages": [
+            "data-management/modbus-tcp"
+          ]
+        },
         "data-management/ot-protocols",
         "data-management/device-profiles",
         "data-management/data-storage"
