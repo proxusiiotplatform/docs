@@ -1,50 +1,49 @@
 ---
+
 title: "Modbus TCP Integration with Proxus"
 description: "Comprehensive guide for integrating Proxus with Modbus TCP devices for industrial data acquisition, including detailed parameter configurations, address formats, and data type specifications."
 sidebarTitle: "Modbus TCP Integration"
 icon: "network-wired"
 iconType: "solid"
----
+-----------------
 
 ## What is Modbus TCP?
 
-Modbus TCP is an industrial communication protocol that enables data acquisition from industrial devices over TCP/IP networks. It provides a standardized method for reading data from PLCs, sensors, and other industrial equipment using Ethernet infrastructure.
+Modbus TCP is an industrial communication protocol that enables data acquisition from PLCs, sensors, and other field devices over Ethernet networks using TCP/IP. It standardizes how discrete and register data are read and written, facilitating interoperability between diverse hardware and software systems.
 
 ## Device Profile Configuration
 
 ### Connection Parameters
 
-Configure the communication settings for your Modbus TCP device:
+Configure the Modbus TCP connection settings in your Proxus Device Profile:
 
-| Parameter | Description | Default Value | Range/Format | Required |
-|-----------|-------------|---------------|--------------|----------|
-| **Host** | IP address of the Modbus TCP device | - | IPv4 format | Yes |
-| **Port** | TCP port number for Modbus communication | 502 | 1-65535 | No |
-| **ReadingFrequency** | Interval between reading cycles (ms) | 1000 | 100-60000 | No |
-| **ConnectTimeOut** | Connection timeout duration (ms) | 1000 | 500-30000 | No |
-| **ReceiveTimeOut** | Response timeout duration (ms) | 1000 | 500-30000 | No |
-| **DataFormat** | Byte order for multi-register data | ABCD | ABCD, BADC, CDAB, DCBA | No |
+| Parameter            | Description                                 | Default | Format                 | Required |
+| -------------------- | ------------------------------------------- | ------- | ---------------------- | -------- |
+| **Host**             | IP address or hostname of the Modbus device | -       | IPv4 or DNS name       | Yes      |
+| **Port**             | TCP port for Modbus (usually 502)           | 502     | 1–65535                | No       |
+| **ReadingFrequency** | Polling interval in milliseconds            | 1000    | 100–60000              | No       |
+| **ConnectTimeOut**   | Connection timeout in milliseconds          | 1000    | 500–30000              | No       |
+| **ReceiveTimeOut**   | Read response timeout in milliseconds       | 1000    | 500–30000              | No       |
+| **DataFormat**       | Byte order for multi-register values        | ABCD    | ABCD, BADC, CDAB, DCBA | No       |
 
-### Data Format Options
+#### DataFormat Options
 
-The DataFormat parameter determines how multi-register values are interpreted:
-
-- **ABCD**: Big-endian, high word first (default)
-- **BADC**: Big-endian, low word first
-- **CDAB**: Little-endian, high word first
-- **DCBA**: Little-endian, low word first
+* **ABCD**: Word1 high → Word2 low (default)
+* **BADC**: Word1 low → Word2 high
+* **CDAB**: Byte-swap each word high → low
+* **DCBA**: Byte-swap each word low → high
 
 ## Tag Configuration
 
-### Basic Tag Settings
+Each tag in Proxus represents a Modbus data point. Below are the key settings:
 
-Each tag represents a data point from your Modbus device and requires:
+### Basic Tag Fields
 
-1. **Name**: Descriptive identifier for the data point
-2. **Address**: Modbus address specification
-3. **Data Type**: Type of data to read
-4. **Length**: Number of registers to read (for String/Bytes only)
-5. **Polling Interval**: Individual polling frequency (0 = use device default)
+1. **Name**: Friendly tag identifier
+2. **Address**: Modbus address string
+3. **Data Type**: Type of the data (Bool, Int16, Float, etc.)
+4. **Length**: Number of registers (only for String/Bytes)
+5. **Polling Interval**: Overrides device default if >0
 
 ### Address Format
 
@@ -52,78 +51,81 @@ Each tag represents a data point from your Modbus device and requires:
 [s=station];[x=function];address[.bit]
 ```
 
-#### Address Components
+| Component   | Description                      | Example |
+| ----------- | -------------------------------- | ------- |
+| **s=<ID>**  | Slave ID (1–247)                 | s=2     |
+| **x=<FC>**  | Modbus function code             | x=4     |
+| **address** | Register or coil number          | 100     |
+| **.bit**    | Bit index within register (0–15) | .5      |
 
-| Component | Description | Default | Example |
-|-----------|-------------|---------|---------|
-| **s=station** | Modbus station/slave ID | 1 | s=2 |
-| **x=function** | Read function code | 3 | x=4 |
-| **address** | Register or coil number | - | 100 |
-| **.bit** | Specific bit within a register | - | .5 |
+### Function Codes and Prefixes
 
-### Function Codes
-
-| Function Code | Operation | Address Prefix | Description |
-|---------------|-----------|----------------|-------------|
-| 01 | Read Coils | `x=1;` | Read discrete output coil status |
-| 02 | Read Discrete Inputs | `x=2;` | Read discrete input contact status |
-| 03 | Read Holding Registers | (default) | Read holding register values |
-| 04 | Read Input Registers | `x=4;` | Read input register values |
+| FC | Operation                | Address Prefix       | Description                   |
+| -- | ------------------------ | -------------------- | ----------------------------- |
+| 01 | Read Coils               | `x=1;`               | Read discrete output coils    |
+| 02 | Read Discrete Inputs     | `x=2;`               | Read discrete input contacts  |
+| 03 | Read Holding Registers   | (default)            | Read 16-bit holding registers |
+| 04 | Read Input Registers     | `x=4;`               | Read 16-bit input registers   |
+| 05 | Write Single Coil        | (via Write Bool)     | Force single coil             |
+| 06 | Write Single Register    | (via Write Int16)    | Write single 16-bit register  |
+| 15 | Write Multiple Coils     | (via Write Bool\[])  | Force multiple coils          |
+| 16 | Write Multiple Registers | (via Write Int16\[]) | Write multiple registers      |
 
 ### Address Examples
 
-| Address Format | Description | Function Code |
-|----------------|-------------|---------------|
-| `100` | Holding register 100 | 03 |
-| `s=2;100` | Register 100 on station 2 | 03 |
-| `x=4;100` | Input register 100 | 04 |
-| `s=2;x=4;100` | Input register 100 on station 2 | 04 |
-| `100.0` | Bit 0 of holding register 100 | 03 |
-| `x=2;100` | Discrete input 100 | 02 |
-| `x=1;100` | Coil 100 | 01 |
+| Address String | Operation                       | FC |
+| -------------- | ------------------------------- | -- |
+| `100`          | Holding register at 100         | 03 |
+| `s=2;100`      | Holding register 100 on slave 2 | 03 |
+| `x=4;100`      | Input register at 100           | 04 |
+| `s=2;x=4;100`  | Input register 100 on slave 2   | 04 |
+| `100.0`        | Bit 0 of holding register 100   | 03 |
+| `x=2;100`      | Discrete input 100              | 02 |
+| `x=1;100`      | Coil 100                        | 01 |
 
-## Data Types
+## Supported Data Types
 
-### Fixed-Size Data Types
+### Fixed-Size Types
 
-| Data Type | Size (Registers) | Size (Bytes) | Description | Range |
-|-----------|------------------|--------------|-------------|-------|
-| **Bool** | - | 1 bit | Boolean value (coil/discrete) | true/false |
-| **Short** | 1 | 2 bytes | Signed short integer | -32,768 to 32,767 |
-| **UShort** | 1 | 2 bytes | Unsigned short integer | 0 to 65,535 |
-| **Int** | 2 | 4 bytes | Signed integer | -2,147,483,648 to 2,147,483,647 |
-| **UInt** | 2 | 4 bytes | Unsigned integer | 0 to 4,294,967,295 |
-| **Float** | 2 | 4 bytes | Single-precision floating point | IEEE 754 single precision |
-| **Long** | 4 | 8 bytes | Signed long integer | Large signed integer values |
-| **ULong** | 4 | 8 bytes | Unsigned long integer | Large unsigned integer values |
-| **Double** | 4 | 8 bytes | Double-precision floating point | IEEE 754 double precision |
-| **DateTime** | 4 | 8 bytes | Date and time value | Date and time representation |
+| Type       | Registers | Bytes | Description                   |
+| ---------- | --------- | ----- | ----------------------------- |
+| **Bool**   | -         | 1 bit | Single coil or discrete input |
+| **Short**  | 1         | 2     | Signed 16-bit integer         |
+| **UShort** | 1         | 2     | Unsigned 16-bit integer       |
+| **Int**    | 2         | 4     | Signed 32-bit integer         |
+| **UInt**   | 2         | 4     | Unsigned 32-bit integer       |
+| **Float**  | 2         | 4     | IEEE 754 single-precision     |
+| **Long**   | 4         | 8     | Signed 64-bit integer         |
+| **ULong**  | 4         | 8     | Unsigned 64-bit integer       |
+| **Double** | 4         | 8     | IEEE 754 double-precision     |
 
-### Variable-Length Data Types
+### Variable-Length Types
 
-| Data Type | Description | Length Usage | Calculation |
-|-----------|-------------|--------------|-------------|
-| **String** | Variable-length string for text data | **Required** | Characters = Length × 2 |
-| **Bytes** | Variable-length byte data for binary data | **Required** | Bytes = Length × 2 |
+| Type       | Description        | Length Field Use    |
+| ---------- | ------------------ | ------------------- |
+| **String** | ASCII/Unicode text | Number of registers |
+| **Bytes**  | Raw binary data    | Number of registers |
 
 ## Configuration Examples
 
-### Temperature Sensor
+### Floating-Point Input Register
+
 ```json
 {
-  "Name": "Temperature",
-  "Address": "s=1;x=4;100",
+  "Name": "MeasuredValue",
+  "Address": "x=4;100",
   "DataType": "Float",
   "Length": 0,
   "PollingInterval": 1000
 }
 ```
 
-### Pump Status
+### Coil Status
+
 ```json
 {
-  "Name": "Pump Status",
-  "Address": "s=2;x=1;50",
+  "Name": "PumpRunning",
+  "Address": "s=2;100",
   "DataType": "Bool",
   "Length": 0,
   "PollingInterval": 500
@@ -131,138 +133,55 @@ Each tag represents a data point from your Modbus device and requires:
 ```
 
 ### Device Name String
+
 ```json
 {
-  "Name": "Device Name",
-  "Address": "s=2;x=4;400",
+  "Name": "DeviceName",
+  "Address": "s=1;x=4;400",
   "DataType": "String",
   "Length": 10,
   "PollingInterval": 5000
 }
 ```
 
-### Energy Counter
-```json
-{
-  "Name": "Energy Counter",
-  "Address": "s=1;x=4;500",
-  "DataType": "UInt",
-  "Length": 0,
-  "PollingInterval": 2000
-}
-```
-
-## Variable-Length Data Configuration
-
-### String Data Type
-- **Length**: Number of registers to read for string data
-- **Character Count**: Each register contains 2 ASCII characters
-- **Total Characters**: Length × 2
-
-Example: Length = 5 reads 5 registers containing 10 characters
-
-### Bytes Data Type
-- **Length**: Number of registers to read for binary data
-- **Byte Count**: Each register contains 2 bytes
-- **Total Bytes**: Length × 2
-
-Example: Length = 4 reads 4 registers containing 8 bytes
-
 ## Advanced Features
 
-### Bit-Level Reading
+### Bit-Level Access
 
-Read specific bits from registers by adding `.bit` to the address:
+Add `.bit` to read a specific bit:
 
 ```
 Address: 100.5
 Data Type: Bool
 ```
 
-This reads bit 5 (0-indexed) from holding register 100.
+Reads bit index 5 of holding register 100.
 
-### Dynamic Data Format
+### Overriding Data Format
 
-Override the default data format for specific tags:
+Use `format=` prefix to change byte order:
 
 ```
-Address: format=BADC;s=2;100
+Address: format=BADC;s=1;100
 Data Type: Float
 ```
 
-This reads a float value using BADC byte order instead of the default ABCD.
+Reads float with BADC ordering.
 
 ## Best Practices
 
-### Performance Optimization
-
-1. **Group Sequential Addresses**: Place related tags in consecutive registers
-2. **Optimize Polling Intervals**: Use appropriate frequencies based on data change rates
-3. **Minimize Station Queries**: Group tags by station number
-4. **Use Appropriate Data Types**: Choose the most efficient data type
-5. **Exact Length Sizing**: Set Length to match exact data size for String/Bytes
-
-### Polling Interval Guidelines
-
-- **Critical Data**: 100-500ms for critical process data
-- **Status Information**: 1-5 seconds for status monitoring
-- **Configuration Data**: 10+ seconds for slowly changing data
-
-### Length Parameter Guidelines
-
-- **String**: Set Length based on expected text length
-- **Bytes**: Set Length based on binary data size
-- **Performance**: Avoid unnecessarily large Length values
-- **Device Limits**: Check device documentation for maximum register ranges
+* **Group sequential addresses** for efficient batch reads.
+* **Adjust polling** based on data volatility.
+* **Use correct data types** and **exact lengths** for String/Bytes.
+* **Prefix station** (`s=`) only when multiple slaves share a gateway.
 
 ## Troubleshooting
 
-### Connection Issues
+| Issue                     | Cause                                 | Solution                                 |
+| ------------------------- | ------------------------------------- | ---------------------------------------- |
+| Data read out of bounds   | Requested registers exceed device map | Verify Length and available registers    |
+| Invalid address           | Address not supported by device       | Check device memory map                  |
+| Unsupported function code | Device firmware lacks FC support      | Try alternate FC or update firmware      |
+| Byte order mismatch       | Wrong DataFormat setting              | Test with ABCD, BADC, CDAB, DCBA options |
 
-| Issue | Possible Cause | Solution |
-|-------|----------------|----------|
-| Connection Timeout | Network connectivity, wrong IP/port | Verify network settings and device availability |
-| Connection Refused | Device not responding, firewall blocking | Check device status and network configuration |
-| Intermittent Disconnections | Network instability, timeout settings | Adjust timeout values and check network stability |
-
-### Data Reading Errors
-
-| Issue | Possible Cause | Solution |
-|-------|----------------|----------|
-| Invalid Address | Address doesn't exist on device | Check device documentation for valid address ranges |
-| Data Format Error | Wrong byte order for multi-register values | Adjust DataFormat parameter (ABCD, BADC, etc.) |
-| Function Code Error | Device doesn't support function code | Try different function codes (03, 04, 01, 02) |
-| Length Parameter Error | Wrong Length for String/Bytes | Set correct Length value for variable data types |
-| Address Range Error | Length exceeds available registers | Reduce Length or check device memory map |
-
-### Diagnostic Steps
-
-1. **Network Connectivity**: Ping the device IP address
-2. **Port Accessibility**: Verify port 502 is accessible
-3. **Address Validation**: Check device memory map documentation
-4. **Function Code Testing**: Try reading with different function codes
-5. **Data Format Testing**: Test different byte order options
-6. **Length Validation**: Ensure Length parameter is correct for variable data types
-
-## Technical Specifications
-
-### Protocol Compliance
-- **Modbus TCP**: Full compliance with Modbus Application Protocol v1.1b3
-- **Message ID Management**: Automatic increment for request tracking
-- **Error Detection**: TCP-based error handling and timeout management
-- **Data Integrity**: Built-in validation and retry mechanisms
-
-### Performance Characteristics
-- **Maximum Tags**: Limited by device capacity and network bandwidth
-- **Update Rate**: Configurable from 100ms to 60 seconds per tag
-- **Concurrent Devices**: Multiple device connections supported
-- **Data Throughput**: Optimized for industrial monitoring applications
-
-### Memory Areas
-
-| Memory Area | Function Code | Address Prefix | Data Types | Typical Use |
-|-------------|---------------|----------------|------------|-------------|
-| Coils | 01 | `x=1;` | Bool | Digital outputs status |
-| Discrete Inputs | 02 | `x=2;` | Bool | Digital inputs status |
-| Holding Registers | 03 | (default) | All types | Process variables, setpoints |
-| Input Registers | 04 | `x=4;` | All types | Sensor readings, measurements |
+---
