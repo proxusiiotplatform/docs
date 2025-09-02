@@ -1,169 +1,206 @@
+x-defaults: &defaults
+  restart: always
+  networks: [proxus]
+
+x-dotnet-env: &dotnet-env
+  TZ: Europe/Istanbul
+  ASPNETCORE_ENVIRONMENT: Production
+  DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: false
+
+x-healthcheck: &healthcheck
+  interval: 30s
+  timeout: 10s
+  retries: 5
+
 services:
-  # NATS Server (Message Broker)
   hub-server:
-    restart: always
+    <<: *defaults
+    user: "0"
     image: nats:alpine
     container_name: hub-server
-    networks:
-      - proxus
-    ports:
-      - "4222:4222"  # NATS client port
-      - "8222:8222"  # NATS monitoring port
-      - "7422:7422"  # NATS leaf node port
-    volumes:
-      - nats:/data
-      - config:/nats-config
+    ports: ["4222:4222", "8222:8222", "7422:7422"]
+    volumes: [nats:/data, config:/nats-config]
     command: |
       /bin/sh -c "
       mkdir -p /nats-config
-      if [ ! -f /nats-config/hub.conf ]; then
-        cat > /nats-config/hub.conf << EOF
+      [ ! -f /nats-config/hub.conf ] && cat > /nats-config/hub.conf << 'EOF'
       port: 4222
       server_name: hub-server
-      jetstream {
-        store_dir: \"/data/jetstream\"
-        domain: hub
-      }
-      leafnodes {
-        port: 7422
-      }
+      jetstream { store_dir: \"/data/jetstream\"; domain: hub }
+      leafnodes { port: 7422 }
       include ./accounts.conf
       EOF
-      fi
-      if [ ! -f /nats-config/accounts.conf ]; then
-        cat > /nats-config/accounts.conf << EOF
+      [ ! -f /nats-config/accounts.conf ] && cat > /nats-config/accounts.conf << 'EOF'
       accounts: {
-        USERS: {
-          users: [
-            {user: acc, password: acc}
-          ],
-          jetstream: enabled
-        },
-        SYS: {
-          users: [
-            {user: admin, password: admin}
-          ]
-        }
+        USERS: { users: [{user: acc, password: acc}], jetstream: enabled },
+        SYS: { users: [{user: admin, password: admin}] }
       }
       system_account: SYS
       EOF
-      fi
-      nats-server -c /nats-config/hub.conf -m 8222
-      "
+      nats-server -c /nats-config/hub.conf -m 8222"
 
-  # Database Service
   timescaledb:
-    restart: always
+    <<: *defaults
+    user: "0"
     container_name: timescaledb
     image: timescale/timescaledb-ha:pg16
     command: postgres -c shared_preload_libraries=timescaledb -p 5442
-    user: "0"
     shm_size: 1g
-    volumes:
-      - proxus-db-volume:/home/postgres/pgdata/data
-    networks:
-      - proxus
-    ports:
-      - "5442:5442"
+    volumes: [proxus-db-volume:/home/postgres/pgdata/data]
+    ports: ["5442:5442"]
     environment:
-      - POSTGRES_DB=proxus
-      - POSTGRES_USER=proxus
-      - POSTGRES_PASSWORD=proxus
+      POSTGRES_DB: proxus
+      POSTGRES_USER: proxus
+      POSTGRES_PASSWORD: proxus
 
-  # Proxus API Service
-  proxus-api:
-    restart: always
-    container_name: proxus-api
-    image: proxusplatform/proxus-api:latest
-    user: "0"
-    networks:
-      - proxus
-    ports:
-      - "8082:8082"
-    volumes:
-      - config:/app/config
-    environment:
-      - TZ=Europe/Istanbul
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8081
-      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
-    depends_on:
-      - timescaledb
-
-  # Proxus Server (connected to NATS)
   proxus-server:
-    restart: always
+    <<: *defaults
+    user: "0"
     container_name: proxus-server
     image: proxusplatform/proxus-server:latest
-    user: "0"
-    networks:
-      - proxus
-    ports:
-      - "8083:8083"
-      - "1883:1883"  # MQTT port
-    volumes:
-      - config:/app/config
+    ports: ["8083:8083", "1883:1883"]
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    volumes: [config:/app/config]
     environment:
-      - TZ=Europe/Istanbul
-      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
-      - AdvertisedHost=proxus-server
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8083
-      - OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES=Proto.Actor
-      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
-      - OTEL_DOTNET_AUTO_METRICS_CONSOLE_EXPORTER_ENABLED=true
+      <<: *dotnet-env
+      AdvertisedHost: proxus-server
+      ASPNETCORE_URLS: http://+:8083
+      OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES: Proto.Actor
+      OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+      OTEL_DOTNET_AUTO_METRICS_CONSOLE_EXPORTER_ENABLED: true
     command: >
-      ./Proxus.Server
-      GatewayID=1
-      EdgeMode=Proxus
-      BrokerUrl=nats://hub-server:4222
-      BrokerUser=acc
-      BrokerPassword=acc
-      UI-Address=proxus-ui
-    
-    depends_on:
-      - hub-server
-      - proxus-ui
+      ./Proxus.Server GatewayID=1 EdgeMode=Proxus BrokerUrl=nats://hub-server:4222
+      BrokerUser=acc BrokerPassword=acc UI-Address=proxus-ui
+    depends_on: [hub-server, proxus-ui]
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:8083/healthz | grep -q 'Healthy' || exit 1" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      <<: *healthcheck
+      test: ["CMD-SHELL", "curl -f http://localhost:8083/healthz | grep -q 'Healthy' || exit 1"]
 
-  # Proxus UI (connected to NATS)
   proxus-ui:
-    restart: always
+    <<: *defaults
+    user: "0"
     container_name: proxus-ui
     image: proxusplatform/proxus-ui:latest
-    user: "0"
-    networks:
-      - proxus
-    ports:
-      - "8080:8080"
+    ports: ["8080:8080"]
+    extra_hosts: ["host.docker.internal:host-gateway"]
     volumes:
       - proxus_modules:/app/Modules
       - config:/app/config
       - /var/run/docker.sock:/var/run/docker.sock
       - ./Configs/accounts.conf:/app/accounts.conf
     environment:
-      - TZ=Europe/Istanbul
-      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8080
-    command: >
-      ./Proxus.Blazor.Server
-      BrokerUrl=nats://hub-server:4222
-      BrokerUser=acc
-      BrokerPassword=acc
-    
-    depends_on:
-      - hub-server
+      <<: *dotnet-env
+      ASPNETCORE_URLS: http://+:8080
+    command: ["./Proxus.Blazor.Server", "UI-Port=8080", "Loglevel=3",
+              "BrokerUrl=nats://hub-server:4222", "BrokerUser=acc", "BrokerPassword=acc"]
+    depends_on: [hub-server, clickhouse]
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:8080/healthz | grep -q 'Healthy' || exit 1" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      <<: *healthcheck
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/healthz | grep -q 'Healthy' || exit 1"]
 
+  clickhouse:
+    <<: *defaults
+    image: bitnami/clickhouse:latest
+    container_name: clickhouse
+    deploy:
+      resources:
+        limits:
+          memory: 8g
+    environment:
+      ALLOW_EMPTY_PASSWORD: "no"
+      CLICKHOUSE_ADMIN_USER: admin
+      CLICKHOUSE_ADMIN_PASSWORD: proxus
+      CLICKHOUSE_HTTP_PORT: 8123
+      CLICKHOUSE_TCP_PORT: 9000
+      CLICKHOUSE_POSTGRESQL_PORT: 9005
+      CLICKHOUSE_MYSQL_PORT: 9004
+    ports: [ "8123:8123", "9000:9000", "9005:9005", "9004:9004" ]
+    volumes:
+      - clickhouse_data:/bitnami/clickhouse
+      - ./clickhouse-logs:/bitnami/clickhouse/logs
+    healthcheck:
+      <<: *healthcheck
+      test: [ "CMD-SHELL", "clickhouse-client --user admin --password proxus --query 'SELECT 1' || exit 1" ]
+    # Docker log driver'ını da kısıtla
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "1"
+    # Container başlarken tüm log tablolarını kapat
+    entrypoint: |
+      /bin/bash -c "
+      # Config dizinini oluştur
+      mkdir -p /bitnami/clickhouse/etc/conf.d
+      
+      # Tüm sistem loglarını tamamen kapat ve network erişimi aç
+      cat > /bitnami/clickhouse/etc/conf.d/disable_logs.xml << 'EOF'
+      <?xml version=\"1.0\"?>
+      <clickhouse>
+        <!-- Dışarıdan erişim için tüm IP'leri dinle -->
+        <listen_host>0.0.0.0</listen_host>
+      
+        <!-- Sadece error logları -->
+        <logger>
+          <level>error</level>
+        </logger>
+      
+        <!-- Tüm sistem loglarını kapat -->
+        <asynchronous_metric_log remove=\"1\"/>
+        <metric_log remove=\"1\"/>
+        <query_thread_log remove=\"1\"/>
+        <query_views_log remove=\"1\"/>
+        <part_log remove=\"1\"/>
+        <session_log remove=\"1\"/>
+        <trace_log remove=\"1\"/>
+        <opentelemetry_span_log remove=\"1\"/>
+        <zookeeper_log remove=\"1\"/>
+        <filesystem_cache_log remove=\"1\"/>
+        <processors_profile_log remove=\"1\"/>
+        <backup_log remove=\"1\"/>
+      </clickhouse>
+      EOF
+      
+      # ClickHouse'u başlat
+      exec /opt/bitnami/scripts/clickhouse/entrypoint.sh /opt/bitnami/scripts/clickhouse/run.sh
+      "
+  # MCP ClickHouse HTTP Server - Remote Access için
+  # mcp-clickhouse-remote:
+  #   <<: *defaults
+  #   image: mcp/clickhouse:latest
+  #   container_name: mcp-clickhouse-remote
+  #   ports: ["8001:8000"]  # Remote erişim için port
+  #   environment:
+  #     # ClickHouse bağlantısı
+  #     CLICKHOUSE_HOST: clickhouse
+  #     CLICKHOUSE_PORT: "8123"
+  #     CLICKHOUSE_USER: admin
+  #     CLICKHOUSE_PASSWORD: proxus
+  #     CLICKHOUSE_SECURE: "false"
+  #     CLICKHOUSE_VERIFY: "false"
+  #     CLICKHOUSE_CONNECT_TIMEOUT: "30"
+  #     CLICKHOUSE_SEND_RECEIVE_TIMEOUT: "300"
+  #     
+  #     # HTTP Server modunda çalıştır
+  #     CLICKHOUSE_MCP_SERVER_TRANSPORT: http
+  #     CLICKHOUSE_MCP_BIND_HOST: "0.0.0.0"
+  #     CLICKHOUSE_MCP_BIND_PORT: "8000"
+  #     
+  #     # Sadece ClickHouse aktif
+  #     CLICKHOUSE_ENABLED: "true"
+  #     CHDB_ENABLED: "false"
+  #   depends_on:
+  #     - clickhouse
+  #   healthcheck:
+  #     <<: *healthcheck
+  #     test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+  #   # CORS headers ekle (remote access için)
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.middlewares.mcp-cors.headers.accesscontrolalloworigin=*"
+  #     - "traefik.http.middlewares.mcp-cors.headers.accesscontrolallowmethods=GET,POST,OPTIONS"
+  #     - "traefik.http.middlewares.mcp-cors.headers.accesscontrolallowheaders=Content-Type,Authorization"
+  #       
 networks:
   proxus:
     driver: bridge
@@ -173,3 +210,5 @@ volumes:
   proxus-db-volume:
   config:
   nats:
+  clickhouse_data:
+
