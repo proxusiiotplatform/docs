@@ -13,6 +13,21 @@ x-healthcheck: &healthcheck
   retries: 5
 
 services:
+  zookeeper-1:
+    <<: *defaults
+    image: signoz/zookeeper:3.7.1
+    container_name: signoz-zookeeper-1
+    environment:
+      - ZOO_SERVER_ID=1
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - ZOO_AUTOPURGE_INTERVAL=1
+      - ZOO_ENABLE_PROMETHEUS_METRICS=yes
+      - ZOO_PROMETHEUS_METRICS_PORT_NUMBER=9141
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -m 2 http://localhost:8080/commands/ruok | grep error | grep null"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
   hub-server:
     <<: *defaults
     user: "0"
@@ -68,6 +83,7 @@ services:
       OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES: Proto.Actor
       OTEL_EXPORTER_OTLP_PROTOCOL: grpc
       OTEL_DOTNET_AUTO_METRICS_CONSOLE_EXPORTER_ENABLED: true
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
     command: >
       ./Proxus.Server GatewayID=1 EdgeMode=Proxus BrokerUrl=nats://hub-server:4222
       BrokerUser=acc BrokerPassword=acc UI-Address=proxus-ui
@@ -91,6 +107,7 @@ services:
     environment:
       <<: *dotnet-env
       ASPNETCORE_URLS: http://+:8080
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
     command: ["./Proxus.Blazor.Server", "UI-Port=8080", "Loglevel=3",
               "BrokerUrl=nats://hub-server:4222", "BrokerUser=acc", "BrokerPassword=acc"]
     depends_on: [hub-server, clickhouse]
@@ -100,8 +117,9 @@ services:
 
   clickhouse:
     <<: *defaults
-    image: bitnami/clickhouse:latest
+    image: bitnamilegacy/clickhouse:latest
     container_name: clickhouse
+    depends_on: [zookeeper-1]
     deploy:
       resources:
         limits:
@@ -118,6 +136,8 @@ services:
     volumes:
       - clickhouse_data:/bitnami/clickhouse
       - ./clickhouse-logs:/bitnami/clickhouse/logs
+      - ./Configs/clickhouse/cluster.xml:/bitnami/clickhouse/etc/conf.d/cluster.xml:ro
+      - ./Configs/clickhouse/zookeeper.xml:/bitnami/clickhouse/etc/conf.d/zookeeper.xml:ro
     healthcheck:
       <<: *healthcheck
       test: [ "CMD-SHELL", "clickhouse-client --user admin --password proxus --query 'SELECT 1' || exit 1" ]
@@ -164,6 +184,8 @@ services:
       # ClickHouse'u başlat
       exec /opt/bitnami/scripts/clickhouse/entrypoint.sh /opt/bitnami/scripts/clickhouse/run.sh
       "
+
+
   # MCP ClickHouse HTTP Server - Remote Access için
   # mcp-clickhouse-remote:
   #   <<: *defaults
@@ -211,4 +233,3 @@ volumes:
   config:
   nats:
   clickhouse_data:
-
