@@ -39,19 +39,26 @@ services:
       EOF
       nats-server -c /nats-config/hub.conf -m 8222"
 
-  timescaledb:
+  postgresql:
     <<: *defaults
     user: "0"
-    container_name: timescaledb
-    image: timescale/timescaledb-ha:pg16
-    command: postgres -c shared_preload_libraries=timescaledb -p 5442
+    container_name: postgresql
+    image: postgres:16
+    command: postgres -p 5442
     shm_size: 1g
-    volumes: [proxus-db-volume:/home/postgres/pgdata/data]
+    volumes: [proxus-db-volume:/var/lib/postgresql/data]
     ports: ["5442:5442"]
+    networks:
+      proxus:
+        aliases:
+          - postgresql
     environment:
       POSTGRES_DB: proxus
       POSTGRES_USER: proxus
       POSTGRES_PASSWORD: proxus
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD-SHELL", "pg_isready -U proxus -d proxus -p 5442 || exit 1"]
 
   proxus-server:
     <<: *defaults
@@ -166,44 +173,6 @@ services:
       "
       
       
-      
-  # MCP ClickHouse HTTP Server - Remote Access için
-  # mcp-clickhouse-remote:
-  #   <<: *defaults
-  #   image: mcp/clickhouse:latest
-  #   container_name: mcp-clickhouse-remote
-  #   ports: ["8001:8000"]  # Remote erişim için port
-  #   environment:
-  #     # ClickHouse bağlantısı
-  #     CLICKHOUSE_HOST: clickhouse
-  #     CLICKHOUSE_PORT: "8123"
-  #     CLICKHOUSE_USER: admin
-  #     CLICKHOUSE_PASSWORD: proxus
-  #     CLICKHOUSE_SECURE: "false"
-  #     CLICKHOUSE_VERIFY: "false"
-  #     CLICKHOUSE_CONNECT_TIMEOUT: "30"
-  #     CLICKHOUSE_SEND_RECEIVE_TIMEOUT: "300"
-  #     
-  #     # HTTP Server modunda çalıştır
-  #     CLICKHOUSE_MCP_SERVER_TRANSPORT: http
-  #     CLICKHOUSE_MCP_BIND_HOST: "0.0.0.0"
-  #     CLICKHOUSE_MCP_BIND_PORT: "8000"
-  #     
-  #     # Sadece ClickHouse aktif
-  #     CLICKHOUSE_ENABLED: "true"
-  #     CHDB_ENABLED: "false"
-  #   depends_on:
-  #     - clickhouse
-  #   healthcheck:
-  #     <<: *healthcheck
-  #     test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
-  #   # CORS headers ekle (remote access için)
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.middlewares.mcp-cors.headers.accesscontrolalloworigin=*"
-  #     - "traefik.http.middlewares.mcp-cors.headers.accesscontrolallowmethods=GET,POST,OPTIONS"
-  #     - "traefik.http.middlewares.mcp-cors.headers.accesscontrolallowheaders=Content-Type,Authorization"
-  #       
 networks:
   proxus:
     driver: bridge
@@ -214,4 +183,3 @@ volumes:
   config:
   nats:
   clickhouse_data:
-
